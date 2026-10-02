@@ -1,0 +1,7 @@
+/* Schriften lokal eingebunden (SIL Open Font License), keine Anfragen an Google */
+@font-face{font-family:"Amatic SC";font-style:normal;font-weight:700;font-display:swap;src:url(amatic-sc-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Cabin Sketch";font-style:normal;font-weight:700;font-display:swap;src:url(cabin-sketch-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Roboto Condensed";font-style:normal;font-weight:400;font-display:swap;src:url(roboto-condensed-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Roboto Condensed";font-style:normal;font-weight:600;font-display:swap;src:url(roboto-condensed-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Roboto Mono";font-style:normal;font-weight:400;font-display:swap;src:url(roboto-mono-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Roboto Mono";font-style:normal;font-weight:600;font-display:swap;src:url(roboto-mono-latin-600-normal.woff2) format("woff2")}
