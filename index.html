@@ -155,7 +155,7 @@ table.season td.slot{white-space:nowrap}
 .sub-h{font-family:var(--f-title);font-size:32px;line-height:1;margin:26px 0 0}
 .suggest{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:12px 14px;border:2px dashed var(--link);margin-top:10px}
 .suggest p{margin:0;flex:1 1 220px;font-size:15px}
-.mapbox{position:relative;margin-top:14px}
+.mapbox{position:relative;z-index:0;isolation:isolate;margin-top:14px}
 #map{height:min(52vh,440px);border:3px solid var(--ink);background-color:var(--paper-2);background-image:linear-gradient(var(--hatch) 1px,transparent 1px),linear-gradient(90deg,var(--hatch) 1px,transparent 1px);background-size:40px 40px;z-index:0}
 .map-note{position:absolute;left:10px;right:10px;bottom:10px;z-index:500;margin:0;padding:8px 12px;background:var(--card);border:2px solid var(--ink);font-size:14px}
 .pickbar{position:sticky;top:calc(env(safe-area-inset-top,0px) + 62px);z-index:30;display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:12px;padding:10px 14px;background:var(--orange);color:var(--on-orange);font-weight:600}
@@ -223,6 +223,8 @@ legend+*{clear:both}
 .row{display:flex;gap:8px}.row input{flex:1;min-width:0}
 .seg{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--ink-2)}
 .seg input{position:absolute;opacity:0;pointer-events:none}
+.seg.seg3{grid-template-columns:repeat(3,1fr)}
+.seg.seg3 label{font-size:11px;letter-spacing:.06em}
 .seg label{min-height:48px;display:grid;place-items:center;font-family:var(--f-meta);font-size:12px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
 .seg input:checked+label{background:var(--ink);color:var(--paper)}
 .seg input:focus-visible+label{outline:3px solid var(--orange);outline-offset:-3px}
@@ -352,7 +354,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
     <div class="view-head">
       <h1 class="display">Info</h1>
       <div class="brush" aria-hidden="true"></div>
-      <div class="meta">Version 0.5.0</div>
+      <div class="meta">Version 0.5.1</div>
     </div>
     <div class="info-grid">
       <article class="card"><div class="bd" style="gap:10px">
@@ -433,6 +435,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
           <label class="f"><span>Art</span><select id="c-species"></select></label>
           <label class="f"><span>Datum &amp; Uhrzeit</span><input id="c-dt" type="datetime-local"></label>
           <label class="f" id="c-other-wrap" style="grid-column:1/-1" hidden><span>Name der Art</span><input id="c-other" list="dl-species" autocomplete="off" placeholder="z. B. Rotfeuerfisch"></label>
+          <div class="f" id="c-wt-wrap" style="grid-column:1/-1" hidden><span>Gewässertyp der Art</span><div class="seg seg3" role="radiogroup" aria-label="Gewässertyp der Art"><input type="radio" name="c-wt" id="c-wt-0" value="Süßwasser" checked><label for="c-wt-0">Süßwasser</label><input type="radio" name="c-wt" id="c-wt-1" value="Brackwasser"><label for="c-wt-1">Brackwasser</label><input type="radio" name="c-wt" id="c-wt-2" value="Meer"><label for="c-wt-2">Meer</label></div></div>
           <label class="f"><span>Länge (cm)</span><input id="c-length" inputmode="decimal" autocomplete="off" placeholder="58"></label>
           <label class="f"><span>Gewicht (kg)</span><input id="c-weight" inputmode="decimal" autocomplete="off" placeholder="1,65"></label>
         </div>
@@ -504,6 +507,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
       <fieldset><legend>Spot</legend>
         <label class="f"><span>Name</span><input id="s-name" autocomplete="off" placeholder="Buhnenfeld unterhalb der Brücke"></label>
         <label class="f"><span>Gewässer</span><input id="s-water" list="dl-water" autocomplete="off" placeholder="Main"></label>
+        <div class="f"><span>Gewässertyp</span><div class="seg seg3" role="radiogroup" aria-label="Gewässertyp"><input type="radio" name="s-wt" id="s-wt-0" value="Süßwasser" checked><label for="s-wt-0">Süßwasser</label><input type="radio" name="s-wt" id="s-wt-1" value="Brackwasser"><label for="s-wt-1">Brackwasser</label><input type="radio" name="s-wt" id="s-wt-2" value="Meer"><label for="s-wt-2">Meer</label></div></div>
         <div class="f">
           <label class="lbl" for="s-coords">Koordinaten</label>
           <div class="row"><input id="s-coords" autocomplete="off" placeholder="50.06320, 8.52850"><button type="button" class="btn btn-sm" data-act="gps" data-target="s-coords" data-status="s-coords-status">GPS</button></div>
@@ -594,6 +598,11 @@ const FRESH=['Hecht','Zander','Barsch','Wels','Rapfen','Huchen','Bachforelle','R
 const SEA=['Meerforelle','Dorsch','Hornhecht','Makrele','Wolfsbarsch','Seelachs','Pollack','Plattfisch','Mahi Mahi','Thunfisch','Wahoo','Barrakuda','Bonito','Bernsteinmakrele','Zackenbarsch'];
 const SPECIES=[...FRESH,...SEA];
 const OTHER='__other';
+const WT=['Süßwasser','Brackwasser','Meer'];
+const getRadio=n=>{const r=document.querySelector(`input[name="${n}"]:checked`);return r?r.value:WT[0]};
+const setRadio=(n,v)=>{const r=document.querySelector(`input[name="${n}"][value="${WT.includes(v)?v:WT[0]}"]`);if(r)r.checked=true};
+function speciesWater(sp){if(FRESH.includes(sp))return'Süßwasser';if(SEA.includes(sp))return'Meer';const c=S.records.filter(r=>r.type==='catch'&&!r.deleted&&r.species===sp&&r.waterType).sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''))[0];return c?c.waterType:null}
+const spotWater=sp=>sp?(sp.waterType||'Süßwasser'):null;
 const RIGS=['Texas Rig','Carolina Rig','Dropshot','Jigkopf','Free Rig','Wobbler','Spinner','Spinnerbait','Köderfisch','Pose','Grundmontage'];
 const BAITS=['Nays CRW 35','Craby Lui'];
 const LEADERS=['Fluorocarbon 0,25 mm','Fluorocarbon 0,30 mm','Fluorocarbon 0,35 mm','Stahl','Titan'];
@@ -668,16 +677,22 @@ const fmtPeriod=p=>p.replace(/^(\d\d)\.(\d\d)-(\d\d)\.(\d\d)$/,'$1.$2.–$3.$4.'
 function inPeriod(p,dt){const d=new Date(dt);if(isNaN(d))return false;const [a,b]=p.split('-').map(x=>{const[dd,mm]=x.split('.');return Number(mm)*100+Number(dd)});const md=(d.getMonth()+1)*100+d.getDate();return a<=b?(md>=a&&md<=b):(md>=a||md<=b)}
 function sizeText(mn,mx){if(mn!=null&&mx!=null)return`Entnahmefenster ${fmtN(mn)}–${fmtN(mx)} cm`;if(mn!=null)return`Mindestmaß ${fmtN(mn)} cm`;if(mx!=null)return`Höchstmaß ${fmtN(mx)} cm`;return''}
 /* Ergebnis: {where, items:[{level:'stop'|'info'|'ok', title, text, note}]} oder null */
-function checkRules(species,dt,lengthCm,kept,co){
+function checkRules(species,dt,lengthCm,kept,co,wt){
   if(!species||!dt)return null;
   let codes,where;
   const at=statesAt(co);
+  if(at&&!at.list.length){
+    const lim=(wt==='Meer'||wt==='Brackwasser')?25:2;
+    const near=Object.keys(GEO).map(k=>({k,d:Math.min(...GEO[k].map(r=>distKm(co.lat,co.lon,r)))})).filter(x=>x.d<lim).sort((a,b)=>a.d-b.d)[0];
+    if(near){at.list=[near.k];at.main=near.k}
+  }
   if(at){if(!at.list.length)return {where:'Außerhalb Deutschlands',items:[]};codes=at.list;where=at.list.length>1?'Grenznähe: '+at.list.map(k=>RULES[k].name).join(' / '):RULES[codes[0]].name}
   else{codes=[homeState()];where=RULES[codes[0]].name+' (kein Ort angegeben)'}
   const items=[];
+  if(wt==='Meer'||wt==='Brackwasser')items.push({level:'info',title:wt==='Meer'?'Küstengewässer':'Brackwasser',text:'Hier gelten die Küstenfischereiverordnung des Landes und EU-Regeln, z. B. für Dorsch und Aal. Die Binnen-Regeln unten können abweichen.',note:''});
   for(const k of codes){
     const st=RULES[k],r=st.r[species],note=st.n[species]||'';
-    if(!r){if(FRESH.includes(species))items.push({level:'ok',title:st.name,text:`Keine landesweite Schonzeit und kein Mindestmaß für ${species}.`,note:''});continue}
+    if(!r){if(FRESH.includes(species)||speciesWater(species)==='Süßwasser')items.push({level:'ok',title:st.name,text:`Keine landesweite Schonzeit und kein Mindestmaß für ${species}.`,note:''});continue}
     const [cl,mn,mx]=r,probs=[];
     if(cl==='all')probs.push(`${species} ist in ${st.name} ganzjährig geschont.`);
     else if(cl&&inPeriod(cl,dt))probs.push(`Schonzeit ${fmtPeriod(cl)}`);
@@ -691,7 +706,7 @@ function checkRules(species,dt,lengthCm,kept,co){
 }
 function rulesHTML(res){
   if(!res)return'';
-  if(!res.items.length)return`<div class="rule ok"><b>${esc(res.where)}</b>Keine Prüfung von Schonzeit und Maß.</div>`;
+  if(!res.items.length)return`<div class="rule ok"><b>${esc(res.where)}</b>${res.where.startsWith('Außerhalb')?'Keine Prüfung von Schonzeit und Maß.':'Für diese Art sind hier keine Schonzeiten oder Maße hinterlegt.'}</div>`;
   return res.items.map(i=>`<div class="rule ${i.level}"><b>${esc(i.title)}</b>${esc(i.text)}${i.note?`<small>${esc(i.note)}</small>`:''}</div>`).join('')+(res.items.length&&res.where.startsWith('Grenz')?`<small class="hint">${esc(res.where)}. Maßgeblich ist das Land, in dem du angelst.</small>`:'');
 }
 function catchCo(c){const sp=spotById(c.spotId);return c.lat!=null?{lat:c.lat,lon:c.lon}:sp?{lat:sp.lat,lon:sp.lon}:null}
@@ -802,7 +817,7 @@ function catchCard(c){
       <div class="meta">${esc(fmtDate(c.dt))} · ${esc(fmtTime(c.dt))} · ${esc(placeOf(c))}</div>
       <div class="wx">${wxChips(c)}</div>
       ${tackle?`<div class="tackle">${esc(tackle)}${c.weightKg!=null?' — '+esc(fmtWeight(c.weightKg)):''}</div>`:''}
-      <span class="fate ${c.released?'rel':'kept'}">${c.released?'Zurückgesetzt':'Entnommen'}</span>${(()=>{const r=checkRules(c.species,c.dt,c.lengthCm,!c.released,catchCo(c));return r&&r.items.some(i=>i.level==='stop')?'<span class="alert">Schonzeit oder Maß prüfen</span>':''})()}
+      <span class="fate ${c.released?'rel':'kept'}">${c.released?'Zurückgesetzt':'Entnommen'}</span>${(()=>{const r=checkRules(c.species,c.dt,c.lengthCm,!c.released,catchCo(c),spotWater(spotById(c.spotId)));return r&&r.items.some(i=>i.level==='stop')?'<span class="alert">Schonzeit oder Maß prüfen</span>':''})()}
     </div></button></li>`;
 }
 function allYears(){const ys=new Set([new Date().getFullYear()]);[...catches(),...trips()].forEach(r=>{const y=yearOf(r);if(y)ys.add(y)});return[...ys].sort((a,b)=>b-a)}
@@ -875,7 +890,7 @@ function renderSpots(){
   $('#spot-list').innerHTML=all.length?all.map(s=>{
     const n=catches().filter(c=>c.spotId===s.id).length;
     return `<li><button type="button" class="card" data-act="open-spot" data-id="${esc(s.id)}">${s.example?'<span class="stamp">BEISPIEL</span>':''}
-      <div class="bd"><h3>${esc(s.name)}</h3><div class="meta">${esc(s.water||'Gewässer offen')} · ${n} ${n===1?'Fang':'Fänge'}</div>
+      <div class="bd"><h3>${esc(s.name)}</h3><div class="meta">${esc(s.water||'Gewässer offen')} · ${esc(spotWater(s))} · ${n} ${n===1?'Fang':'Fänge'}</div>
       <div class="coord">${esc(fmtCoords(s.lat,s.lon))}</div><span class="priv">Privat · nur auf diesem Gerät</span></div></button></li>`}).join('')
     :`<li class="empty" style="grid-column:1/-1"><b>Noch keine Spots</b>Leg Stellen an, die du wieder anfahren willst. Fänge lassen sich dann einem Spot zuordnen.</li>`;
   renderMapControls();renderSuggestions();drawMarkers();
@@ -997,7 +1012,7 @@ function openCatchForm(c,pre){
   const known=c&&SPECIES.includes(c.species);
   $('#c-species').value=c?(known?c.species:OTHER):'';
   $('#c-other').value=c&&!known?c.species:'';
-  $('#c-other-wrap').hidden=!(c&&!known);
+  $('#c-other-wrap').hidden=!(c&&!known);$('#c-wt-wrap').hidden=!(c&&!known);setRadio('c-wt',c&&!known?c.waterType||speciesWater(c.species):'Süßwasser');
   $('#c-method').value=c?c.method||'':'';
   $('#c-photo-meta').hidden=true;S.photoMeta=null;
   $('#c-dt').value=c?c.dt:localDT(new Date());
@@ -1022,10 +1037,10 @@ function formCoords(){let co=parseCoords($('#c-coords').value);if(!co){const sp=
 function formSpecies(){const v=$('#c-species').value;return v===OTHER?$('#c-other').value.trim():v}
 function updateCatchHints(){
   const dt=$('#c-dt').value,sp=formSpecies();
-  $('#c-other-wrap').hidden=$('#c-species').value!==OTHER;
+  $('#c-other-wrap').hidden=$('#c-species').value!==OTHER;$('#c-wt-wrap').hidden=$('#c-species').value!==OTHER;
   const m=dt?moon(new Date(dt)):null;
   $('#c-moon').innerHTML=m?`<b aria-hidden="true">${m.glyph}</b><span>${esc(m.name)} · ${m.illum} % beleuchtet</span>`:'';
-  const res=checkRules(sp,dt,parseNum($('#c-length').value),$('#c-kept').checked,formCoords());
+  const res=checkRules(sp,dt,parseNum($('#c-length').value),$('#c-kept').checked,formCoords(),spotWater(spotById($('#c-spot').value)));
   const box=$('#c-rules');box.innerHTML=rulesHTML(res);box.hidden=!res;
 }
 function renderFormPhotos(){
@@ -1065,7 +1080,7 @@ async function submitCatch(e){
   err.hidden=true;
   const old=S.editCatch?S.records.find(r=>r.id===S.editCatch):null;
   const c=old?{...old}:{id:uid(),type:'catch',tripId:S.prefTrip||null};const prevTrip=old?old.tripId:null;
-  Object.assign(c,{species,dt,lengthCm:parseNum($('#c-length').value),weightKg:parseNum($('#c-weight').value),released:$('#c-rel').checked,
+  Object.assign(c,{species,waterType:$('#c-species').value===OTHER?getRadio('c-wt'):null,dt,lengthCm:parseNum($('#c-length').value),weightKg:parseNum($('#c-weight').value),released:$('#c-rel').checked,
     spotId:$('#c-spot').value||null,method:$('#c-method').value||null,water:$('#c-water').value.trim(),lat:co?co.lat:null,lon:co?co.lon:null,
     bait:$('#c-bait').value.trim(),rig:$('#c-rig').value.trim(),leader:$('#c-leader').value.trim(),depthM:parseNum($('#c-depth').value),
     wx:{pressure:parseNum($('#c-pressure').value),trend:$('#c-trend').value||null,temp:parseNum($('#c-temp').value),wind:parseNum($('#c-wind').value),windDir:$('#c-winddir').value||null,sky:$('#c-sky').value||null,waterTemp:parseNum($('#c-watertemp').value),clarity:$('#c-clarity').value||null,source:S.wxSource||'manuell'},
@@ -1083,6 +1098,7 @@ async function submitCatch(e){
 /* ---------- Spot-Formular ---------- */
 function openSpotForm(s,prefill){
   S.editSpot=s?s.id:null;S.linkCatches=prefill?(prefill.catchIds||(prefill.catchId?[prefill.catchId]:[])):[];$('#ss-title').textContent=s?'Spot bearbeiten':'Spot anlegen';
+  setRadio('s-wt',s?s.waterType:'Süßwasser');
   $('#s-name').value=s?s.name:'';$('#s-water').value=s?s.water||'':'';$('#s-coords').value=s?fmtCoords(s.lat,s.lon):'';$('#s-note').value=s?s.note||'':'';
   if(prefill){$('#s-coords').value=fmtCoords(prefill.lat,prefill.lon);$('#s-water').value=prefill.water||''}
   $('#s-err').hidden=true;setStatus('s-coords-status',prefill?(prefill.msg||'Standort aus dem Foto übernommen.'):'',prefill?'good':'');openSheet('sheet-spot');
@@ -1094,7 +1110,7 @@ async function submitSpot(e){
   if(!co)return fail('Koordinaten fehlen. GPS nutzen, auf der Karte wählen oder einfügen.');
   const old=S.editSpot?S.records.find(r=>r.id===S.editSpot):null;
   const s=old?{...old}:{id:uid(),type:'spot'};
-  Object.assign(s,{name,water:$('#s-water').value.trim(),lat:co.lat,lon:co.lon,note:$('#s-note').value.trim()});
+  Object.assign(s,{name,waterType:getRadio('s-wt'),water:$('#s-water').value.trim(),lat:co.lat,lon:co.lon,note:$('#s-note').value.trim()});
   stamp(s,!old);await save(s);closeSheet('sheet-spot');
   const links=S.linkCatches.map(id=>S.records.find(r=>r.id===id)).filter(Boolean);S.linkCatches=[];
   for(const l of links){const u={...l,spotId:s.id};if(u.lat==null){u.lat=s.lat;u.lon=s.lon}if(!u.water)u.water=s.water;stamp(u);await save(u)}
@@ -1108,7 +1124,7 @@ function fact(k,v){return v==null||v===''?'':`<dt>${esc(k)}</dt><dd>${v}</dd>`}
 function openCatch(id){
   const c=S.records.find(r=>r.id===id);if(!c)return;const w=c.wx||{},m=moon(new Date(c.dt)),sp=spotById(c.spotId);
   $('#sd-title').textContent='Fang';
-  const res=checkRules(c.species,c.dt,c.lengthCm,!c.released,catchCo(c));
+  const res=checkRules(c.species,c.dt,c.lengthCm,!c.released,catchCo(c),spotWater(sp));
   $('#detail-body').innerHTML=`
     ${c.photos&&c.photos.length?`<div class="gallery">${c.photos.map((p,i)=>`<img data-photo="${esc(p)}" data-kind="full" alt="Foto ${i+1}">`).join('')}</div>`:''}
     <h3 class="detail-title">${esc(c.species)}${c.lengthCm!=null?' · '+fmtN(c.lengthCm)+' cm':''}</h3>
@@ -1117,7 +1133,7 @@ function openCatch(id){
     <dl class="facts">
       ${fact('Gewicht',esc(fmtWeight(c.weightKg)))}${fact('Verbleib',c.released?'Zurückgesetzt':'Entnommen')}
       ${fact('Angeltag',(()=>{const t=c.tripId&&trips().find(x=>x.id===c.tripId);return t?`<button type="button" class="link-btn" style="padding:0" data-act="open-trip" data-id="${esc(t.id)}">${esc(fmtDay(t.date))} · ${esc(tripPlace(t))}</button>`:''})())}
-      ${fact('Spot',sp?esc(sp.name):'')}${fact('Angelart',esc(c.method))}${fact('Gewässer',esc(c.water))}
+      ${fact('Spot',sp?esc(sp.name):'')}${fact('Angelart',esc(c.method))}${fact('Gewässer',esc(c.water))}${fact('Gewässertyp',esc(spotWater(sp)||c.waterType||speciesWater(c.species)||''))}
       ${fact('Koordinaten',c.lat!=null?`<span class="coord">${esc(fmtCoords(c.lat,c.lon))}</span><br><span class="priv">Privat · nur auf diesem Gerät</span>`:'')}
       ${fact('Köder',esc(c.bait))}${fact('Montage',esc(c.rig))}${fact('Vorfach',esc(c.leader))}${fact('Tiefe',c.depthM!=null?fmtN(c.depthM)+' m':'')}
       ${fact('Luftdruck',w.pressure!=null?`${w.pressure} hPa${w.trend?' · '+esc(w.trend)+' '+TREND[w.trend]:''}`:'')}
@@ -1144,7 +1160,7 @@ function openSpot(id){
   $('#detail-body').innerHTML=`
     <h3 class="detail-title">${esc(s.name)}</h3>
     <div class="meta">${esc(s.water||'Gewässer offen')} · ${list.length} ${list.length===1?'Fang':'Fänge'}${s.example?' · Beispiel':''}</div>
-    <dl class="facts">${fact('Koordinaten',`<span class="coord">${esc(fmtCoords(s.lat,s.lon))}</span><br><span class="priv">Privat · nur auf diesem Gerät</span>`)}</dl>
+    <dl class="facts">${fact('Gewässertyp',esc(spotWater(s)))}${fact('Koordinaten',`<span class="coord">${esc(fmtCoords(s.lat,s.lon))}</span><br><span class="priv">Privat · nur auf diesem Gerät</span>`)}</dl>
     ${s.note?`<div class="notebox">${esc(s.note)}</div>`:''}
     ${list.length?`<p class="lbl" style="margin-top:18px">Fänge an diesem Spot</p><ul class="mini-list">${list.map(c=>`<li><button type="button" data-act="open-catch" data-id="${esc(c.id)}"><span>${esc(c.species)}${c.lengthCm!=null?' · '+fmtN(c.lengthCm)+' cm':''}</span><small>${esc(fmtDate(c.dt))}</small></button></li>`).join('')}</ul>`:''}
     <div class="actions"><button type="button" class="btn" data-act="edit-spot" data-id="${esc(s.id)}">Bearbeiten</button><button type="button" class="btn btn-danger" data-act="ask-del" data-id="${esc(s.id)}">Löschen</button></div>
@@ -1280,6 +1296,7 @@ $('#map-species').addEventListener('change',e=>{S.mapSpecies=e.target.value;rend
 $('#t-spot').addEventListener('change',()=>{const sp=spotById($('#t-spot').value);if(sp&&!$('#t-water').value)$('#t-water').value=sp.water||''});
 $('#home-state').addEventListener('change',e=>{homeMem=e.target.value;flag.set('rr-home',e.target.value);renderAll()});
 ['c-species','c-dt','c-other','c-coords','c-length'].forEach(id=>$('#'+id).addEventListener('input',updateCatchHints));
+$('#c-other').addEventListener('change',()=>{const w=speciesWater($('#c-other').value.trim());if(w)setRadio('c-wt',w)});
 $('#c-species').addEventListener('change',()=>{updateCatchHints();if($('#c-species').value===OTHER)$('#c-other').focus()});
 $$('input[name="c-fate"]').forEach(r=>r.addEventListener('change',updateCatchHints));
 ['c-pressure','c-trend','c-temp','c-wind','c-winddir','c-sky'].forEach(id=>$('#'+id).addEventListener('change',()=>{if(S.wxSource==='Open-Meteo')S.wxSource='Open-Meteo, angepasst'}));

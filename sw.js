@@ -1,7 +1,7 @@
 /* Service Worker: hält die App offline verfügbar.
    Eigene Dateien: aus dem Speicher, im Hintergrund aktualisiert.
    Wetter (Open-Meteo) und Kartenkacheln (OpenStreetMap): nur online, werden nicht gespeichert. */
-const CACHE = 'rur-tagebuch-0.5.0';
+const CACHE = 'rur-tagebuch-0.5.1';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'vendor/leaflet.js', 'fonts/fonts.css',
   'fonts/amatic-sc-latin-700-normal.woff2', 'fonts/cabin-sketch-latin-700-normal.woff2',
