@@ -119,6 +119,16 @@ table.season td.slot{white-space:nowrap}
 .empty{padding:28px 18px;border:2px dashed var(--ink-2);text-align:center;color:var(--ink-2)}
 .empty b{display:block;font-family:var(--f-title);font-size:32px;color:var(--ink)}
 
+/* Einstellungen, Sicherung, Willkommen */
+.choice{display:grid;gap:12px;margin-top:18px}
+.choice button{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:16px 18px;border:3px solid var(--ink);background:var(--card);text-align:left;cursor:pointer}
+.choice button b{font-family:var(--f-title);font-size:34px;line-height:1}
+.choice button span{font-size:15px;color:var(--ink-2)}
+.choice button:hover{border-color:var(--rust)}
+.check{display:flex;gap:10px;align-items:center;font-size:16px;cursor:pointer;min-height:44px}
+.check input{width:22px;height:22px;accent-color:var(--green)}
+.backup-note{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-block:12px;padding:10px 14px;border:2px solid var(--warn);background:var(--paper-2);font-size:15px}
+.backup-note p{margin:0;flex:1 1 220px}
 /* Reiter, Jahre */
 .tabs{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--ink);margin-top:8px;max-width:420px}
 .tabs button{min-height:46px;border:0;background:transparent;font-family:var(--f-meta);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
@@ -171,7 +181,8 @@ table.season td.slot{white-space:nowrap}
 
 /* Untere Leiste */
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:45;background:var(--toolbar);color:var(--toolbar-ink);padding-bottom:env(safe-area-inset-bottom,0px)}
-.nav ul{list-style:none;margin:0 auto;padding:0 8px;max-width:640px;display:grid;grid-template-columns:repeat(4,1fr);align-items:end}
+.nav ul{list-style:none;margin:0 auto;padding:0 8px;max-width:640px;display:flex;align-items:flex-end}
+.nav li{flex:1 1 0}
 .nav button{width:100%;min-height:62px;border:0;background:transparent;color:var(--toolbar-muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-family:var(--f-meta);font-size:10px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
 .nav button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2}
 .nav button[aria-current="page"]{color:var(--toolbar-ink)}
@@ -282,6 +293,10 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
       <div class="brush" aria-hidden="true"></div>
       <div class="meta" id="catch-summary"></div>
     </div>
+    <div class="backup-note" id="backup-note" hidden>
+      <p id="backup-note-text"></p>
+      <button type="button" class="btn btn-sm" data-act="goto-backup">Jetzt sichern</button>
+    </div>
     <div class="note" id="example-note" hidden>
       <p>Einträge mit Stempel <b>Beispiel</b> sind Musterdaten, damit du siehst, wie es aussieht.</p>
       <button type="button" class="btn btn-sm" data-act="clear-examples">Beispiele entfernen</button>
@@ -342,23 +357,31 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
         <h2>Deine Daten</h2>
         <p>Speicher: <span id="store-state"></span></p>
         <ul>
-          <li>Fänge, Fotos und Spots liegen nur auf diesem Gerät. Kein Konto, kein Server.</li>
+          <li>Fänge, Fotos und Spots liegen nur auf diesem Gerät. Kein Konto, kein Server. Sicherungen landen nur dort, wo du sie selbst ablegst.</li>
           <li>Fotos werden beim Hinzufügen neu gespeichert. Dabei fallen GPS-Daten und andere Metadaten aus der Bilddatei weg.</li>
           <li>Steckt im Foto ein Standort, merkt sich die App ihn getrennt vom Bild, damit du ihn später als Spot übernehmen kannst. Er bleibt privat.</li>
           <li>Für das Wetter gehen nur auf 0,1° gerundete Koordinaten (rund 10 km) und die Uhrzeit an Open-Meteo.</li>
           <li>Die Karte lädt Kacheln von OpenStreetMap. Dabei wird deine IP-Adresse übertragen, deine Spots nicht.</li>
         </ul>
       </div></article>
-      <article class="card"><div class="bd" style="gap:10px">
+      <article class="card" id="backup-card"><div class="bd" style="gap:10px">
         <h2>Sicherung</h2>
-        <p>Kopiert alle Fänge und Spots als Text (ohne Fotos). Zum Wiederherstellen hier einfügen und einlesen.</p>
-        <div class="actions" style="margin-top:0">
-          <button type="button" class="btn btn-sm" data-act="copy-backup">Sicherung kopieren</button>
-          <button type="button" class="btn btn-sm" data-act="import-backup">Einlesen</button>
-        </div>
-        <label class="lbl" for="backup-text">Sicherung</label>
-        <textarea class="backup" id="backup-text" spellcheck="false" placeholder="Sicherung hier einfügen"></textarea>
+        <p>Eine Datei mit allen Fängen, Angeltagen, Spots <b>und Fotos</b>. Speichere sie in iCloud Drive, Google Drive oder schick sie dir per Mail. Geht das Handy verloren, liest du sie auf dem neuen Gerät wieder ein.</p>
+        <p class="hint" id="backup-last"></p>
+        <label class="f"><span>Passwort (empfohlen)</span><input id="bk-pw" type="password" autocomplete="new-password" placeholder="Ohne Passwort unverschlüsselt"></label>
+        <p class="hint">Mit Passwort ist die Datei verschlüsselt (AES-256). Ohne das Passwort lässt sie sich nicht öffnen, auch nicht von uns. Gut merken.</p>
+        <button type="button" class="btn btn-primary" data-act="create-backup">Sicherung erstellen</button>
+        <label class="btn file-btn">Sicherung einlesen<input type="file" id="bk-file" accept=".json,application/json"></label>
         <p class="status" id="backup-status" role="status"></p>
+      </div></article>
+      <article class="card"><div class="bd" style="gap:10px">
+        <h2>Bereiche</h2>
+        <p>Was nutzt du? Die App blendet den Rest aus. Daten gehen dabei nicht verloren.</p>
+        <div class="seg seg3" role="radiogroup" aria-label="Bereiche">
+          <input type="radio" name="set-sec" id="set-sec-a" value="angeln"><label for="set-sec-a">Angeln</label>
+          <input type="radio" name="set-sec" id="set-sec-j" value="jagd"><label for="set-sec-j">Jagd</label>
+          <input type="radio" name="set-sec" id="set-sec-b" value="both"><label for="set-sec-b">Beides</label>
+        </div>
       </div></article>
       <article class="card"><div class="bd" style="gap:10px">
         <h2>Schonzeiten &amp; Maße</h2>
@@ -399,9 +422,10 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
 
 <nav class="nav" id="nav" aria-label="Hauptnavigation">
   <ul>
-    <li><button type="button" data-go="faenge" aria-current="page"><svg viewBox="0 0 24 24"><path d="M3 12c3-4 7-6 11-6 3 0 5 2 7 6-2 4-4 6-7 6-4 0-8-2-11-6z"/><path d="M3 12 1 9M3 12l-2 3"/><circle cx="16" cy="11" r="1"/></svg>Fänge</button></li>
-    <li><button type="button" class="add" data-act="new-catch" aria-label="Fang eintragen"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Fang</button></li>
-    <li><button type="button" data-go="spots" aria-current="false"><svg viewBox="0 0 24 24"><path d="M12 21s-6-6-6-11a6 6 0 0 1 12 0c0 5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/></svg>Karte</button></li>
+    <li data-sec="angeln"><button type="button" data-go="faenge" aria-current="page"><svg viewBox="0 0 24 24"><path d="M3 12c3-4 7-6 11-6 3 0 5 2 7 6-2 4-4 6-7 6-4 0-8-2-11-6z"/><path d="M3 12 1 9M3 12l-2 3"/><circle cx="16" cy="11" r="1"/></svg>Fänge</button></li>
+    <li data-sec="angeln"><button type="button" class="add" data-act="new-catch" aria-label="Fang eintragen"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Fang</button></li>
+    <li data-sec="angeln"><button type="button" data-go="spots" aria-current="false"><svg viewBox="0 0 24 24"><path d="M12 21s-6-6-6-11a6 6 0 0 1 12 0c0 5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/></svg>Karte</button></li>
+    <li data-sec="jagd" hidden><button type="button" data-go="jagd" aria-current="false"><svg viewBox="0 0 24 24"><path d="M8 3v5l-3 3M8 8l3-3M16 3v5l3 3M16 8l-3-3M8 8c0 6 2 9 4 13 2-4 4-7 4-13"/></svg>Revier</button></li>
     <li><button type="button" data-go="info" aria-current="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v.5"/></svg>Info</button></li>
   </ul>
 </nav>
@@ -504,6 +528,19 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
       <button type="submit" class="btn btn-primary btn-block">Spot speichern</button>
     </div></div>
   </form>
+</section>
+
+<!-- Willkommen -->
+<section class="sheet" id="sheet-welcome" hidden role="dialog" aria-modal="true" aria-labelledby="sw-title">
+  <header class="sheet-head"><h2 class="sheet-title" id="sw-title">Willkommen</h2></header>
+  <div class="sheet-body">
+    <p class="lead" style="margin-top:16px">Wofür nutzt du das Tagebuch? Das lässt sich unter Info jederzeit ändern.</p>
+    <div class="choice">
+      <button type="button" data-act="pick-sec" data-sec="angeln"><b>Angeln</b><span>Fangbuch, Angeltage, Fangkarte, Schonzeiten</span></button>
+      <button type="button" data-act="pick-sec" data-sec="jagd"><b>Jagd</b><span>Ansitz, Strecke, Reviereinrichtungen</span></button>
+      <button type="button" data-act="pick-sec" data-sec="both"><b>Angeln und Jagd</b><span>Beide Bereiche, Umschalter oben rechts</span></button>
+    </div>
+  </div>
 </section>
 
 <!-- Angeltag -->
@@ -610,6 +647,13 @@ async function dbGet(store,id){if(DB.mem[store].has(id))return DB.mem[store].get
 
 /* ---------- Zustand ---------- */
 const S={records:[],tab:'faenge',year:new Date().getFullYear(),layers:{spots:true,catches:true},mapYear:'Alle',mapSpecies:'Alle',linkCatches:[],view:'faenge',section:'angeln',filter:'Alle',editCatch:null,editSpot:null,formPhotos:[],removedPhotos:[],pick:false,map:null,layer:null,tilesFailed:false};
+/* Einstellungen je Gerät (werden nicht mitgesichert) */
+const SET_ID='_settings';
+const settings=()=>S.records.find(r=>r.id===SET_ID)||{id:SET_ID,type:'settings',sections:null,lastBackupAt:null,lastBackupCount:0};
+async function saveSettings(patch){const cur=settings();const n={...cur,...patch,updatedAt:new Date().toISOString()};await save(n);return n}
+const sections=()=>settings().sections||'both';
+const allowed=sec=>sections()==='both'||sections()===sec;
+const realRecords=()=>S.records.filter(r=>!r.example&&!r.deleted&&r.type!=='settings');
 const catches=()=>S.records.filter(r=>r.type==='catch'&&!r.deleted);
 const spots=()=>S.records.filter(r=>r.type==='spot'&&!r.deleted);
 const trips=()=>S.records.filter(r=>r.type==='trip'&&!r.deleted);
@@ -918,7 +962,7 @@ function renderRulesInfo(){
   $('#rules-table').innerHTML=`<thead><tr><th>Art</th><th>Schonzeit</th><th>Maß</th></tr></thead><tbody>${rows}</tbody>`;
   $('#rules-source').textContent=[`Quelle: ${st.src}${st.stand?', '+st.stand:''}.`,st.general,...Object.entries(st.n).map(([a,t])=>`${a}: ${t}`)].filter(Boolean).join(' ');
 }
-function renderAll(){renderCatches();renderSpots();renderLists();renderStore();renderRulesInfo()}
+function renderAll(){renderCatches();renderSpots();renderLists();renderStore();renderRulesInfo();renderBackupInfo();renderSettings()}
 
 /* ---------- Karte ---------- */
 function ensureMap(){
@@ -963,11 +1007,15 @@ function endPick(){S.pick=false;$('#pickbar').hidden=true}
 /* ---------- Ansichten & Blätter ---------- */
 function show(v){
   if(!['faenge','spots','info','jagd'].includes(v))v='faenge';
-  S.view=v;S.section=v==='jagd'?'jagd':'angeln';
+  if((v==='faenge'||v==='spots')&&!allowed('angeln'))v='jagd';
+  if(v==='jagd'&&!allowed('jagd'))v='faenge';
+  S.view=v;if(v!=='info')S.section=v==='jagd'?'jagd':'angeln';
+  if(!allowed(S.section))S.section=allowed('angeln')?'angeln':'jagd';
+  $('.switch').hidden=sections()!=='both';
+  $$('.nav li[data-sec]').forEach(li=>li.hidden=li.dataset.sec!==S.section);
   $$('.view').forEach(el=>el.hidden=el.dataset.view!==v);
   $$('.nav [data-go]').forEach(b=>b.setAttribute('aria-current',b.dataset.go===v?'page':'false'));
   $('#sw-angeln').setAttribute('aria-pressed',String(S.section==='angeln'));$('#sw-jagd').setAttribute('aria-pressed',String(S.section==='jagd'));
-  $('#nav').hidden=S.section==='jagd';
   if(v==='spots')ensureMap();
   if(!S.pick)window.scrollTo(0,0);
   try{history.replaceState(null,'','#'+v)}catch(e){}
@@ -1201,19 +1249,71 @@ async function removeRecord(id){
 }
 
 /* ---------- Sicherung ---------- */
-async function copyBackup(){
-  const data={app:'rute-und-revier-tagebuch',schema:1,exported:new Date().toISOString(),records:S.records.filter(r=>!r.example).map(r=>({...r,photos:[]}))};
-  const txt=JSON.stringify(data);const ta=$('#backup-text');ta.value=txt;
-  try{await navigator.clipboard.writeText(txt);setStatus('backup-status',`${data.records.length} Einträge kopiert. Fotos sind nicht enthalten.`,'good')}
-  catch(e){ta.focus();ta.select();setStatus('backup-status','Kopieren nicht erlaubt. Text ist markiert, bitte von Hand kopieren.')}
+function u8ToB64(u8){let s='';for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s)}
+function b64ToU8(b64){const s=atob(b64),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u}
+async function blobToB64(b){return b?u8ToB64(new Uint8Array(await b.arrayBuffer())):null}
+const b64ToBlob=(b,type)=>b?new Blob([b64ToU8(b)],{type:type||'image/jpeg'}):null;
+async function pwKey(pw,salt,iter){
+  const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:iter,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
 }
-async function importBackup(){
-  let d;try{d=JSON.parse($('#backup-text').value)}catch(e){return setStatus('backup-status','Das ist keine gültige Sicherung.','bad')}
-  if(!d||!Array.isArray(d.records))return setStatus('backup-status','Das ist keine gültige Sicherung.','bad');
-  let n=0;for(const r of d.records){if(!r.id||!r.type)continue;const cur=S.records.find(x=>x.id===r.id);
-    if(!cur||(r.updatedAt||'')>(cur.updatedAt||'')){const keep=cur&&cur.photos?cur.photos:[];await save({...r,photos:r.photos&&r.photos.length?r.photos:keep});n++}}
-  renderAll();setStatus('backup-status',`${n} Einträge übernommen.`,'good');
+async function encryptText(text,pw){
+  const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),iter=310000;
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},await pwKey(pw,salt,iter),new TextEncoder().encode(text));
+  return {app:'rute-und-revier-tagebuch',enc:'AES-256-GCM/PBKDF2-SHA256',iter,salt:u8ToB64(salt),iv:u8ToB64(iv),data:u8ToB64(new Uint8Array(ct))};
 }
+async function decryptText(env,pw){
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64ToU8(env.iv)},await pwKey(pw,b64ToU8(env.salt),env.iter),b64ToU8(env.data));
+  return new TextDecoder().decode(pt);
+}
+function renderBackupInfo(){
+  const st=settings(),n=realRecords().length,last=st.lastBackupAt?new Date(st.lastBackupAt):null;
+  const days=last?Math.floor((Date.now()-last.getTime())/864e5):null,since=n-(st.lastBackupCount||0);
+  $('#backup-last').textContent=last?`Letzte Sicherung: ${fmtDate(st.lastBackupAt)}${days?` (vor ${days} ${days===1?'Tag':'Tagen'})`:' (heute)'}.`:'Noch keine Sicherung erstellt.';
+  const due=n>0&&(!last||days>=14||since>=10);
+  $('#backup-note').hidden=!due;
+  if(due)$('#backup-note-text').textContent=!last?`Noch keine Sicherung. ${n} ${n===1?'Eintrag liegt':'Einträge liegen'} nur auf diesem Handy.`:since>=10?`${since} neue Einträge seit der letzten Sicherung.`:`Letzte Sicherung vor ${days} Tagen.`;
+}
+async function createBackup(){
+  const pw=$('#bk-pw').value;
+  if(pw&&!(window.crypto&&crypto.subtle))return setStatus('backup-status','Verschlüsseln geht nur über eine sichere Verbindung (https). Bitte die App über ihre https-Adresse öffnen.','bad');
+  setStatus('backup-status','Sicherung wird erstellt …');
+  try{
+    const recs=S.records.filter(r=>!r.example&&r.type!=='settings'),live=recs.filter(r=>!r.deleted).length;
+    const ids=new Set(recs.filter(r=>r.type==='catch').flatMap(c=>c.photos||[]));
+    const photos=[];for(const id of ids){const ph=await dbGet('photos',id);if(ph)photos.push({id:ph.id,catchId:ph.catchId,meta:ph.meta||null,full:await blobToB64(ph.full),thumb:await blobToB64(ph.thumb)})}
+    const data={app:'rute-und-revier-tagebuch',schema:2,created:new Date().toISOString(),records:recs,photos};
+    let text=JSON.stringify(data);
+    if(pw)text=JSON.stringify(await encryptText(text,pw));
+    const day=localDT(new Date()).slice(0,10),name=`rur-sicherung-${day}${pw?'-verschluesselt':''}.json`;
+    const file=new File([text],name,{type:'application/json'});
+    const mb=file.size<1048576?Math.max(1,Math.round(file.size/1024))+' KB':(file.size/1048576).toLocaleString('de-DE',{maximumFractionDigits:1})+' MB';
+    const done=async how=>{await saveSettings({lastBackupAt:new Date().toISOString(),lastBackupCount:live});renderBackupInfo();setStatus('backup-status',`${how}: ${live} ${live===1?'Eintrag':'Einträge'}, ${photos.length} ${photos.length===1?'Foto':'Fotos'}, ${mb}${pw?', verschlüsselt':''}.`,'good')};
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      try{await navigator.share({files:[file],title:'Rute & Revier Sicherung'});await done('Geteilt');return}
+      catch(e){if(e&&e.name==='AbortError'){setStatus('backup-status','Teilen abgebrochen. Es wurde nichts gespeichert.');return}}
+    }
+    const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=name;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),60000);
+    await done('Heruntergeladen, liegt im Download-Ordner');
+  }catch(e){setStatus('backup-status','Sicherung fehlgeschlagen: '+(e&&e.message||'unbekannter Fehler'),'bad')}
+}
+async function restoreBackup(file){
+  setStatus('backup-status','Sicherung wird gelesen …');
+  let d;try{d=JSON.parse(await file.text())}catch(e){return setStatus('backup-status','Diese Datei ist keine Sicherung des Tagebuchs.','bad')}
+  if(d&&d.enc){
+    const pw=$('#bk-pw').value;
+    if(!pw){$('#bk-pw').focus();return setStatus('backup-status','Die Sicherung ist verschlüsselt. Passwort oben eintragen und die Datei erneut wählen.','bad')}
+    try{d=JSON.parse(await decryptText(d,pw))}catch(e){return setStatus('backup-status','Passwort falsch oder Datei beschädigt.','bad')}
+  }
+  if(!d||!Array.isArray(d.records))return setStatus('backup-status','Diese Datei ist keine Sicherung des Tagebuchs.','bad');
+  let n=0,np=0;
+  for(const ph of d.photos||[]){if(!ph.id)continue;if(await dbGet('photos',ph.id))continue;await dbPut('photos',{id:ph.id,catchId:ph.catchId,meta:ph.meta||null,full:b64ToBlob(ph.full),thumb:b64ToBlob(ph.thumb)});np++}
+  for(const r of d.records){if(!r.id||!r.type||r.type==='settings')continue;const cur=S.records.find(x=>x.id===r.id);
+    if(!cur||(r.updatedAt||'')>(cur.updatedAt||'')){await save(r);n++}}
+  renderAll();setStatus('backup-status',`Eingelesen: ${n} ${n===1?'Eintrag':'Einträge'} und ${np} ${np===1?'Foto':'Fotos'} übernommen.${n?'':' Alles war schon auf dem neuesten Stand.'}`,'good');
+}
+function renderSettings(){const v=sections();const r=document.querySelector(`input[name="set-sec"][value="${v}"]`);if(r)r.checked=true}
 
 /* ---------- Ereignisse ---------- */
 document.addEventListener('click',async e=>{
@@ -1232,6 +1332,9 @@ document.addEventListener('click',async e=>{
     case 'year':S.year=Number(a.dataset.year);S.filter='Alle';renderCatches();break;
     case 'tab':S.tab=a.dataset.tab;renderCatches();break;
     case 'new-trip':openTripForm(null);break;
+    case 'pick-sec':await saveSettings({sections:a.dataset.sec});closeSheet('sheet-welcome');renderSettings();show(a.dataset.sec==='jagd'?'jagd':'faenge');break;
+    case 'create-backup':createBackup();break;
+    case 'goto-backup':show('info');setTimeout(()=>$('#backup-card').scrollIntoView({block:'start'}),50);break;
     case 'open-trip':openTrip(id);break;
     case 'edit-trip':openTripForm(trips().find(x=>x.id===id));break;
     case 'catch-on-trip':{const t=trips().find(x=>x.id===id);if(!t)break;const co=tripCo(t);openCatchForm(null,{tripId:t.id,dt:t.date+'T'+(t.end&&t.end!==t.start?t.end:t.start||localDT(new Date()).slice(11,16)),spotId:t.spotId,water:t.water,lat:t.spotId?null:co&&co.lat,lon:t.spotId?null:co&&co.lon,method:t.method});break}
@@ -1248,8 +1351,6 @@ document.addEventListener('click',async e=>{
     case 'meta-time':if(S.photoMeta&&S.photoMeta.taken){$('#c-dt').value=S.photoMeta.taken;updateCatchHints();toast('Zeit aus dem Foto übernommen')}break;
     case 'spot-from-photo':{const c=S.records.find(r=>r.id===id);openSpotForm(null,{lat:Number(a.dataset.lat),lon:Number(a.dataset.lon),water:c&&c.water,catchId:id});break}
     case 'cancel-pick':endPick();openSheet('sheet-spot');break;
-    case 'copy-backup':copyBackup();break;
-    case 'import-backup':importBackup();break;
     case 'gps':{const t=a.dataset.target,st=a.dataset.status;setStatus(st,'Standort wird ermittelt …');
       try{const p=await gps();$('#'+t).value=fmtCoords(p.lat,p.lon);setStatus(st,`Standort übernommen (± ${Math.round(p.acc)} m).`,'good')}
       catch(err){setStatus(st,'Standort nicht verfügbar. In der Vorschau ist GPS gesperrt, in der installierten App fragt das Handy nach. Spot wählen oder Koordinaten einfügen.','bad')}
@@ -1272,6 +1373,8 @@ document.addEventListener('click',async e=>{
 $('#form-catch').addEventListener('submit',submitCatch);
 $('#form-spot').addEventListener('submit',submitSpot);
 $('#form-trip').addEventListener('submit',submitTrip);
+$$('input[name="set-sec"]').forEach(r=>r.addEventListener('change',async e=>{await saveSettings({sections:e.target.value});renderSettings();show(S.view==='info'?'info':e.target.value==='jagd'?'jagd':'faenge')}));
+$('#bk-file').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)restoreBackup(f)});
 $('#map-year').addEventListener('change',e=>{S.mapYear=e.target.value==='Alle'?'Alle':Number(e.target.value);renderMapControls();drawMarkers();fitMap()});
 $('#map-species').addEventListener('change',e=>{S.mapSpecies=e.target.value;renderMapControls();drawMarkers();fitMap()});
 $('#t-spot').addEventListener('change',()=>{const sp=spotById($('#t-spot').value);if(sp&&!$('#t-water').value)$('#t-water').value=sp.water||''});
@@ -1297,8 +1400,9 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const open=$$
   for(const c of catches().filter(c=>!c.tripId&&!c.example).sort((a,b)=>a.dt.localeCompare(b.dt)))await assignTrip(c,null);
   if(DB.db&&navigator.storage&&navigator.storage.persist){try{navigator.storage.persist()}catch(e){}}
   const h=(location.hash||'').slice(1);
-  show(['faenge','spots','info','jagd'].includes(h)?h:'faenge');
   renderAll();
+  show(['faenge','spots','info','jagd'].includes(h)?h:sections()==='jagd'?'jagd':'faenge');
+  if(!settings().sections)openSheet('sheet-welcome');
 })();
 })();
 </script>
