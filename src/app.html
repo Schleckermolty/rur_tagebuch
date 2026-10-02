@@ -144,6 +144,15 @@ table.season td.slot{white-space:nowrap}
 .targets{display:flex;flex-wrap:wrap;gap:8px}
 .targets label{display:flex;align-items:center;gap:6px;padding:6px 10px;border:2px solid var(--ink-2);font-size:15px;cursor:pointer}
 .targets input{accent-color:var(--green)}
+.lure-grid{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.lure-grid button{width:100%;display:flex;flex-direction:column;border:2px solid var(--ink);background:var(--card);padding:0;cursor:pointer;text-align:left}
+.lure-grid .sq{aspect-ratio:1;width:100%;max-width:100%;display:grid;place-items:center;overflow:hidden;background:repeating-linear-gradient(-45deg,var(--hatch) 0 8px,transparent 8px 16px);border-bottom:2px solid var(--ink)}
+.lure-grid .sq img{width:100%;height:100%;object-fit:contain;display:block;background:var(--card)}
+.lure-grid .sq span{font-family:var(--f-meta);font-size:11px;color:var(--muted);text-transform:uppercase;text-align:center;padding:6px}
+.lure-grid .nm{padding:6px 8px;font-size:14px;line-height:1.2;overflow-wrap:anywhere}
+.lure-grid .nm small{display:block;color:var(--muted);font-size:12px}
+.lure-grid .out .sq{opacity:.45}
+.view-toggle{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
 /* Reiter, Jahre */
 .tabs{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--ink);margin-top:8px;max-width:420px}
 .tabs button{min-height:46px;border:0;background:transparent;font-family:var(--f-meta);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
@@ -376,6 +385,10 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
       <div id="r-out"></div>
     </div>
     <div style="margin-top:16px"><button type="button" class="btn btn-primary" data-act="new-lure">+ Köder anlegen</button></div>
+    <div class="view-toggle" role="group" aria-label="Darstellung">
+      <button type="button" class="chip" data-act="lure-view" data-v="list" aria-pressed="true">Liste</button>
+      <button type="button" class="chip" data-act="lure-view" data-v="grid" aria-pressed="false">Fotos</button>
+    </div>
     <div class="chips" id="lure-chips" role="group" aria-label="Nach Typ filtern"></div>
     <ul class="cards" id="lure-list"></ul>
   </section>
@@ -503,7 +516,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
 
       <fieldset><legend>Köder &amp; Montage</legend>
         <div class="grid2">
-          <label class="f" style="grid-column:1/-1"><span>Aus der Köderbox</span><select id="c-lure"></select></label>
+          <div class="f" style="grid-column:1/-1"><label class="lbl" for="c-lure">Aus der Köderbox</label><div class="row"><select id="c-lure" style="flex:1;min-width:0;min-height:50px;padding:10px 36px 10px 12px;border:2px solid var(--ink-2);border-radius:0;background:var(--card);font-family:var(--f-ui);font-size:18px"></select><button type="button" class="btn btn-sm" data-act="pick-lure-photo">Per Foto</button></div></div>
           <label class="f"><span>Köder</span><input id="c-bait" list="dl-bait" autocomplete="off" placeholder="Nays CRW 35"></label>
           <label class="f"><span>Montage</span><input id="c-rig" list="dl-rig" autocomplete="off" placeholder="Texas Rig"></label>
           <label class="f"><span>Vorfach</span><input id="c-leader" list="dl-leader" autocomplete="off" placeholder="Fluorocarbon 0,30 mm"></label>
@@ -597,7 +610,8 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
       </fieldset>
       <fieldset><legend>Foto &amp; Notiz</legend>
         <div class="thumbs" id="l-photo"></div>
-        <label class="btn file-btn">Foto wählen<input type="file" id="l-file" accept="image/*"></label>
+        <p class="hint">Bis zu drei Fotos, z. B. Köder von beiden Seiten und das Etikett der Verpackung.</p>
+        <label class="btn file-btn" id="l-file-btn">Foto hinzufügen<input type="file" id="l-file" accept="image/*" multiple></label>
         <label class="f"><span>Notiz</span><textarea id="l-note" placeholder="Läuft am besten am 7-g-Jigkopf, langsam einleiern"></textarea></label>
       </fieldset>
     </div>
@@ -606,6 +620,12 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
       <button type="submit" class="btn btn-primary btn-block">Köder speichern</button>
     </div></div>
   </form>
+</section>
+
+<!-- Köder per Foto wählen -->
+<section class="sheet" id="sheet-lurepick" hidden role="dialog" aria-modal="true" aria-labelledby="slp-title">
+  <header class="sheet-head"><h2 class="sheet-title" id="slp-title">Köder wählen</h2><button type="button" class="icon-btn" data-act="close" data-sheet="sheet-lurepick" aria-label="Schließen">✕</button></header>
+  <div class="sheet-body"><p class="hint" style="margin-top:14px">Tippe auf den Köder, den du benutzt hast.</p><ul class="lure-grid" id="lurepick-grid"></ul></div>
 </section>
 
 <!-- Willkommen -->
@@ -1070,6 +1090,7 @@ function renderRulesInfo(){
   $('#rules-source').textContent=[`Quelle: ${st.src}${st.stand?', '+st.stand:''}.`,st.general,...Object.entries(st.n).map(([a,t])=>`${a}: ${t}`)].filter(Boolean).join(' ');
 }
 /* ---------- Köderbox ---------- */
+const lurePhotos=l=>l.photos&&l.photos.length?l.photos:(l.photo?[l.photo]:[]);
 const unitPrice=l=>l.price!=null?l.price/(l.pack||1):null;
 const fmtEuro=v=>v==null?'':v.toLocaleString('de-DE',{style:'currency',currency:'EUR'});
 function catchesWithLure(l){return catches().filter(c=>c.lureId===l.id||(!c.lureId&&c.bait&&c.bait.trim().toLowerCase()===l.name.trim().toLowerCase()))}
@@ -1078,11 +1099,15 @@ function lureCard(l){
   const cs=catchesWithLure(l),y=new Date().getFullYear(),lostY=lureLostYear(l,y);
   const desc=[l.brand,l.lureType,l.size!=null?fmtN(l.size)+' cm':'',l.weight!=null?fmtN(l.weight)+' g':'',l.color].filter(Boolean).join(' · ');
   return `<li><button type="button" class="card" data-act="open-lure" data-id="${esc(l.id)}">
-    <div class="ph">${l.photo?`<img data-photo="${esc(l.photo)}" alt="Foto: ${esc(l.name)}" hidden><span>${esc(l.lureType||'Köder')}</span>`:`<span>${esc(l.lureType||'Köder')}</span>`}</div>${l.example?'<span class="stamp">BEISPIEL</span>':''}
+    <div class="ph">${lurePhotos(l)[0]?`<img data-photo="${esc(lurePhotos(l)[0])}" alt="Foto: ${esc(l.name)}" hidden><span>${esc(l.lureType||'Köder')}</span>`:`<span>${esc(l.lureType||'Köder')}</span>`}</div>${l.example?'<span class="stamp">BEISPIEL</span>':''}
     <div class="bd"><h3>${esc(l.name)}</h3><div class="meta">${esc(desc)}</div>
       <div class="lure-stats"><span>${cs.length} ${cs.length===1?'Fang':'Fänge'}</span><span class="${l.qty===0?'out':''}">${l.qty==null?'Bestand offen':l.qty===0?'nicht vorrätig':l.qty+' Stück'}</span>${unitPrice(l)!=null?`<span>${fmtEuro(unitPrice(l))}/Stück</span>`:''}${lostY?`<span>${lostY}× verloren ${y}</span>`:''}</div>
       ${l.targets&&l.targets.length?`<div class="tackle">Für ${esc(l.targets.join(', '))}</div>`:''}
     </div></button></li>`;
+}
+function lureTile(l,act){
+  const ph=lurePhotos(l)[0];
+  return `<li class="${l.qty===0?'out':''}"><button type="button" data-act="${act}" data-id="${esc(l.id)}"><div class="sq">${ph?`<img data-photo="${esc(ph)}" alt="${esc(l.name)}" hidden><span>${esc(l.lureType||'Köder')}</span>`:`<span>${esc(l.lureType||'Köder')}<br>kein Foto</span>`}</div><div class="nm">${esc(l.name)}<small>${esc([l.size!=null?fmtN(l.size)+' cm':'',l.color].filter(Boolean).join(' · '))}${l.qty===0?' · leer':''}</small></div></button></li>`;
 }
 function renderLures(){
   const all=lures().sort((a,b)=>a.name.localeCompare(b.name,'de')),y=new Date().getFullYear();
@@ -1093,7 +1118,9 @@ function renderLures(){
   const f=S.lureFilter||'Alle';
   $('#lure-chips').innerHTML=all.length?['Alle',...types].map(t=>`<button type="button" class="chip" data-act="lure-filter" data-type="${esc(t)}" aria-pressed="${f===t}">${esc(t)}</button>`).join(''):'';
   const list=f==='Alle'?all:all.filter(l=>l.lureType===f);
-  $('#lure-list').innerHTML=list.length?list.map(lureCard).join(''):`<li class="empty" style="grid-column:1/-1"><b>Noch keine Köder</b>Leg deine Köder an. Beim Fang wählst du sie dann aus der Köderbox, und die App lernt, was bei dir fängt.</li>`;
+  $$('[data-act="lure-view"]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===(S.lureView||'list'))));
+  $('#lure-list').className=S.lureView==='grid'?'lure-grid':'cards';
+  $('#lure-list').innerHTML=list.length?list.map(l=>S.lureView==='grid'?lureTile(l,'open-lure'):lureCard(l)).join(''):`<li class="empty" style="grid-column:1/-1"><b>Noch keine Köder</b>Leg deine Köder an. Beim Fang wählst du sie dann aus der Köderbox, und die App lernt, was bei dir fängt.</li>`;
   hydratePhotos($('#lure-list'));
   const rs=$('#r-species'),keep=rs.value||S.recoSpecies||'Zander';
   const spp=[...new Set([...Object.keys(PROFILE),...catches().map(c=>c.species),...lures().flatMap(l=>l.targets||[])])].sort((a,b)=>a.localeCompare(b,'de'));
@@ -1131,7 +1158,7 @@ function openLure(id){
   const bySp={};cs.forEach(c=>bySp[c.species]=(bySp[c.species]||0)+1);
   $('#sd-title').textContent='Köder';
   $('#detail-body').innerHTML=`
-    ${l.photo?`<div class="gallery"><img data-photo="${esc(l.photo)}" data-kind="full" alt="Foto: ${esc(l.name)}"></div>`:''}
+    ${lurePhotos(l).length?`<div class="gallery">${lurePhotos(l).map((p,i)=>`<img data-photo="${esc(p)}" data-kind="full" alt="Foto ${i+1}: ${esc(l.name)}">`).join('')}</div>`:''}
     <h3 class="detail-title">${esc(l.name)}</h3>
     <div class="meta">${esc([l.brand,l.lureType].filter(Boolean).join(' · '))}${l.example?' · Beispiel':''}</div>
     <dl class="facts">
@@ -1154,9 +1181,9 @@ function renderLureTargets(sel){
   $('#l-targets').innerHTML=spp.map((x,i)=>`<label><input type="checkbox" value="${esc(x)}" ${sel&&sel.includes(x)?'checked':''}>${esc(x)}</label>`).join('');
 }
 function updateUnit(){const pr=parseNum($('#l-price').value),pk=parseNum($('#l-pack').value)||1;$('#l-unit').textContent=pr!=null&&pk>1?`Stückpreis: ${fmtEuro(pr/pk)}`:''}
-function renderLurePhoto(){const b=$('#l-photo'),ph=S.lurePhoto;b.innerHTML=ph?`<figure><img alt="Köderfoto" ${ph.url?`src="${ph.url}"`:`data-photo="${esc(ph.id)}"`}><button type="button" data-act="rm-lure-photo" aria-label="Foto entfernen">✕</button></figure>`:'';hydratePhotos(b)}
+function renderLurePhoto(){const b=$('#l-photo');b.innerHTML=S.lurePhotos.map((ph,i)=>`<figure><img alt="Köderfoto ${i+1}" ${ph.url?`src="${ph.url}"`:`data-photo="${esc(ph.id)}"`}><button type="button" data-act="rm-lure-photo" data-i="${i}" aria-label="Foto entfernen">✕</button></figure>`).join('');hydratePhotos(b);$('#l-file-btn').hidden=S.lurePhotos.length>=3}
 function openLureForm(l){
-  S.editLure=l?l.id:null;S.lurePhoto=l&&l.photo?{id:l.photo,isNew:false}:null;S.lurePhotoRemoved=null;
+  S.editLure=l?l.id:null;S.lurePhotos=l?lurePhotos(l).map(id=>({id,isNew:false})):[];S.lurePhotosRemoved=[];
   $('#sl-title').textContent=l?'Köder bearbeiten':'Köder anlegen';
   const v=(id,x)=>{$(id).value=x==null?'':x};
   v('#l-name',l&&l.name);v('#l-brand',l&&l.brand);v('#l-type',l&&l.lureType);v('#l-size',l&&l.size!=null?fmtN(l.size):'');v('#l-weight',l&&l.weight!=null?fmtN(l.weight):'');
@@ -1169,13 +1196,13 @@ async function submitLure(e){
   const name=$('#l-name').value.trim();if(!name)return fail('Bitte Name oder Modell angeben.');
   const old=S.editLure?lures().find(x=>x.id===S.editLure):null;
   const l=old?{...old}:{id:uid(),type:'lure',lost:[]};
-  if(S.lurePhoto&&S.lurePhoto.isNew)await dbPut('photos',{id:S.lurePhoto.id,lureId:l.id,full:S.lurePhoto.full,thumb:S.lurePhoto.thumb,meta:null});
-  if(S.lurePhotoRemoved)await dbDel('photos',S.lurePhotoRemoved);
+  for(const ph of S.lurePhotos.filter(x=>x.isNew))await dbPut('photos',{id:ph.id,lureId:l.id,full:ph.full,thumb:ph.thumb,meta:null});
+  for(const id of S.lurePhotosRemoved)await dbDel('photos',id);
   const qty=parseNum($('#l-qty').value);
   Object.assign(l,{name,brand:$('#l-brand').value.trim(),lureType:$('#l-type').value||null,size:parseNum($('#l-size').value),weight:parseNum($('#l-weight').value),
     color:$('#l-color').value.trim(),colorType:$('#l-colortype').value||null,depth:$('#l-depth').value.trim(),qty:qty==null?null:Math.max(0,Math.round(qty)),
     targets:$$('#l-targets input:checked').map(i=>i.value),bought:$('#l-bought').value||null,shop:$('#l-shop').value.trim(),price:parseNum($('#l-price').value),
-    pack:Math.max(1,Math.round(parseNum($('#l-pack').value)||1)),note:$('#l-note').value.trim(),photo:S.lurePhoto?S.lurePhoto.id:null});
+    pack:Math.max(1,Math.round(parseNum($('#l-pack').value)||1)),note:$('#l-note').value.trim(),photos:S.lurePhotos.map(x=>x.id),photo:null});
   stamp(l,!old);await save(l);closeSheet('sheet-lure');show('koeder');renderAll();
   if(!$('#sheet-detail').hidden)openLure(l.id);
   toast(old?'Köder aktualisiert':'Köder gespeichert');
@@ -1464,7 +1491,7 @@ async function removeRecord(id){
   if(r.type==='catch')for(const p of r.photos||[])await dbDel('photos',p);
   if(r.type==='spot')for(const c of catches().filter(c=>c.spotId===id)){const u={...c,spotId:null};stamp(u);await save(u)}
   if(r.type==='trip')for(const c of catchesOfTrip(id)){const u={...c,tripId:null};stamp(u);await save(u)}
-  if(r.type==='lure'&&r.photo)await dbDel('photos',r.photo);
+  if(r.type==='lure')for(const ph of lurePhotos(r))await dbDel('photos',ph);
   const tripOfCatch=r.type==='catch'&&r.tripId?trips().find(x=>x.id===r.tripId):null;
   if(r.example){S.records=S.records.filter(x=>x.id!==id);await dbDel('records',id)}
   else{const u={...r,deleted:true,photos:[]};stamp(u);await save(u)}
@@ -1504,7 +1531,7 @@ async function createBackup(){
   setStatus('backup-status','Sicherung wird erstellt …');
   try{
     const recs=S.records.filter(r=>!r.example&&r.type!=='settings'),live=recs.filter(r=>!r.deleted).length;
-    const ids=new Set([...recs.filter(r=>r.type==='catch').flatMap(c=>c.photos||[]),...recs.filter(r=>r.type==='lure'&&r.photo).map(l=>l.photo)]);
+    const ids=new Set([...recs.filter(r=>r.type==='catch').flatMap(c=>c.photos||[]),...recs.filter(r=>r.type==='lure').flatMap(l=>lurePhotos(l))]);
     const photos=[];for(const id of ids){const ph=await dbGet('photos',id);if(ph)photos.push({id:ph.id,catchId:ph.catchId,lureId:ph.lureId,meta:ph.meta||null,full:await blobToB64(ph.full),thumb:await blobToB64(ph.thumb)})}
     const data={app:'rute-und-revier-tagebuch',schema:2,created:new Date().toISOString(),records:recs,photos};
     let text=JSON.stringify(data);
@@ -1560,7 +1587,10 @@ document.addEventListener('click',async e=>{
     case 'open-lure':openLure(id);break;
     case 'edit-lure':openLureForm(lures().find(x=>x.id===id));break;
     case 'lure-filter':S.lureFilter=a.dataset.type;renderLures();break;
-    case 'rm-lure-photo':if(S.lurePhoto&&!S.lurePhoto.isNew)S.lurePhotoRemoved=S.lurePhoto.id;S.lurePhoto=null;renderLurePhoto();break;
+    case 'rm-lure-photo':{const ph=S.lurePhotos.splice(Number(a.dataset.i),1)[0];if(ph&&!ph.isNew)S.lurePhotosRemoved.push(ph.id);renderLurePhoto();break}
+    case 'lure-view':S.lureView=a.dataset.v;renderLures();break;
+    case 'pick-lure-photo':{const ls=lures().filter(l=>l.qty!==0||l.id===$('#c-lure').value).sort((x,y)=>x.name.localeCompare(y.name,'de'));$('#lurepick-grid').innerHTML=ls.length?ls.map(l=>lureTile(l,'pick-lure')).join(''):'<li class="empty" style="grid-column:1/-1"><b>Box ist leer</b>Leg zuerst Köder in der Köderbox an.</li>';hydratePhotos($('#lurepick-grid'));openSheet('sheet-lurepick');break}
+    case 'pick-lure':{const l=lures().find(x=>x.id===id);if(l){$('#c-lure').value=l.id;$('#c-bait').value=l.name}closeSheet('sheet-lurepick');break}
     case 'lure-lost':{const l=lures().find(x=>x.id===id);if(!l||l.qty===0)break;const u={...l,qty:l.qty==null?null:Math.max(0,l.qty-1),lost:[...(l.lost||[]),localDT(new Date()).slice(0,10)]};stamp(u);await save(u);renderAll();openLure(id);toast(u.qty===0?'Verloren. Bestand ist jetzt leer.':'Verlust eingetragen');break}
     case 'pick-sec':await saveSettings({sections:a.dataset.sec});closeSheet('sheet-welcome');renderSettings();show(a.dataset.sec==='jagd'?'jagd':'faenge');break;
     case 'create-backup':createBackup();break;
@@ -1606,7 +1636,7 @@ $('#form-trip').addEventListener('submit',submitTrip);
 $('#form-lure').addEventListener('submit',submitLure);
 ['l-price','l-pack'].forEach(id=>$('#'+id).addEventListener('input',updateUnit));
 $('#r-species').addEventListener('change',renderReco);$('#r-clarity').addEventListener('change',renderReco);
-$('#l-file').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{const img=await loadImg(f);const full=await reencode(img,1200,.82),thumb=await reencode(img,520,.78);if(S.lurePhoto&&!S.lurePhoto.isNew)S.lurePhotoRemoved=S.lurePhoto.id;S.lurePhoto={id:uid(),isNew:true,full,thumb,url:URL.createObjectURL(thumb)};renderLurePhoto()}catch(err){toast('Foto konnte nicht gelesen werden')}});
+$('#l-file').addEventListener('change',async e=>{const fs=[...e.target.files].slice(0,3-S.lurePhotos.length);e.target.value='';for(const f of fs){try{const img=await loadImg(f);const full=await reencode(img,1200,.82),thumb=await reencode(img,520,.78);S.lurePhotos.push({id:uid(),isNew:true,full,thumb,url:URL.createObjectURL(thumb)})}catch(err){toast('Foto konnte nicht gelesen werden')}}renderLurePhoto()});
 $('#c-lure').addEventListener('change',()=>{const l=lures().find(x=>x.id===$('#c-lure').value);if(l)$('#c-bait').value=l.name});
 $('#c-bait').addEventListener('input',()=>{const l=lures().find(x=>x.id===$('#c-lure').value);if(l&&$('#c-bait').value.trim().toLowerCase()!==l.name.toLowerCase())$('#c-lure').value=''});
 $$('input[name="set-sec"]').forEach(r=>r.addEventListener('change',async e=>{await saveSettings({sections:e.target.value});renderSettings();show(S.view==='info'?'info':e.target.value==='jagd'?'jagd':'faenge')}));
