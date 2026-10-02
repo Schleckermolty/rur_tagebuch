@@ -124,7 +124,7 @@ table.season td.slot{white-space:nowrap}
 .card:hover::after{inset:4px -4px -4px 4px}
 .card .ph{aspect-ratio:16/10;max-width:100%;width:100%;background:repeating-linear-gradient(-45deg,var(--hatch) 0 8px,transparent 8px 16px);border-bottom:2px solid var(--ink);display:grid;place-items:center;overflow:hidden}
 .card .ph img{width:100%;height:100%;object-fit:cover;display:block}
-.card .ph span{font-family:var(--f-display);font-size:34px;color:var(--muted);opacity:.55;text-transform:uppercase}
+.card .ph span{font-family:var(--f-display);font-size:clamp(22px,7vw,34px);color:var(--muted);opacity:.55;text-transform:uppercase;text-align:center;padding:0 12px;overflow-wrap:anywhere}
 .card .bd{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .card h3{font-family:var(--f-title);font-size:34px;line-height:1;margin:0;font-weight:700;text-wrap:balance}
 .stamp{position:absolute;top:10px;right:10px;padding:2px 8px;border:2px solid var(--rust);color:var(--rust);background:var(--card);font-family:var(--f-meta);font-size:11px;font-weight:600;letter-spacing:.2em;transform:rotate(4deg)}
@@ -146,6 +146,21 @@ table.season td.slot{white-space:nowrap}
 .check input{width:22px;height:22px;accent-color:var(--green)}
 .backup-note{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-block:12px;padding:10px 14px;border:2px solid var(--warn);background:var(--paper-2);font-size:15px}
 .backup-note p{margin:0;flex:1 1 220px}
+/* Köderbox */
+.reco{margin-top:14px;padding:14px 16px;border:3px solid var(--ink);background:var(--card);display:flex;flex-direction:column;gap:10px}
+.reco h2{font-family:var(--f-title);font-size:32px;line-height:1;margin:0}
+.reco .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.reco ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.reco li button{width:100%;text-align:left;display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:2px solid var(--ink-2);background:var(--paper-2);cursor:pointer}
+.reco li b{font-size:18px}
+.reco li small{color:var(--ink-2);font-size:14px}
+.reco .rank{font-family:var(--f-meta);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--rust)}
+.lure-stats{display:flex;flex-wrap:wrap;gap:6px}
+.lure-stats span{font-family:var(--f-meta);font-size:12px;padding:3px 7px;background:var(--paper-2);white-space:nowrap}
+.lure-stats .out{color:var(--danger)}
+.targets{display:flex;flex-wrap:wrap;gap:8px}
+.targets label{display:flex;align-items:center;gap:6px;padding:6px 10px;border:2px solid var(--ink-2);font-size:15px;cursor:pointer}
+.targets input{accent-color:var(--green)}
 /* Reiter, Jahre */
 .tabs{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--ink);margin-top:8px;max-width:420px}
 .tabs button{min-height:46px;border:0;background:transparent;font-family:var(--f-meta);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
@@ -364,12 +379,32 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
     <ul class="spot-list" id="spot-list"></ul>
   </section>
 
+  <!-- Köderbox -->
+  <section class="view" data-view="koeder" hidden>
+    <div class="view-head">
+      <h1 class="display">Köderbox</h1>
+      <div class="brush" aria-hidden="true"></div>
+      <div class="meta" id="lure-summary"></div>
+    </div>
+    <div class="reco">
+      <h2>Was soll ich nehmen?</h2>
+      <div class="row2">
+        <label class="f"><span>Zielfisch</span><select id="r-species"></select></label>
+        <label class="f"><span>Wasser</span><select id="r-clarity"><option value="">egal</option><option>klar</option><option>angetrübt</option><option>trüb</option></select></label>
+      </div>
+      <div id="r-out"></div>
+    </div>
+    <div style="margin-top:16px"><button type="button" class="btn btn-primary" data-act="new-lure">+ Köder anlegen</button></div>
+    <div class="chips" id="lure-chips" role="group" aria-label="Nach Typ filtern"></div>
+    <ul class="cards" id="lure-list"></ul>
+  </section>
+
   <!-- Info -->
   <section class="view" data-view="info" hidden>
     <div class="view-head">
       <h1 class="display">Info</h1>
       <div class="brush" aria-hidden="true"></div>
-      <div class="meta">Version 0.6.0</div>
+      <div class="meta">Version 0.7.0</div>
     </div>
     <div class="info-grid">
       <article class="card"><div class="bd" style="gap:10px">
@@ -443,6 +478,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
   <ul>
     <li data-sec="angeln"><button type="button" data-go="faenge" aria-current="page"><svg viewBox="0 0 24 24"><path d="M3 12c3-4 7-6 11-6 3 0 5 2 7 6-2 4-4 6-7 6-4 0-8-2-11-6z"/><path d="M3 12 1 9M3 12l-2 3"/><circle cx="16" cy="11" r="1"/></svg>Fänge</button></li>
     <li data-sec="angeln"><button type="button" class="add" data-act="new-catch" aria-label="Fang eintragen"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Fang</button></li>
+    <li data-sec="angeln"><button type="button" data-go="koeder" aria-current="false"><svg viewBox="0 0 24 24"><path d="M5 9h9l4 3-4 3H5z"/><path d="M18 12h3M9 15v3a2 2 0 0 0 4 0"/><circle cx="8" cy="12" r="1"/></svg>Köder</button></li>
     <li data-sec="angeln"><button type="button" data-go="spots" aria-current="false"><svg viewBox="0 0 24 24"><path d="M12 21s-6-6-6-11a6 6 0 0 1 12 0c0 5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/></svg>Karte</button></li>
     <li data-sec="jagd" hidden><button type="button" data-go="jagd" aria-current="false"><svg viewBox="0 0 24 24"><path d="M8 3v5l-3 3M8 8l3-3M16 3v5l3 3M16 8l-3-3M8 8c0 6 2 9 4 13 2-4 4-7 4-13"/></svg>Revier</button></li>
     <li><button type="button" data-go="info" aria-current="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v.5"/></svg>Info</button></li>
@@ -486,6 +522,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
 
       <fieldset><legend>Köder &amp; Montage</legend>
         <div class="grid2">
+          <label class="f" style="grid-column:1/-1"><span>Aus der Köderbox</span><select id="c-lure"></select></label>
           <label class="f"><span>Köder</span><input id="c-bait" list="dl-bait" autocomplete="off" placeholder="Nays CRW 35"></label>
           <label class="f"><span>Montage</span><input id="c-rig" list="dl-rig" autocomplete="off" placeholder="Texas Rig"></label>
           <label class="f"><span>Vorfach</span><input id="c-leader" list="dl-leader" autocomplete="off" placeholder="Fluorocarbon 0,30 mm"></label>
@@ -549,6 +586,47 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
   </form>
 </section>
 
+<!-- Köder -->
+<section class="sheet" id="sheet-lure" hidden role="dialog" aria-modal="true" aria-labelledby="sl-title">
+  <header class="sheet-head"><h2 class="sheet-title" id="sl-title">Köder</h2><button type="button" class="icon-btn" data-act="close" data-sheet="sheet-lure" aria-label="Schließen">✕</button></header>
+  <form id="form-lure" novalidate>
+    <div class="sheet-body">
+      <fieldset><legend>Köder</legend>
+        <label class="f"><span>Name / Modell</span><input id="l-name" autocomplete="off" placeholder="Nays CRW 35"></label>
+        <div class="grid2">
+          <label class="f"><span>Hersteller</span><input id="l-brand" list="dl-brand" autocomplete="off" placeholder="Nays"></label>
+          <label class="f"><span>Typ</span><select id="l-type"><option value="">–</option><option>Gummifisch</option><option>Creature / Krebs</option><option>Wobbler</option><option>Jerkbait</option><option>Swimbait</option><option>Spinner</option><option>Blinker</option><option>Spinnerbait</option><option>Jig</option><option>Oberflächenköder</option><option>Pilker</option><option>Fliege</option><option>Sonstiges</option></select></label>
+          <label class="f"><span>Länge (cm)</span><input id="l-size" inputmode="decimal" autocomplete="off" placeholder="9"></label>
+          <label class="f"><span>Gewicht (g)</span><input id="l-weight" inputmode="decimal" autocomplete="off" placeholder="7"></label>
+          <label class="f"><span>Farbe</span><input id="l-color" autocomplete="off" placeholder="Motoroil"></label>
+          <label class="f"><span>Farbwirkung</span><select id="l-colortype"><option value="">–</option><option>natürlich</option><option>auffällig</option><option>dunkel</option></select></label>
+          <label class="f"><span>Lauftiefe (m)</span><input id="l-depth" autocomplete="off" placeholder="2–3"></label>
+          <label class="f"><span>Bestand (Stück)</span><input id="l-qty" inputmode="numeric" autocomplete="off" placeholder="5"></label>
+        </div>
+        <div class="f"><span class="lbl">Zielfische</span><div class="targets" id="l-targets"></div></div>
+      </fieldset>
+      <fieldset><legend>Kauf</legend>
+        <div class="grid2">
+          <label class="f"><span>Gekauft am</span><input id="l-bought" type="date"></label>
+          <label class="f"><span>Händler</span><input id="l-shop" list="dl-shop" autocomplete="off" placeholder="Angel-Bär Frankfurt"></label>
+          <label class="f"><span>Preis (€)</span><input id="l-price" inputmode="decimal" autocomplete="off" placeholder="7,99"></label>
+          <label class="f"><span>Stück pro Packung</span><input id="l-pack" inputmode="numeric" autocomplete="off" placeholder="1"></label>
+        </div>
+        <p class="hint" id="l-unit"></p>
+      </fieldset>
+      <fieldset><legend>Foto &amp; Notiz</legend>
+        <div class="thumbs" id="l-photo"></div>
+        <label class="btn file-btn">Foto wählen<input type="file" id="l-file" accept="image/*"></label>
+        <label class="f"><span>Notiz</span><textarea id="l-note" placeholder="Läuft am besten am 7-g-Jigkopf, langsam einleiern"></textarea></label>
+      </fieldset>
+    </div>
+    <div class="sheet-foot"><div class="inner">
+      <p class="err" id="l-err" role="alert" hidden></p>
+      <button type="submit" class="btn btn-primary btn-block">Köder speichern</button>
+    </div></div>
+  </form>
+</section>
+
 <!-- Willkommen -->
 <section class="sheet" id="sheet-welcome" hidden role="dialog" aria-modal="true" aria-labelledby="sw-title">
   <header class="sheet-head"><h2 class="sheet-title" id="sw-title">Willkommen</h2></header>
@@ -601,7 +679,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
   <div class="sheet-body" id="detail-body"></div>
 </section>
 
-<datalist id="dl-species"></datalist><datalist id="dl-bait"></datalist><datalist id="dl-rig"></datalist><datalist id="dl-leader"></datalist><datalist id="dl-water"></datalist>
+<datalist id="dl-species"></datalist><datalist id="dl-brand"></datalist><datalist id="dl-shop"></datalist><datalist id="dl-bait"></datalist><datalist id="dl-rig"></datalist><datalist id="dl-leader"></datalist><datalist id="dl-water"></datalist>
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script src="vendor/leaflet.js"></script>
@@ -642,6 +720,30 @@ function speciesWater(sp){if(FRESH.includes(sp))return'Süßwasser';if(SEA.inclu
 const spotWater=sp=>sp?(sp.waterType||'Süßwasser'):null;
 const RIGS=['Texas Rig','Carolina Rig','Dropshot','Jigkopf','Free Rig','Wobbler','Spinner','Spinnerbait','Köderfisch','Pose','Grundmontage'];
 const BAITS=['Nays CRW 35','Craby Lui'];
+const LURE_TYPES=["Gummifisch", "Creature / Krebs", "Wobbler", "Jerkbait", "Swimbait", "Spinner", "Blinker", "Spinnerbait", "Jig", "Oberflächenköder", "Pilker", "Fliege", "Sonstiges"];
+/* Grundprofile je Zielfisch: passende Ködertypen und Längen in cm. Ausgangspunkt, eigene Fänge zählen stärker. */
+const PROFILE={
+  Zander:{t:['Gummifisch','Creature / Krebs','Jig','Wobbler'],min:7,max:13},
+  Barsch:{t:['Gummifisch','Creature / Krebs','Spinner','Wobbler','Jig'],min:3,max:9},
+  Hecht:{t:['Gummifisch','Wobbler','Jerkbait','Swimbait','Spinnerbait','Blinker'],min:10,max:25},
+  Rapfen:{t:['Blinker','Jerkbait','Wobbler','Spinner'],min:6,max:13},
+  Wels:{t:['Gummifisch','Swimbait','Wobbler'],min:12,max:30},
+  Huchen:{t:['Gummifisch','Wobbler','Swimbait'],min:12,max:25},
+  Bachforelle:{t:['Spinner','Wobbler','Blinker'],min:2,max:7},
+  Regenbogenforelle:{t:['Spinner','Wobbler','Blinker'],min:2,max:7},
+  Seeforelle:{t:['Wobbler','Blinker','Spinner'],min:5,max:14},
+  Äsche:{t:['Fliege','Spinner'],min:1,max:4},
+  Döbel:{t:['Wobbler','Spinner','Creature / Krebs','Oberflächenköder'],min:3,max:7},
+  Aland:{t:['Spinner','Wobbler'],min:3,max:6},
+  Barbe:{t:['Creature / Krebs','Jig'],min:3,max:7},
+  Meerforelle:{t:['Blinker','Wobbler','Fliege'],min:5,max:12},
+  Dorsch:{t:['Pilker','Gummifisch','Jig'],min:8,max:20},
+  Makrele:{t:['Pilker','Blinker','Jig'],min:3,max:8},
+  Wolfsbarsch:{t:['Wobbler','Gummifisch','Oberflächenköder'],min:8,max:15},
+  Hornhecht:{t:['Blinker','Wobbler'],min:4,max:10},
+  'Mahi Mahi':{t:['Oberflächenköder','Wobbler','Jig'],min:10,max:25},
+  Thunfisch:{t:['Oberflächenköder','Jig','Wobbler'],min:10,max:25}
+};
 const LEADERS=['Fluorocarbon 0,25 mm','Fluorocarbon 0,30 mm','Fluorocarbon 0,35 mm','Stahl','Titan'];
 /* Schonzeiten und Maße je Bundesland: [Schonzeit 'TT.MM-TT.MM' | 'all' | null, Mindestmaß cm, Höchstmaß cm]. Stand 02.10.2026 */
 const RULES={"HE":{"name":"Hessen","src":"Hessische Fischereiverordnung (HFischV) vom 14.04.2023","stand":"zuletzt geändert 16.12.2025","general":"In Hessen gelten für viele Arten Entnahmefenster: Fische über dem Höchstmaß müssen zurückgesetzt werden.","r":{"Hecht":["01.02-15.04",50.0,90.0],"Zander":[null,50.0,null],"Bachforelle":["01.10-31.03",25.0,60.0],"Meerforelle":["01.10-31.03",25.0,60.0],"Seeforelle":["01.10-31.03",25.0,60.0],"Aal":["15.09-01.03",50.0,70.0],"Karpfen":["15.03-31.05",45.0,60.0],"Schleie":["01.05-30.06",25.0,45.0],"Äsche":["01.03-15.05",30.0,45.0],"Barbe":["01.05-30.06",40.0,60.0],"Nase":["15.03-30.04",25.0,40.0],"Rotfeder":["15.03-31.05",20.0,30.0],"Lachs":["all",null,null],"Renke":["all",null,null],"Quappe":["all",null,null],"Zährte":["all",null,null],"Karausche":["all",null,null]},"n":{"Karpfen":"Gilt für die Wildform."}},"BY":{"name":"Bayern","src":"Verordnung zur Ausführung des Bayerischen Fischereigesetzes (AVBayFiG), Anlage","stand":"Anlage gültig ab 01.06.2025","general":"Einige Regeln gelten nur in bestimmten Flussgebieten (Donau, Elbe, Rhein, Weser). Der Main gehört zum Rheingebiet.","r":{"Hecht":["15.02-30.04",50.0,null],"Zander":["15.02-30.04",50.0,null],"Huchen":["15.02-30.06",90.0,null],"Bachforelle":["01.10-15.03",26.0,null],"Regenbogenforelle":["15.12-15.03",26.0,null],"Seeforelle":["01.10-15.03",60.0,null],"Äsche":["01.01-30.04",35.0,null],"Aal":["01.10-31.12",50.0,null],"Barbe":["01.05-30.06",40.0,null],"Nase":["01.03-30.04",30.0,null],"Aland":["01.03-30.04",30.0,null],"Hasel":["01.03-30.04",null,null],"Rapfen":["01.03-30.04",40.0,null],"Schleie":["01.05-30.06",26.0,null],"Karpfen":[null,35.0,null],"Quappe":[null,40.0,null],"Renke":["15.10-31.12",30.0,null],"Seesaibling":["01.10-31.12",30.0,null],"Lachs":["all",null,null],"Meerforelle":["all",null,null],"Karausche":["all",null,null]},"n":{"Aal":"Gilt im Elbe-, Rhein- und Wesergebiet, nicht im Donaugebiet.","Huchen":"Gilt im Donaugebiet.","Seeforelle":"Gilt im Donau- und Rheingebiet.","Seesaibling":"Gilt im Donaugebiet."}},"BW":{"name":"Baden-Württemberg","src":"Landesfischereiverordnung (LFischVO)","stand":"zuletzt geändert 18.01.2022","general":"Für den Bodensee gilt eine eigene Verordnung.","r":{"Hecht":["15.02-15.05",50.0,null],"Zander":["01.04-15.05",45.0,null],"Bachforelle":["01.10-28.02",25.0,null],"Regenbogenforelle":["01.10-28.02",null,null],"Seeforelle":["01.10-28.02",50.0,null],"Seesaibling":["01.10-28.02",25.0,null],"Bachsaibling":["01.10-28.02",null,null],"Aal":["15.09-01.03",50.0,null],"Karpfen":[null,35.0,null],"Schleie":["15.05-30.06",25.0,null],"Äsche":["01.02-30.04",30.0,null],"Rapfen":["01.03-31.05",40.0,null],"Barbe":["01.05-15.06",40.0,null],"Renke":["15.10-10.01",30.0,null],"Quappe":["01.11-28.02",30.0,null],"Nase":["15.03-31.05",35.0,null],"Aland":["01.04-31.05",25.0,null],"Meerforelle":["all",null,null],"Lachs":["all",null,null],"Zährte":["all",null,null]},"n":{"Aal":"Gilt im Rhein und seinem Gewässersystem.","Rapfen":"Gilt in der Donau und ihrem Gewässersystem.","Bachforelle":"Mindestmaß gestaffelt: Hochrhein 35 cm, Gewässer über 800 m 20 cm, sonst 25 cm."}},"NW":{"name":"Nordrhein-Westfalen","src":"Landesfischereiverordnung (LFischVO NRW)","stand":"Fassung gültig ab 03.07.2026","general":"In festgelegten Gewässerabschnitten gilt für die Äsche ein ganzjähriges Entnahmeverbot.","r":{"Hecht":["15.02-30.04",45.0,null],"Zander":["01.04-31.05",40.0,null],"Bachforelle":["20.10-15.03",25.0,null],"Seeforelle":["20.10-15.03",50.0,null],"Seesaibling":["20.10-15.03",30.0,null],"Aal":["01.10-01.03",50.0,null],"Karpfen":[null,35.0,null],"Schleie":[null,25.0,null],"Äsche":["01.03-30.04",30.0,null],"Barbe":["15.05-15.06",35.0,null],"Nase":["01.03-30.04",30.0,null],"Aland":[null,25.0,null],"Meerforelle":["all",null,null],"Lachs":["all",null,null],"Quappe":["all",null,null]},"n":{"Aal":"Schonzeit gilt nur im Rheinhauptstrom ohne Nebengewässer."}},"RP":{"name":"Rheinland-Pfalz","src":"Landesfischereiordnung Rheinland-Pfalz (§§ 17–20)","stand":"zuletzt geändert 23.07.2024","general":"Für die Grenzgewässer Mosel, Sauer und Our gelten abweichende Regeln.","r":{"Hecht":["01.02-31.05",50.0,null],"Zander":["15.03-15.05",45.0,null],"Bachforelle":["15.10-15.03",25.0,null],"Aal":[null,50.0,null],"Karpfen":[null,35.0,null],"Schleie":[null,25.0,null],"Rotauge":[null,15.0,null],"Rotfeder":[null,15.0,null],"Hasel":[null,15.0,null],"Äsche":["15.02-30.04",30.0,null],"Barbe":["01.05-15.06",35.0,null],"Renke":[null,25.0,null],"Seeforelle":[null,60.0,null],"Nase":["15.03-30.04",30.0,null],"Meerforelle":["all",null,null],"Lachs":["all",null,null],"Quappe":["all",null,null],"Aland":["all",null,null],"Karausche":["all",null,null]},"n":{"Zander":"In der Lahn: 01.04.–31.05.","Nase":"Schonzeit gilt nicht in Rhein, Mosel und Lahn.","Bachforelle":"Schonzeit gilt in Gewässern ohne Winterschonzeit."}},"SL":{"name":"Saarland","src":"Landesfischereiordnung (LFO SL)","stand":"Fassung vom 05.02.2020","general":"","r":{"Hecht":["15.02-31.05",50.0,null],"Zander":["15.02-31.05",45.0,null],"Bachforelle":["01.10-31.03",25.0,null],"Aal":[null,50.0,null],"Karpfen":[null,35.0,null],"Schleie":[null,25.0,null],"Äsche":["01.03-30.04",30.0,null],"Barbe":["15.03-15.06",40.0,null],"Nase":["15.03-15.06",35.0,null],"Meerforelle":["all",null,null],"Lachs":["all",null,null],"Quappe":["all",null,null]},"n":{}},"NI":{"name":"Niedersachsen","src":"Binnenfischereiordnung (BiFischO)","stand":"zuletzt geändert 22.12.2005","general":"Für einige Arten weichen Werte je nach Gewässer ab. Küstengewässer: eigene Küstenfischereiordnung.","r":{"Hecht":["01.02-15.04",40.0,null],"Zander":["15.03-30.04",35.0,null],"Bachforelle":["15.10-15.02",25.0,null],"Regenbogenforelle":[null,25.0,null],"Aal":[null,35.0,null],"Wels":[null,50.0,null],"Äsche":["01.03-15.05",30.0,null],"Barbe":[null,35.0,null],"Quappe":[null,35.0,null],"Meerforelle":["all",null,null],"Lachs":["all",null,null],"Rapfen":["all",null,null],"Nase":["all",null,null]},"n":{"Meerforelle":"Besatzfische: Schonzeit 15.10.–15.02., 40 cm. Wildfische ganzjährig geschont.","Lachs":"Besatzfische: Schonzeit 01.10.–15.03., 50 cm. Wildfische ganzjährig geschont.","Rapfen":"Besatzfische: keine Schonzeit, 40 cm. Wildfische ganzjährig geschont.","Nase":"Besatzfische: keine Schonzeit, 25 cm. Wildfische ganzjährig geschont."}},"HB":{"name":"Bremen","src":"Bremische Binnenfischereiverordnung vom 30.09.2011","stand":"","general":"","r":{"Hecht":["01.02-15.05",60.0,null],"Zander":["01.02-15.05",40.0,null],"Barsch":["01.02-15.05",15.0,null],"Bachforelle":["15.10-15.03",30.0,null],"Meerforelle":["15.10-15.03",50.0,null],"Lachs":["15.10-15.03",60.0,null],"Aal":[null,45.0,null],"Döbel":[null,30.0,null],"Äsche":["01.03-15.05",35.0,null],"Rapfen":[null,40.0,null],"Quappe":[null,35.0,null],"Zährte":["all",null,null]},"n":{}},"HH":{"name":"Hamburg","src":"Verordnung zur Durchführung des Hamburgischen Fischerei- und Angelgesetzes (HmbFAnGDVO)","stand":"zuletzt geändert 01.02.2022","general":"In Hamburg gelten für viele Arten Entnahmefenster: Fische über dem Höchstmaß müssen zurückgesetzt werden.","r":{"Hecht":["01.02-31.05",45.0,75.0],"Zander":["01.02-31.05",45.0,75.0],"Barsch":[null,10.0,35.0],"Bachforelle":["15.10-15.02",20.0,40.0],"Meerforelle":["15.10-15.02",40.0,65.0],"Aal":[null,45.0,75.0],"Karpfen":[null,35.0,null],"Schleie":[null,25.0,45.0],"Äsche":["01.01-15.05",null,null],"Rapfen":[null,50.0,70.0],"Quappe":[null,30.0,50.0],"Lachs":["all",null,null],"Zährte":["all",null,null],"Hasel":["all",null,null]},"n":{}},"SH":{"name":"Schleswig-Holstein","src":"Binnenfischereiverordnung (BiFVO), Anlage 1","stand":"Anlage gültig ab 09.07.2021","general":"In 44 gelisteten Fließgewässern gilt für Forellen und Lachs zusätzlich eine Winterschonzeit. Küste: Küstenfischereiverordnung.","r":{"Hecht":["15.02-15.04",45.0,null],"Zander":["15.03-15.05",45.0,null],"Bachforelle":["01.10-28.02",30.0,null],"Meerforelle":["01.10-28.02",40.0,null],"Lachs":["01.10-28.02",60.0,null],"Aal":[null,50.0,null],"Karpfen":[null,35.0,null],"Schleie":[null,25.0,null],"Äsche":["01.01-30.04",35.0,null],"Rapfen":[null,50.0,null],"Renke":[null,30.0,null],"Quappe":["01.01-28.02",35.0,null],"Barbe":["all",null,null],"Zährte":["all",null,null],"Hasel":["all",null,null]},"n":{}},"MV":{"name":"Mecklenburg-Vorpommern","src":"Binnenfischereiverordnung (BiFVO M-V), Übersicht LALLF","stand":"Übersicht vom 30.03.2026","general":"Für Hecht und Zander legen die Fischereiberechtigten meist eigene Schonzeiten fest. Küste: Küstenfischereiverordnung und EU-Regeln (u. a. Dorsch).","r":{"Hecht":[null,45.0,null],"Zander":[null,45.0,null],"Barsch":[null,17.0,null],"Bachforelle":["01.10-31.03",30.0,null],"Meerforelle":["01.09-31.03",45.0,null],"Lachs":["01.09-31.03",60.0,null],"Aal":["01.12-28.02",50.0,null],"Karpfen":[null,40.0,null],"Wels":["01.05-30.06",70.0,null],"Schleie":[null,25.0,null],"Äsche":[null,30.0,null],"Rapfen":[null,35.0,null],"Renke":["01.10-31.12",30.0,null],"Quappe":["01.01-15.02",30.0,null],"Aland":[null,25.0,null],"Zährte":["01.05-31.07",null,null],"Hasel":["01.03-31.05",null,null],"Barbe":["all",null,null],"Nase":["all",null,null]},"n":{"Hecht":"Schonzeit legt der Fischereiberechtigte fest. Gewässerordnung prüfen.","Zander":"Schonzeit legt der Fischereiberechtigte fest. Gewässerordnung prüfen."}},"BB":{"name":"Brandenburg","src":"Fischereiordnung des Landes Brandenburg (BbgFischO)","stand":"geändert 05.03.2024","general":"","r":{"Hecht":["01.02-31.03",45.0,null],"Zander":["01.04-31.05",45.0,null],"Bachforelle":["16.10-15.04",30.0,null],"Aal":[null,50.0,null],"Karpfen":[null,35.0,null],"Schleie":[null,25.0,null],"Äsche":["01.12-31.05",30.0,null],"Rapfen":["01.04-30.06",40.0,null],"Barbe":["01.05-31.07",40.0,null],"Renke":["01.10-31.12",30.0,null],"Quappe":[null,30.0,null],"Aland":[null,30.0,null],"Hasel":[null,15.0,null],"Meerforelle":["all",null,null],"Lachs":["all",null,null],"Seeforelle":["all",null,null],"Nase":["all",null,null],"Zährte":["all",null,null]},"n":{}},"BE":{"name":"Berlin","src":"Berliner Landesfischereiordnung (LFischO)","stand":"zuletzt geändert 27.10.2025","general":"","r":{"Hecht":["01.01-30.04",45.0,null],"Zander":["01.01-31.05",45.0,null],"Bachforelle":["01.10-30.04",30.0,null],"Regenbogenforelle":["01.10-30.04",25.0,null],"Bachsaibling":["01.10-30.04",25.0,null],"Seeforelle":["01.10-31.05",60.0,null],"Aal":[null,50.0,null],"Karpfen":[null,35.0,null],"Wels":[null,75.0,null],"Schleie":[null,25.0,null],"Döbel":[null,30.0,null],"Äsche":["01.12-31.05",30.0,null],"Rapfen":["01.04-30.06",40.0,null],"Renke":["01.10-31.12",30.0,null],"Quappe":[null,30.0,null],"Aland":[null,30.0,null],"Hasel":[null,15.0,null],"Meerforelle":["all",null,null],"Barbe":["all",null,null],"Lachs":["all",null,null],"Nase":["all",null,null],"Zährte":["all",null,null],"Karausche":["all",null,null]},"n":{}},"SN":{"name":"Sachsen","src":"Sächsische Fischereiverordnung (SächsFischVO)","stand":"Fassung vom 22.04.2022","general":"","r":{"Hecht":["01.02-30.04",50.0,null],"Zander":["01.02-31.05",50.0,null],"Bachforelle":["01.10-30.04",28.0,null],"Regenbogenforelle":["01.10-30.04",25.0,null],"Meerforelle":["01.10-30.04",60.0,null],"Lachs":["01.10-30.04",60.0,null],"Seeforelle":["01.10-30.04",60.0,null],"Seesaibling":["01.10-30.04",28.0,null],"Bachsaibling":["01.10-30.04",25.0,null],"Aal":[null,50.0,null],"Karpfen":[null,40.0,null],"Schleie":[null,25.0,null],"Äsche":["01.01-15.06",35.0,null],"Rapfen":["01.01-31.05",40.0,null],"Barbe":["15.04-30.06",50.0,null],"Renke":["01.10-31.12",30.0,null],"Aland":[null,20.0,null],"Rotfeder":[null,20.0,null],"Karausche":["01.02-30.06",15.0,null],"Quappe":["all",30.0,null],"Nase":["all",40.0,null],"Zährte":["all",null,null]},"n":{"Regenbogenforelle":"Schonzeit gilt nur in Fließgewässern.","Rotfeder":"Mindestmaß gilt nur in Fließgewässern.","Quappe":"In Elbe, Vereinigter Mulde und Weißer Elster befristet nur 01.01.–31.03.","Nase":"In der Elbe befristet nur 01.01.–15.06."}},"ST":{"name":"Sachsen-Anhalt","src":"Fischereiordnung des Landes Sachsen-Anhalt (FischO LSA)","stand":"zuletzt geändert 06.03.2013","general":"","r":{"Hecht":["15.02-30.04",50.0,null],"Zander":["15.02-31.05",50.0,null],"Bachforelle":["15.09-31.03",25.0,null],"Regenbogenforelle":[null,25.0,null],"Aal":[null,50.0,null],"Karpfen":[null,35.0,null],"Schleie":[null,25.0,null],"Äsche":["01.12-15.05",30.0,null],"Rapfen":[null,40.0,null],"Barbe":["01.04-30.06",45.0,null],"Quappe":[null,30.0,null],"Zährte":[null,30.0,null],"Meerforelle":["all",null,null],"Lachs":["all",null,null],"Nase":["all",null,null]},"n":{}},"TH":{"name":"Thüringen","src":"Thüringer Fischereiausführungsverordnung (ThürFischAVO)","stand":"Fassung vom 11.08.2020","general":"Regenbogenforelle und Bachsaibling müssen unabhängig von Maß und Zeit entnommen werden.","r":{"Hecht":["15.02-30.04",50.0,null],"Zander":["01.04-31.05",45.0,null],"Bachforelle":["01.10-31.03",30.0,null],"Aal":["01.11-28.02",50.0,null],"Karpfen":[null,35.0,null],"Wels":[null,50.0,null],"Schleie":[null,25.0,null],"Döbel":[null,20.0,null],"Äsche":["01.02-31.05",35.0,null],"Barbe":["01.04-31.08",40.0,null],"Quappe":["01.11-31.03",30.0,null],"Rotfeder":[null,15.0,null],"Hasel":["01.04-31.05",20.0,null],"Karausche":["01.04-31.05",15.0,null],"Meerforelle":["all",null,null],"Lachs":["all",null,null],"Rapfen":["all",null,null],"Nase":["all",null,null],"Aland":["all",null,null],"Zährte":["all",null,null]},"n":{}}};
@@ -673,6 +775,7 @@ async function saveSettings(patch){const cur=settings();const n={...cur,...patch
 const sections=()=>settings().sections||'both';
 const allowed=sec=>sections()==='both'||sections()===sec;
 const realRecords=()=>S.records.filter(r=>!r.example&&!r.deleted&&r.type!=='settings');
+const lures=()=>S.records.filter(r=>r.type==='lure'&&!r.deleted);
 const catches=()=>S.records.filter(r=>r.type==='catch'&&!r.deleted);
 const spots=()=>S.records.filter(r=>r.type==='spot'&&!r.deleted);
 const trips=()=>S.records.filter(r=>r.type==='trip'&&!r.deleted);
@@ -832,6 +935,9 @@ function examples(){
     {...base,id:'ex-spot-2',type:'spot',name:'Nidda-Mündung',water:'Main / Nidda',lat:50.0968,lon:8.5497,note:'Barsche im Kehrwasser der Mündung.'},
     {...base,id:'ex-c-1',type:'catch',tripId:'ex-t-1',species:'Zander',dt:'2026-09-26T19:40',lengthCm:58,weightKg:1.65,released:false,spotId:'ex-spot-1',water:'Main',lat:50.0632,lon:8.5285,bait:'Nays CRW 35',rig:'Texas Rig',leader:'Fluorocarbon 0,30 mm',depthM:3.5,wx:{pressure:1016,trend:'fallend',temp:14,wind:11,windDir:'SW',sky:'bewölkt',waterTemp:16,clarity:'angetrübt',source:'Beispiel'},note:'Biss in der Absinkphase direkt an der Kante.',photos:[]},
     {...base,id:'ex-c-2',type:'catch',tripId:'ex-t-2',species:'Barsch',dt:'2026-09-20T08:15',lengthCm:32,weightKg:.42,released:true,spotId:'ex-spot-2',water:'Main / Nidda',lat:50.0968,lon:8.5497,bait:'Craby Lui',rig:'Carolina Rig',leader:'Fluorocarbon 0,25 mm',depthM:2,wx:{pressure:1022,trend:'stabil',temp:11,wind:6,windDir:'O',sky:'heiter',waterTemp:17,clarity:'klar',source:'Beispiel'},note:'',photos:[]},
+    {...base,id:'ex-l-1',type:'lure',name:'Nays CRW 35',brand:'Nays',lureType:'Creature / Krebs',size:9,weight:null,color:'Motoroil',colorType:'dunkel',depth:'',qty:4,targets:['Barsch','Zander'],bought:'2026-04-12',shop:'Angel-Bär Frankfurt',price:8.49,pack:6,note:'Am Texas Rig, 7 g Bullet.',photo:null,lost:['2026-06-14','2026-08-02']},
+    {...base,id:'ex-l-2',type:'lure',name:'Craby Lui',brand:'',lureType:'Creature / Krebs',size:7,weight:null,color:'Natur',colorType:'natürlich',depth:'',qty:5,targets:['Barsch'],bought:'2026-05-03',shop:'Online',price:6.99,pack:8,note:'Carolina Rig, langsam schleifen.',photo:null,lost:[]},
+    {...base,id:'ex-l-3',type:'lure',name:'Gummifisch 10 cm',brand:'',lureType:'Gummifisch',size:10,weight:null,color:'Firetiger',colorType:'auffällig',depth:'',qty:0,targets:['Hecht','Zander'],bought:'2026-03-20',shop:'Angel-Bär Frankfurt',price:5.99,pack:4,note:'',photo:null,lost:['2026-09-13','2026-09-26','2026-09-26','2026-07-11']},
     {...base,id:'ex-t-1',type:'trip',date:'2026-09-26',start:'18:00',end:'21:30',spotId:'ex-spot-1',water:'Main',lat:null,lon:null,method:'Ufer',note:''},
     {...base,id:'ex-t-2',type:'trip',date:'2026-09-20',start:'07:00',end:'10:00',spotId:'ex-spot-2',water:'Main / Nidda',lat:null,lon:null,method:'Ufer',note:''},
     {...base,id:'ex-t-3',type:'trip',date:'2026-09-13',start:'15:00',end:'18:30',spotId:'ex-spot-1',water:'Main',lat:null,lon:null,method:'Ufer',note:''},
@@ -966,7 +1072,8 @@ function renderLists(){
   const used=k=>[...new Set(catches().map(c=>c[k]).filter(Boolean))];
   const fill=(id,arr)=>{$(id).innerHTML=[...new Set(arr)].map(v=>`<option value="${esc(v)}"></option>`).join('')};
   fill('#dl-species',catches().map(c=>c.species).filter(s=>!SPECIES.includes(s)));
-  fill('#dl-bait',[...used('bait'),...BAITS]);fill('#dl-rig',[...used('rig'),...RIGS]);fill('#dl-leader',[...used('leader'),...LEADERS]);
+  fill('#dl-bait',[...lures().map(l=>l.name),...used('bait'),...BAITS]);
+  fill('#dl-brand',lures().map(l=>l.brand).filter(Boolean));fill('#dl-shop',lures().map(l=>l.shop).filter(Boolean));fill('#dl-rig',[...used('rig'),...RIGS]);fill('#dl-leader',[...used('leader'),...LEADERS]);
   fill('#dl-water',[...used('water'),...spots().map(s=>s.water).filter(Boolean),'Main','Nidda']);
 }
 function renderStore(){
@@ -981,7 +1088,123 @@ function renderRulesInfo(){
   $('#rules-table').innerHTML=`<thead><tr><th>Art</th><th>Schonzeit</th><th>Maß</th></tr></thead><tbody>${rows}</tbody>`;
   $('#rules-source').textContent=[`Quelle: ${st.src}${st.stand?', '+st.stand:''}.`,st.general,...Object.entries(st.n).map(([a,t])=>`${a}: ${t}`)].filter(Boolean).join(' ');
 }
-function renderAll(){renderCatches();renderSpots();renderLists();renderStore();renderRulesInfo();renderBackupInfo();renderSettings()}
+/* ---------- Köderbox ---------- */
+const unitPrice=l=>l.price!=null?l.price/(l.pack||1):null;
+const fmtEuro=v=>v==null?'':v.toLocaleString('de-DE',{style:'currency',currency:'EUR'});
+function catchesWithLure(l){return catches().filter(c=>c.lureId===l.id||(!c.lureId&&c.bait&&c.bait.trim().toLowerCase()===l.name.trim().toLowerCase()))}
+function lureLostYear(l,y){return (l.lost||[]).filter(d=>d.startsWith(String(y))).length}
+function lureCard(l){
+  const cs=catchesWithLure(l),y=new Date().getFullYear(),lostY=lureLostYear(l,y);
+  const desc=[l.brand,l.lureType,l.size!=null?fmtN(l.size)+' cm':'',l.weight!=null?fmtN(l.weight)+' g':'',l.color].filter(Boolean).join(' · ');
+  return `<li><button type="button" class="card" data-act="open-lure" data-id="${esc(l.id)}">
+    <div class="ph">${l.photo?`<img data-photo="${esc(l.photo)}" alt="Foto: ${esc(l.name)}" hidden><span>${esc(l.lureType||'Köder')}</span>`:`<span>${esc(l.lureType||'Köder')}</span>`}</div>${l.example?'<span class="stamp">BEISPIEL</span>':''}
+    <div class="bd"><h3>${esc(l.name)}</h3><div class="meta">${esc(desc)}</div>
+      <div class="lure-stats"><span>${cs.length} ${cs.length===1?'Fang':'Fänge'}</span><span class="${l.qty===0?'out':''}">${l.qty==null?'Bestand offen':l.qty===0?'nicht vorrätig':l.qty+' Stück'}</span>${unitPrice(l)!=null?`<span>${fmtEuro(unitPrice(l))}/Stück</span>`:''}${lostY?`<span>${lostY}× verloren ${y}</span>`:''}</div>
+      ${l.targets&&l.targets.length?`<div class="tackle">Für ${esc(l.targets.join(', '))}</div>`:''}
+    </div></button></li>`;
+}
+function renderLures(){
+  const all=lures().sort((a,b)=>a.name.localeCompare(b.name,'de')),y=new Date().getFullYear();
+  const value=all.reduce((s,l)=>s+(unitPrice(l)||0)*(l.qty||0),0),lostCost=all.reduce((s,l)=>s+(unitPrice(l)||0)*lureLostYear(l,y),0),lostN=all.reduce((s,l)=>s+lureLostYear(l,y),0);
+  $('#lure-summary').textContent=`${all.length} ${all.length===1?'Köder':'Köder'} · Bestandswert ${fmtEuro(value)}${lostN?` · ${y}: ${lostN} verloren (${fmtEuro(lostCost)})`:''}`;
+  const types=[...new Set(all.map(l=>l.lureType).filter(Boolean))];
+  if(S.lureFilter&&S.lureFilter!=='Alle'&&!types.includes(S.lureFilter))S.lureFilter='Alle';
+  const f=S.lureFilter||'Alle';
+  $('#lure-chips').innerHTML=all.length?['Alle',...types].map(t=>`<button type="button" class="chip" data-act="lure-filter" data-type="${esc(t)}" aria-pressed="${f===t}">${esc(t)}</button>`).join(''):'';
+  const list=f==='Alle'?all:all.filter(l=>l.lureType===f);
+  $('#lure-list').innerHTML=list.length?list.map(lureCard).join(''):`<li class="empty" style="grid-column:1/-1"><b>Noch keine Köder</b>Leg deine Köder an. Beim Fang wählst du sie dann aus der Köderbox, und die App lernt, was bei dir fängt.</li>`;
+  hydratePhotos($('#lure-list'));
+  const rs=$('#r-species'),keep=rs.value||S.recoSpecies||'Zander';
+  const spp=[...new Set([...Object.keys(PROFILE),...catches().map(c=>c.species),...lures().flatMap(l=>l.targets||[])])].sort((a,b)=>a.localeCompare(b,'de'));
+  rs.innerHTML=spp.map(x=>`<option>${esc(x)}</option>`).join('');rs.value=spp.includes(keep)?keep:spp[0];
+  renderReco();
+}
+function scoreLure(l,sp,clarity){
+  let s=0;const why=[];const pr=PROFILE[sp];
+  const n=catchesWithLure(l).filter(c=>c.species===sp).length;
+  if(n){s+=10*n;why.push(`${n} ${sp} damit gefangen`)}
+  if((l.targets||[]).includes(sp)){s+=4;why.push(`von dir für ${sp} markiert`)}
+  if(pr){
+    if(l.lureType&&pr.t.includes(l.lureType)){s+=3;why.push(`${l.lureType} passt zum ${sp}`)}
+    if(l.size!=null){if(l.size>=pr.min&&l.size<=pr.max){s+=2;why.push(`${fmtN(l.size)} cm liegt im üblichen Bereich (${pr.min}–${pr.max} cm)`)}else s-=2}
+  }
+  if(clarity&&l.colorType){const good=clarity==='klar'?'natürlich':'auffällig';if(l.colorType===good||(clarity==='trüb'&&l.colorType==='dunkel')){s+=2;why.push(`${{natürlich:'natürliche',auffällig:'auffällige',dunkel:'dunkle'}[l.colorType]} Farbe bei ${{klar:'klarem',angetrübt:'angetrübtem',trüb:'trübem'}[clarity]} Wasser`)}}
+  const strong=n>0||(l.targets||[]).includes(sp)||(pr&&l.lureType&&pr.t.includes(l.lureType));
+  return {l,s:strong?s:0,why};
+}
+function renderReco(){
+  const sp=$('#r-species').value,clarity=$('#r-clarity').value;S.recoSpecies=sp;
+  if(!sp){$('#r-out').innerHTML='';return}
+  const ranked=lures().filter(l=>l.qty!==0).map(l=>scoreLure(l,sp,clarity)).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).slice(0,3);
+  const pr=PROFILE[sp];
+  const closed=(()=>{const r=checkRules(sp,localDT(new Date()),null,true,null);return r&&r.items.find(i=>i.level==='stop')})();
+  const empty=lures().filter(l=>l.qty===0&&scoreLure(l,sp,clarity).s>=10);
+  $('#r-out').innerHTML=(closed?`<div class="rule stop"><b>${esc(closed.title.split(' · ')[0])}</b>${esc(closed.text)}</div>`:'')+
+    (ranked.length?`<ol>${ranked.map((x,i)=>`<li><button type="button" data-act="open-lure" data-id="${esc(x.l.id)}"><span class="rank">${i===0?'Erste Wahl':i===1?'Zweite Wahl':'Dritte Wahl'}</span><b>${esc(x.l.name)}</b><small>${esc(x.why.join(' · '))}</small></button></li>`).join('')}</ol>`
+      :`<p class="hint" style="margin:0">Kein passender Köder in deiner Box.${pr?` Für ${esc(sp)} eignen sich meist ${esc(pr.t.slice(0,3).join(', '))} mit ${pr.min}–${pr.max} cm.`:''}</p>`)+
+    (empty.length?`<p class="hint" style="margin:0">Nachkaufen: ${esc(empty.map(l=>l.name).join(', '))}. Hat bei dir schon ${esc(sp)} gebracht, ist aber nicht mehr vorrätig.</p>`:'')+
+    (!catches().some(c=>c.species===sp&&(c.lureId||c.bait))?`<p class="hint" style="margin:0">Noch keine eigenen ${esc(sp)}-Fänge mit Köder. Die Empfehlung beruht auf dem Grundprofil und wird mit jedem Fang genauer.</p>`:'');
+}
+function openLure(id){
+  const l=lures().find(x=>x.id===id);if(!l)return;const cs=catchesWithLure(l).sort((a,b)=>b.dt.localeCompare(a.dt)),up=unitPrice(l);
+  const bySp={};cs.forEach(c=>bySp[c.species]=(bySp[c.species]||0)+1);
+  $('#sd-title').textContent='Köder';
+  $('#detail-body').innerHTML=`
+    ${l.photo?`<div class="gallery"><img data-photo="${esc(l.photo)}" data-kind="full" alt="Foto: ${esc(l.name)}"></div>`:''}
+    <h3 class="detail-title">${esc(l.name)}</h3>
+    <div class="meta">${esc([l.brand,l.lureType].filter(Boolean).join(' · '))}${l.example?' · Beispiel':''}</div>
+    <dl class="facts">
+      ${fact('Länge',l.size!=null?fmtN(l.size)+' cm':'')}${fact('Gewicht',l.weight!=null?fmtN(l.weight)+' g':'')}${fact('Farbe',esc([l.color,l.colorType].filter(Boolean).join(' · ')))}${fact('Lauftiefe',l.depth?esc(l.depth)+' m':'')}
+      ${fact('Zielfische',esc((l.targets||[]).join(', ')))}
+      ${fact('Bestand',l.qty==null?'':l.qty===0?'nicht vorrätig':l.qty+' Stück')}
+      ${fact('Gekauft',esc([l.bought?fmtDate(l.bought+'T12:00'):'',l.shop].filter(Boolean).join(' · ')))}
+      ${fact('Preis',l.price!=null?`${fmtEuro(l.price)}${(l.pack||1)>1?` für ${l.pack} Stück · ${fmtEuro(up)}/Stück`:''}`:'')}
+      ${fact('Verloren',(l.lost||[]).length?`${l.lost.length}× gesamt${up!=null?` · ${fmtEuro(up*l.lost.length)}`:''}`:'')}
+      ${fact('Fänge',cs.length?Object.entries(bySp).map(([a,n])=>`${n}× ${esc(a)}`).join(', '):'noch keine')}
+    </dl>
+    ${l.note?`<div class="notebox">${esc(l.note)}</div>`:''}
+    ${cs.length?`<ul class="mini-list">${cs.slice(0,10).map(c=>`<li><button type="button" data-act="open-catch" data-id="${esc(c.id)}"><span>${esc(c.species)}${c.lengthCm!=null?' · '+fmtN(c.lengthCm)+' cm':''}</span><small>${esc(fmtDate(c.dt))}</small></button></li>`).join('')}</ul>`:''}
+    <div class="actions"><button type="button" class="btn" data-act="edit-lure" data-id="${esc(l.id)}">Bearbeiten</button><button type="button" class="btn" data-act="lure-lost" data-id="${esc(l.id)}"${l.qty===0?' disabled':''}>Abriss / verloren</button><button type="button" class="btn btn-danger" data-act="ask-del" data-id="${esc(l.id)}">Löschen</button></div>
+    <div id="del-confirm"></div>`;
+  hydratePhotos($('#detail-body'));openSheet('sheet-detail');
+}
+function renderLureTargets(sel){
+  const spp=[...new Set([...Object.keys(PROFILE),...(sel||[])])].sort((a,b)=>a.localeCompare(b,'de'));
+  $('#l-targets').innerHTML=spp.map((x,i)=>`<label><input type="checkbox" value="${esc(x)}" ${sel&&sel.includes(x)?'checked':''}>${esc(x)}</label>`).join('');
+}
+function updateUnit(){const pr=parseNum($('#l-price').value),pk=parseNum($('#l-pack').value)||1;$('#l-unit').textContent=pr!=null&&pk>1?`Stückpreis: ${fmtEuro(pr/pk)}`:''}
+function renderLurePhoto(){const b=$('#l-photo'),ph=S.lurePhoto;b.innerHTML=ph?`<figure><img alt="Köderfoto" ${ph.url?`src="${ph.url}"`:`data-photo="${esc(ph.id)}"`}><button type="button" data-act="rm-lure-photo" aria-label="Foto entfernen">✕</button></figure>`:'';hydratePhotos(b)}
+function openLureForm(l){
+  S.editLure=l?l.id:null;S.lurePhoto=l&&l.photo?{id:l.photo,isNew:false}:null;S.lurePhotoRemoved=null;
+  $('#sl-title').textContent=l?'Köder bearbeiten':'Köder anlegen';
+  const v=(id,x)=>{$(id).value=x==null?'':x};
+  v('#l-name',l&&l.name);v('#l-brand',l&&l.brand);v('#l-type',l&&l.lureType);v('#l-size',l&&l.size!=null?fmtN(l.size):'');v('#l-weight',l&&l.weight!=null?fmtN(l.weight):'');
+  v('#l-color',l&&l.color);v('#l-colortype',l&&l.colorType);v('#l-depth',l&&l.depth);v('#l-qty',l&&l.qty);
+  v('#l-bought',l&&l.bought);v('#l-shop',l&&l.shop);v('#l-price',l&&l.price!=null?fmtN(l.price,2):'');v('#l-pack',l&&l.pack&&l.pack>1?l.pack:'');v('#l-note',l&&l.note);
+  renderLureTargets(l?l.targets:[]);updateUnit();renderLurePhoto();$('#l-err').hidden=true;openSheet('sheet-lure');
+}
+async function submitLure(e){
+  e.preventDefault();const err=$('#l-err');const fail=m=>{err.textContent=m;err.hidden=false};
+  const name=$('#l-name').value.trim();if(!name)return fail('Bitte Name oder Modell angeben.');
+  const old=S.editLure?lures().find(x=>x.id===S.editLure):null;
+  const l=old?{...old}:{id:uid(),type:'lure',lost:[]};
+  if(S.lurePhoto&&S.lurePhoto.isNew)await dbPut('photos',{id:S.lurePhoto.id,lureId:l.id,full:S.lurePhoto.full,thumb:S.lurePhoto.thumb,meta:null});
+  if(S.lurePhotoRemoved)await dbDel('photos',S.lurePhotoRemoved);
+  const qty=parseNum($('#l-qty').value);
+  Object.assign(l,{name,brand:$('#l-brand').value.trim(),lureType:$('#l-type').value||null,size:parseNum($('#l-size').value),weight:parseNum($('#l-weight').value),
+    color:$('#l-color').value.trim(),colorType:$('#l-colortype').value||null,depth:$('#l-depth').value.trim(),qty:qty==null?null:Math.max(0,Math.round(qty)),
+    targets:$$('#l-targets input:checked').map(i=>i.value),bought:$('#l-bought').value||null,shop:$('#l-shop').value.trim(),price:parseNum($('#l-price').value),
+    pack:Math.max(1,Math.round(parseNum($('#l-pack').value)||1)),note:$('#l-note').value.trim(),photo:S.lurePhoto?S.lurePhoto.id:null});
+  stamp(l,!old);await save(l);closeSheet('sheet-lure');show('koeder');renderAll();
+  if(!$('#sheet-detail').hidden)openLure(l.id);
+  toast(old?'Köder aktualisiert':'Köder gespeichert');
+}
+function fillLureSelect(sel){
+  $('#c-lure').innerHTML='<option value="">Nicht aus der Box</option>'+lures().filter(l=>l.qty!==0||l.id===sel).sort((a,b)=>a.name.localeCompare(b.name,'de')).map(l=>`<option value="${esc(l.id)}">${esc(l.name)}${l.size!=null?' · '+fmtN(l.size)+' cm':''}${l.color?' · '+esc(l.color):''}</option>`).join('');
+  $('#c-lure').value=sel||'';
+}
+
+function renderAll(){renderLures();renderCatches();renderSpots();renderLists();renderStore();renderRulesInfo();renderBackupInfo();renderSettings()}
 
 /* ---------- Karte ---------- */
 function ensureMap(){
@@ -1025,8 +1248,8 @@ function endPick(){S.pick=false;$('#pickbar').hidden=true}
 
 /* ---------- Ansichten & Blätter ---------- */
 function show(v){
-  if(!['faenge','spots','info','jagd'].includes(v))v='faenge';
-  if((v==='faenge'||v==='spots')&&!allowed('angeln'))v='jagd';
+  if(!['faenge','spots','koeder','info','jagd'].includes(v))v='faenge';
+  if((v==='faenge'||v==='spots'||v==='koeder')&&!allowed('angeln'))v='jagd';
   if(v==='jagd'&&!allowed('jagd'))v='faenge';
   S.view=v;if(v!=='info')S.section=v==='jagd'?'jagd':'angeln';
   if(!allowed(S.section))S.section=allowed('angeln')?'angeln':'jagd';
@@ -1070,7 +1293,7 @@ function openCatchForm(c,pre){
   fillSpotSelect(c?c.spotId:'');
   $('#c-water').value=c?c.water||'':'';
   $('#c-coords').value=c?fmtCoords(c.lat,c.lon):'';
-  $('#c-bait').value=c?c.bait||'':'';$('#c-rig').value=c?c.rig||'':'';$('#c-leader').value=c?c.leader||'':'';
+  fillLureSelect(c?c.lureId:'');$('#c-bait').value=c?c.bait||'':'';$('#c-rig').value=c?c.rig||'':'';$('#c-leader').value=c?c.leader||'':'';
   $('#c-depth').value=c&&c.depthM!=null?fmtN(c.depthM):'';
   $('#c-pressure').value=w.pressure??'';$('#c-trend').value=w.trend||'';$('#c-temp').value=w.temp!=null?fmtN(w.temp):'';
   $('#c-sky').value=w.sky||'';$('#c-wind').value=w.wind??'';$('#c-winddir').value=w.windDir||'';
@@ -1130,7 +1353,7 @@ async function submitCatch(e){
   const c=old?{...old}:{id:uid(),type:'catch',tripId:S.prefTrip||null};const prevTrip=old?old.tripId:null;
   Object.assign(c,{species,waterType:$('#c-species').value===OTHER?getRadio('c-wt'):null,dt,lengthCm:parseNum($('#c-length').value),weightKg:parseNum($('#c-weight').value),released:$('#c-rel').checked,
     spotId:$('#c-spot').value||null,method:$('#c-method').value||null,water:$('#c-water').value.trim(),lat:co?co.lat:null,lon:co?co.lon:null,
-    bait:$('#c-bait').value.trim(),rig:$('#c-rig').value.trim(),leader:$('#c-leader').value.trim(),depthM:parseNum($('#c-depth').value),
+    lureId:$('#c-lure').value||null,bait:$('#c-bait').value.trim(),rig:$('#c-rig').value.trim(),leader:$('#c-leader').value.trim(),depthM:parseNum($('#c-depth').value),
     wx:{pressure:parseNum($('#c-pressure').value),trend:$('#c-trend').value||null,temp:parseNum($('#c-temp').value),wind:parseNum($('#c-wind').value),windDir:$('#c-winddir').value||null,sky:$('#c-sky').value||null,waterTemp:parseNum($('#c-watertemp').value),clarity:$('#c-clarity').value||null,source:S.wxSource||'manuell'},
     note:$('#c-note').value.trim()});
   for(const p of S.formPhotos.filter(p=>p.isNew))await dbPut('photos',{id:p.id,catchId:c.id,full:p.full,thumb:p.thumb,meta:p.meta||null});
@@ -1260,11 +1483,12 @@ async function removeRecord(id){
   if(r.type==='catch')for(const p of r.photos||[])await dbDel('photos',p);
   if(r.type==='spot')for(const c of catches().filter(c=>c.spotId===id)){const u={...c,spotId:null};stamp(u);await save(u)}
   if(r.type==='trip')for(const c of catchesOfTrip(id)){const u={...c,tripId:null};stamp(u);await save(u)}
+  if(r.type==='lure'&&r.photo)await dbDel('photos',r.photo);
   const tripOfCatch=r.type==='catch'&&r.tripId?trips().find(x=>x.id===r.tripId):null;
   if(r.example){S.records=S.records.filter(x=>x.id!==id);await dbDel('records',id)}
   else{const u={...r,deleted:true,photos:[]};stamp(u);await save(u)}
   if(tripOfCatch&&tripOfCatch.auto&&!catchesOfTrip(tripOfCatch.id).length)await dropRecord(tripOfCatch);
-  closeSheet('sheet-detail');renderAll();toast({catch:'Fang gelöscht',spot:'Spot gelöscht',trip:'Angeltag gelöscht'}[r.type]);
+  closeSheet('sheet-detail');renderAll();toast({catch:'Fang gelöscht',spot:'Spot gelöscht',trip:'Angeltag gelöscht',lure:'Köder gelöscht'}[r.type]);
 }
 
 /* ---------- Sicherung ---------- */
@@ -1299,8 +1523,8 @@ async function createBackup(){
   setStatus('backup-status','Sicherung wird erstellt …');
   try{
     const recs=S.records.filter(r=>!r.example&&r.type!=='settings'),live=recs.filter(r=>!r.deleted).length;
-    const ids=new Set(recs.filter(r=>r.type==='catch').flatMap(c=>c.photos||[]));
-    const photos=[];for(const id of ids){const ph=await dbGet('photos',id);if(ph)photos.push({id:ph.id,catchId:ph.catchId,meta:ph.meta||null,full:await blobToB64(ph.full),thumb:await blobToB64(ph.thumb)})}
+    const ids=new Set([...recs.filter(r=>r.type==='catch').flatMap(c=>c.photos||[]),...recs.filter(r=>r.type==='lure'&&r.photo).map(l=>l.photo)]);
+    const photos=[];for(const id of ids){const ph=await dbGet('photos',id);if(ph)photos.push({id:ph.id,catchId:ph.catchId,lureId:ph.lureId,meta:ph.meta||null,full:await blobToB64(ph.full),thumb:await blobToB64(ph.thumb)})}
     const data={app:'rute-und-revier-tagebuch',schema:2,created:new Date().toISOString(),records:recs,photos};
     let text=JSON.stringify(data);
     if(pw)text=JSON.stringify(await encryptText(text,pw));
@@ -1327,7 +1551,7 @@ async function restoreBackup(file){
   }
   if(!d||!Array.isArray(d.records))return setStatus('backup-status','Diese Datei ist keine Sicherung des Tagebuchs.','bad');
   let n=0,np=0;
-  for(const ph of d.photos||[]){if(!ph.id)continue;if(await dbGet('photos',ph.id))continue;await dbPut('photos',{id:ph.id,catchId:ph.catchId,meta:ph.meta||null,full:b64ToBlob(ph.full),thumb:b64ToBlob(ph.thumb)});np++}
+  for(const ph of d.photos||[]){if(!ph.id)continue;if(await dbGet('photos',ph.id))continue;await dbPut('photos',{id:ph.id,catchId:ph.catchId,lureId:ph.lureId,meta:ph.meta||null,full:b64ToBlob(ph.full),thumb:b64ToBlob(ph.thumb)});np++}
   for(const r of d.records){if(!r.id||!r.type||r.type==='settings')continue;const cur=S.records.find(x=>x.id===r.id);
     if(!cur||(r.updatedAt||'')>(cur.updatedAt||'')){await save(r);n++}}
   renderAll();setStatus('backup-status',`Eingelesen: ${n} ${n===1?'Eintrag':'Einträge'} und ${np} ${np===1?'Foto':'Fotos'} übernommen.${n?'':' Alles war schon auf dem neuesten Stand.'}`,'good');
@@ -1351,6 +1575,12 @@ document.addEventListener('click',async e=>{
     case 'year':S.year=Number(a.dataset.year);S.filter='Alle';renderCatches();break;
     case 'tab':S.tab=a.dataset.tab;renderCatches();break;
     case 'new-trip':openTripForm(null);break;
+    case 'new-lure':openLureForm(null);break;
+    case 'open-lure':openLure(id);break;
+    case 'edit-lure':openLureForm(lures().find(x=>x.id===id));break;
+    case 'lure-filter':S.lureFilter=a.dataset.type;renderLures();break;
+    case 'rm-lure-photo':if(S.lurePhoto&&!S.lurePhoto.isNew)S.lurePhotoRemoved=S.lurePhoto.id;S.lurePhoto=null;renderLurePhoto();break;
+    case 'lure-lost':{const l=lures().find(x=>x.id===id);if(!l||l.qty===0)break;const u={...l,qty:l.qty==null?null:Math.max(0,l.qty-1),lost:[...(l.lost||[]),localDT(new Date()).slice(0,10)]};stamp(u);await save(u);renderAll();openLure(id);toast(u.qty===0?'Verloren. Bestand ist jetzt leer.':'Verlust eingetragen');break}
     case 'pick-sec':await saveSettings({sections:a.dataset.sec});closeSheet('sheet-welcome');renderSettings();show(a.dataset.sec==='jagd'?'jagd':'faenge');break;
     case 'create-backup':createBackup();break;
     case 'goto-backup':show('info');setTimeout(()=>$('#backup-card').scrollIntoView({block:'start'}),50);break;
@@ -1392,6 +1622,12 @@ document.addEventListener('click',async e=>{
 $('#form-catch').addEventListener('submit',submitCatch);
 $('#form-spot').addEventListener('submit',submitSpot);
 $('#form-trip').addEventListener('submit',submitTrip);
+$('#form-lure').addEventListener('submit',submitLure);
+['l-price','l-pack'].forEach(id=>$('#'+id).addEventListener('input',updateUnit));
+$('#r-species').addEventListener('change',renderReco);$('#r-clarity').addEventListener('change',renderReco);
+$('#l-file').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{const img=await loadImg(f);const full=await reencode(img,1200,.82),thumb=await reencode(img,520,.78);if(S.lurePhoto&&!S.lurePhoto.isNew)S.lurePhotoRemoved=S.lurePhoto.id;S.lurePhoto={id:uid(),isNew:true,full,thumb,url:URL.createObjectURL(thumb)};renderLurePhoto()}catch(err){toast('Foto konnte nicht gelesen werden')}});
+$('#c-lure').addEventListener('change',()=>{const l=lures().find(x=>x.id===$('#c-lure').value);if(l)$('#c-bait').value=l.name});
+$('#c-bait').addEventListener('input',()=>{const l=lures().find(x=>x.id===$('#c-lure').value);if(l&&$('#c-bait').value.trim().toLowerCase()!==l.name.toLowerCase())$('#c-lure').value=''});
 $$('input[name="set-sec"]').forEach(r=>r.addEventListener('change',async e=>{await saveSettings({sections:e.target.value});renderSettings();show(S.view==='info'?'info':e.target.value==='jagd'?'jagd':'faenge')}));
 $('#bk-file').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)restoreBackup(f)});
 $('#map-year').addEventListener('change',e=>{S.mapYear=e.target.value==='Alle'?'Alle':Number(e.target.value);renderMapControls();drawMarkers();fitMap()});
@@ -1416,11 +1652,12 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const open=$$
   if(S.records.some(r=>r.id==='ex-c-1')&&!S.records.some(r=>r.id==='ex-t-1')){
     for(const r of examples()){if(r.type==='trip'||r.type==='catch'){const cur=S.records.find(x=>x.id===r.id);if(r.type==='trip'||cur)await save(r.type==='catch'?{...cur,tripId:r.tripId}:r)}}
   }
+  if(S.records.some(r=>r.id==='ex-c-1')&&!S.records.some(r=>r.id==='ex-l-1'))for(const r of examples().filter(r=>r.type==='lure'))await save(r);
   for(const c of catches().filter(c=>!c.tripId&&!c.example).sort((a,b)=>a.dt.localeCompare(b.dt)))await assignTrip(c,null);
   if(DB.db&&navigator.storage&&navigator.storage.persist){try{navigator.storage.persist()}catch(e){}}
   const h=(location.hash||'').slice(1);
   renderAll();
-  show(['faenge','spots','info','jagd'].includes(h)?h:sections()==='jagd'?'jagd':'faenge');
+  show(['faenge','spots','koeder','info','jagd'].includes(h)?h:sections()==='jagd'?'jagd':'faenge');
   if(!settings().sections)openSheet('sheet-welcome');
 })();
 })();
