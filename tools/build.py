@@ -10,7 +10,7 @@ Aufruf: python3 tools/build.py
 import pathlib, re, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-VERSION = "0.7.1"
+VERSION = "0.8.0"
 
 src = (ROOT / "src" / "app.html").read_text(encoding="utf-8")
 

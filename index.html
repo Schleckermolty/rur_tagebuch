@@ -127,6 +127,7 @@ table.season td.slot{white-space:nowrap}
 .card .ph span{font-family:var(--f-display);font-size:clamp(22px,7vw,34px);color:var(--muted);opacity:.55;text-transform:uppercase;text-align:center;padding:0 12px;overflow-wrap:anywhere}
 .card .bd{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .card h3{font-family:var(--f-title);font-size:34px;line-height:1;margin:0;font-weight:700;text-wrap:balance}
+.card:has(.stamp) h3{padding-right:96px}
 .stamp{position:absolute;top:10px;right:10px;padding:2px 8px;border:2px solid var(--rust);color:var(--rust);background:var(--card);font-family:var(--f-meta);font-size:11px;font-weight:600;letter-spacing:.2em;transform:rotate(4deg)}
 .wx{display:flex;flex-wrap:wrap;gap:6px}
 .wx span{font-family:var(--f-meta);font-size:12px;padding:3px 7px;background:var(--paper-2);white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -170,6 +171,12 @@ table.season td.slot{white-space:nowrap}
 .lure-grid .nm small{display:block;color:var(--muted);font-size:12px}
 .lure-grid .out .sq{opacity:.45}
 .view-toggle{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.spools{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.spool{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 10px;background:var(--paper-2);border-left:5px solid var(--green);font-size:15px}
+.spool.soon{border-color:var(--warn)}.spool.due{border-color:var(--danger)}
+.spool small{display:block;color:var(--ink-2);font-size:13px}
+.lstate{font-family:var(--f-meta);font-size:11px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+.lstate.due{color:var(--danger)}.lstate.soon{color:var(--warn)}.lstate.ok{color:var(--ok)}
 /* Reiter, Jahre */
 .tabs{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--ink);margin-top:8px;max-width:420px}
 .tabs button{min-height:46px;border:0;background:transparent;font-family:var(--f-meta);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
@@ -336,6 +343,10 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
       <div class="brush" aria-hidden="true"></div>
       <div class="meta" id="catch-summary"></div>
     </div>
+    <div class="backup-note" id="line-note" hidden>
+      <p id="line-note-text"></p>
+      <button type="button" class="btn btn-sm" data-act="goto-gear">Ansehen</button>
+    </div>
     <div class="backup-note" id="backup-note" hidden>
       <p id="backup-note-text"></p>
       <button type="button" class="btn btn-sm" data-act="goto-backup">Jetzt sichern</button>
@@ -391,10 +402,23 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
   <!-- Köderbox -->
   <section class="view" data-view="koeder" hidden>
     <div class="view-head">
-      <h1 class="display">Köderbox</h1>
+      <h1 class="display">Tackle</h1>
       <div class="brush" aria-hidden="true"></div>
       <div class="meta" id="lure-summary"></div>
     </div>
+    <div class="tabs" role="group" aria-label="Tackle">
+      <button type="button" data-act="tackle-tab" data-tab="koeder" aria-pressed="true">Köder</button>
+      <button type="button" data-act="tackle-tab" data-tab="geraet" aria-pressed="false">Gerät</button>
+    </div>
+    <div id="pane-geraet" hidden>
+      <div class="rules" id="gear-due" style="margin-top:14px"></div>
+      <div class="actions" style="margin-top:14px"><button type="button" class="btn btn-primary" data-act="new-gear" data-kind="rod">+ Rute</button><button type="button" class="btn btn-primary" data-act="new-gear" data-kind="reel">+ Rolle</button></div>
+      <h2 class="sub-h">Ruten</h2>
+      <ul class="cards" id="rod-list"></ul>
+      <h2 class="sub-h">Rollen &amp; Spulen</h2>
+      <ul class="cards" id="reel-list"></ul>
+    </div>
+    <div id="pane-koeder">
     <div class="reco">
       <h2>Was soll ich nehmen?</h2>
       <div class="row2">
@@ -410,6 +434,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
     </div>
     <div class="chips" id="lure-chips" role="group" aria-label="Nach Typ filtern"></div>
     <ul class="cards" id="lure-list"></ul>
+    </div>
   </section>
 
   <!-- Info -->
@@ -417,7 +442,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
     <div class="view-head">
       <h1 class="display">Info</h1>
       <div class="brush" aria-hidden="true"></div>
-      <div class="meta">Version 0.7.1</div>
+      <div class="meta">Version 0.8.0</div>
     </div>
     <div class="info-grid">
       <article class="card"><div class="bd" style="gap:10px">
@@ -491,7 +516,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
   <ul>
     <li data-sec="angeln"><button type="button" data-go="faenge" aria-current="page"><svg viewBox="0 0 24 24"><path d="M3 12c3-4 7-6 11-6 3 0 5 2 7 6-2 4-4 6-7 6-4 0-8-2-11-6z"/><path d="M3 12 1 9M3 12l-2 3"/><circle cx="16" cy="11" r="1"/></svg>Fänge</button></li>
     <li data-sec="angeln"><button type="button" class="add" data-act="new-catch" aria-label="Fang eintragen"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Fang</button></li>
-    <li data-sec="angeln"><button type="button" data-go="koeder" aria-current="false"><svg viewBox="0 0 24 24"><path d="M5 9h9l4 3-4 3H5z"/><path d="M18 12h3M9 15v3a2 2 0 0 0 4 0"/><circle cx="8" cy="12" r="1"/></svg>Köder</button></li>
+    <li data-sec="angeln"><button type="button" data-go="koeder" aria-current="false"><svg viewBox="0 0 24 24"><path d="M5 9h9l4 3-4 3H5z"/><path d="M18 12h3M9 15v3a2 2 0 0 0 4 0"/><circle cx="8" cy="12" r="1"/></svg>Tackle</button></li>
     <li data-sec="angeln"><button type="button" data-go="spots" aria-current="false"><svg viewBox="0 0 24 24"><path d="M12 21s-6-6-6-11a6 6 0 0 1 12 0c0 5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/></svg>Karte</button></li>
     <li data-sec="jagd" hidden><button type="button" data-go="jagd" aria-current="false"><svg viewBox="0 0 24 24"><path d="M8 3v5l-3 3M8 8l3-3M16 3v5l3 3M16 8l-3-3M8 8c0 6 2 9 4 13 2-4 4-7 4-13"/></svg>Revier</button></li>
     <li><button type="button" data-go="info" aria-current="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v.5"/></svg>Info</button></li>
@@ -537,6 +562,8 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
         <div class="grid2">
           <div class="f" style="grid-column:1/-1"><label class="lbl" for="c-lure">Aus der Köderbox</label><div class="row"><select id="c-lure" style="flex:1;min-width:0;min-height:50px;padding:10px 36px 10px 12px;border:2px solid var(--ink-2);border-radius:0;background:var(--card);font-family:var(--f-ui);font-size:18px"></select><button type="button" class="btn btn-sm" data-act="pick-lure-photo">Per Foto</button></div></div>
           <label class="f"><span>Köder</span><input id="c-bait" list="dl-bait" autocomplete="off" placeholder="Nays CRW 35"></label>
+          <label class="f"><span>Rute</span><select id="c-rod"></select></label>
+          <label class="f"><span>Rolle / Spule</span><select id="c-spool"></select></label>
           <label class="f"><span>Montage</span><input id="c-rig" list="dl-rig" autocomplete="off" placeholder="Texas Rig"></label>
           <label class="f"><span>Vorfach</span><input id="c-leader" list="dl-leader" autocomplete="off" placeholder="Fluorocarbon 0,30 mm"></label>
           <label class="f"><span>Tiefe (m)</span><input id="c-depth" inputmode="decimal" autocomplete="off" placeholder="3,5"></label>
@@ -645,6 +672,51 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
 <section class="sheet" id="sheet-lurepick" hidden role="dialog" aria-modal="true" aria-labelledby="slp-title">
   <header class="sheet-head"><h2 class="sheet-title" id="slp-title">Köder wählen</h2><button type="button" class="icon-btn" data-act="close" data-sheet="sheet-lurepick" aria-label="Schließen">✕</button></header>
   <div class="sheet-body"><p class="hint" style="margin-top:14px">Tippe auf den Köder, den du benutzt hast.</p><ul class="lure-grid" id="lurepick-grid"></ul></div>
+</section>
+
+<!-- Gerät -->
+<section class="sheet" id="sheet-gear" hidden role="dialog" aria-modal="true" aria-labelledby="sg-title">
+  <header class="sheet-head"><h2 class="sheet-title" id="sg-title">Gerät</h2><button type="button" class="icon-btn" data-act="close" data-sheet="sheet-gear" aria-label="Schließen">✕</button></header>
+  <form id="form-gear" novalidate>
+    <div class="sheet-body">
+      <fieldset data-kinds="rod reel"><legend id="g-legend">Rute</legend>
+        <label class="f"><span>Modell</span><input id="g-name" autocomplete="off" placeholder="Daiwa Sensitip"></label>
+        <div class="grid2">
+          <label class="f"><span>Hersteller</span><input id="g-brand" list="dl-brand" autocomplete="off" placeholder="Daiwa"></label>
+          <label class="f" data-kinds="rod"><span>Länge (m)</span><input id="g-length" inputmode="decimal" autocomplete="off" placeholder="2,40"></label>
+          <label class="f" data-kinds="rod"><span>Wurfgewicht</span><input id="g-cast" autocomplete="off" placeholder="2–14 g"></label>
+          <label class="f" data-kinds="reel"><span>Größe</span><input id="g-size" autocomplete="off" placeholder="2500"></label>
+          <label class="f" data-kinds="reel"><span>Übersetzung</span><input id="g-ratio" autocomplete="off" placeholder="5,2:1"></label>
+        </div>
+      </fieldset>
+      <fieldset data-kinds="spool"><legend>Spule</legend>
+        <label class="f"><span>Bezeichnung</span><input id="g-label" autocomplete="off" placeholder="Hauptspule"></label>
+        <div class="grid2">
+          <label class="f"><span>Schnurtyp</span><select id="g-ltype"><option>Geflecht</option><option>Monofil</option><option>Fluorocarbon</option></select></label>
+          <label class="f"><span>Schnur</span><input id="g-lname" autocomplete="off" placeholder="Daiwa J-Braid X8"></label>
+          <label class="f"><span>Durchmesser (mm)</span><input id="g-diam" inputmode="decimal" autocomplete="off" placeholder="0,10"></label>
+          <label class="f"><span>Tragkraft (kg)</span><input id="g-load" inputmode="decimal" autocomplete="off" placeholder="6,8"></label>
+          <label class="f"><span>Länge (m)</span><input id="g-llen" inputmode="numeric" autocomplete="off" placeholder="150"></label>
+          <label class="f"><span>Wechsel nach (Monaten)</span><input id="g-interval" inputmode="numeric" autocomplete="off" placeholder="24"></label>
+          <label class="f"><span>Aufgespult am</span><input id="g-since" type="date"></label>
+          <label class="f"><span>Schnur gekauft am</span><input id="g-lbought" type="date"></label>
+        </div>
+        <p class="hint" id="g-ihint"></p>
+      </fieldset>
+      <fieldset data-kinds="rod reel spool"><legend>Kauf &amp; Notiz</legend>
+        <div class="grid2">
+          <label class="f" data-kinds="rod reel"><span>Gekauft am</span><input id="g-bought" type="date"></label>
+          <label class="f"><span>Händler</span><input id="g-shop" list="dl-shop" autocomplete="off" placeholder="Angel-Bär Frankfurt"></label>
+          <label class="f"><span>Preis (€)</span><input id="g-price" inputmode="decimal" autocomplete="off" placeholder="89,00"></label>
+        </div>
+        <label class="f"><span>Notiz</span><textarea id="g-note" placeholder="Bremse auf 1,5 kg eingestellt"></textarea></label>
+      </fieldset>
+    </div>
+    <div class="sheet-foot"><div class="inner">
+      <p class="err" id="g-err" role="alert" hidden></p>
+      <button type="submit" class="btn btn-primary btn-block">Speichern</button>
+    </div></div>
+  </form>
 </section>
 
 <!-- Willkommen -->
@@ -796,6 +868,10 @@ const sections=()=>settings().sections||'both';
 const allowed=sec=>sections()==='both'||sections()===sec;
 const realRecords=()=>S.records.filter(r=>!r.example&&!r.deleted&&r.type!=='settings');
 const lures=()=>S.records.filter(r=>r.type==='lure'&&!r.deleted);
+const rods=()=>S.records.filter(r=>r.type==='rod'&&!r.deleted);
+const reels=()=>S.records.filter(r=>r.type==='reel'&&!r.deleted);
+const spools=()=>S.records.filter(r=>r.type==='spool'&&!r.deleted);
+const spoolsOf=id=>spools().filter(x=>x.reelId===id).sort((a,b)=>(a.label||'').localeCompare(b.label||'','de'));
 const catches=()=>S.records.filter(r=>r.type==='catch'&&!r.deleted);
 const spots=()=>S.records.filter(r=>r.type==='spot'&&!r.deleted);
 const trips=()=>S.records.filter(r=>r.type==='trip'&&!r.deleted);
@@ -953,8 +1029,12 @@ function examples(){
   return [
     {...base,id:'ex-spot-1',type:'spot',name:'Kelsterbacher Ufer',water:'Main',lat:50.0632,lon:8.5285,note:'Steinpackung. Zander ab der Dämmerung an der Strömungskante.'},
     {...base,id:'ex-spot-2',type:'spot',name:'Nidda-Mündung',water:'Main / Nidda',lat:50.0968,lon:8.5497,note:'Barsche im Kehrwasser der Mündung.'},
-    {...base,id:'ex-c-1',type:'catch',tripId:'ex-t-1',species:'Zander',dt:'2026-09-26T19:40',lengthCm:58,weightKg:1.65,released:false,spotId:'ex-spot-1',water:'Main',lat:50.0632,lon:8.5285,bait:'Nays CRW 35',rig:'Texas Rig',leader:'Fluorocarbon 0,30 mm',depthM:3.5,wx:{pressure:1016,trend:'fallend',temp:14,wind:11,windDir:'SW',sky:'bewölkt',waterTemp:16,clarity:'angetrübt',source:'Beispiel'},note:'Biss in der Absinkphase direkt an der Kante.',photos:[]},
-    {...base,id:'ex-c-2',type:'catch',tripId:'ex-t-2',species:'Barsch',dt:'2026-09-20T08:15',lengthCm:32,weightKg:.42,released:true,spotId:'ex-spot-2',water:'Main / Nidda',lat:50.0968,lon:8.5497,bait:'Craby Lui',rig:'Carolina Rig',leader:'Fluorocarbon 0,25 mm',depthM:2,wx:{pressure:1022,trend:'stabil',temp:11,wind:6,windDir:'O',sky:'heiter',waterTemp:17,clarity:'klar',source:'Beispiel'},note:'',photos:[]},
+    {...base,id:'ex-c-1',type:'catch',rodId:'ex-rod-1',spoolId:'ex-sp-1',tripId:'ex-t-1',species:'Zander',dt:'2026-09-26T19:40',lengthCm:58,weightKg:1.65,released:false,spotId:'ex-spot-1',water:'Main',lat:50.0632,lon:8.5285,bait:'Nays CRW 35',rig:'Texas Rig',leader:'Fluorocarbon 0,30 mm',depthM:3.5,wx:{pressure:1016,trend:'fallend',temp:14,wind:11,windDir:'SW',sky:'bewölkt',waterTemp:16,clarity:'angetrübt',source:'Beispiel'},note:'Biss in der Absinkphase direkt an der Kante.',photos:[]},
+    {...base,id:'ex-c-2',type:'catch',rodId:'ex-rod-1',spoolId:'ex-sp-1',tripId:'ex-t-2',species:'Barsch',dt:'2026-09-20T08:15',lengthCm:32,weightKg:.42,released:true,spotId:'ex-spot-2',water:'Main / Nidda',lat:50.0968,lon:8.5497,bait:'Craby Lui',rig:'Carolina Rig',leader:'Fluorocarbon 0,25 mm',depthM:2,wx:{pressure:1022,trend:'stabil',temp:11,wind:6,windDir:'O',sky:'heiter',waterTemp:17,clarity:'klar',source:'Beispiel'},note:'',photos:[]},
+    {...base,id:'ex-rod-1',type:'rod',name:'Sensitip',brand:'Daiwa',length:2.4,cast:'2–14 g',bought:'2008-04-01',shop:'',price:null,note:'Für Texas und Carolina Rig.'},
+    {...base,id:'ex-reel-1',type:'reel',name:'Spinnrolle 2500',brand:'',size:'2500',ratio:'',bought:'2015-05-01',shop:'',price:null,note:''},
+    {...base,id:'ex-sp-1',type:'spool',reelId:'ex-reel-1',label:'Hauptspule',lineType:'Geflecht',lineName:'8-fach Geflecht',diameter:0.1,load:6.8,lineLength:150,since:'2024-05-10',lineBought:'2024-05-01',interval:24,shop:'',price:null,note:'',history:[]},
+    {...base,id:'ex-sp-2',type:'spool',reelId:'ex-reel-1',label:'Ersatzspule',lineType:'Fluorocarbon',lineName:'Fluorocarbon 0,30',diameter:0.3,load:6.2,lineLength:150,since:'2025-11-20',lineBought:'2023-03-01',interval:18,shop:'',price:null,note:'',history:[]},
     {...base,id:'ex-l-1',type:'lure',name:'Nays CRW 35',brand:'Nays',lureType:'Creature / Krebs',size:9,weight:null,color:'Motoroil',colorType:'dunkel',depth:'',qty:4,targets:['Barsch','Zander'],bought:'2026-04-12',shop:'Angel-Bär Frankfurt',price:8.49,pack:6,note:'Am Texas Rig, 7 g Bullet.',photo:null,lost:['2026-06-14','2026-08-02']},
     {...base,id:'ex-l-2',type:'lure',name:'Craby Lui',brand:'',lureType:'Creature / Krebs',size:7,weight:null,color:'Natur',colorType:'natürlich',depth:'',qty:5,targets:['Barsch'],bought:'2026-05-03',shop:'Online',price:6.99,pack:8,note:'Carolina Rig, langsam schleifen.',photo:null,lost:[]},
     {...base,id:'ex-l-3',type:'lure',name:'Gummifisch 10 cm',brand:'',lureType:'Gummifisch',size:10,weight:null,color:'Firetiger',colorType:'auffällig',depth:'',qty:0,targets:['Hecht','Zander'],bought:'2026-03-20',shop:'Angel-Bär Frankfurt',price:5.99,pack:4,note:'',photo:null,lost:['2026-09-13','2026-09-26','2026-09-26','2026-07-11']},
@@ -962,7 +1042,7 @@ function examples(){
     {...base,id:'ex-t-2',type:'trip',date:'2026-09-20',start:'07:00',end:'10:00',spotId:'ex-spot-2',water:'Main / Nidda',lat:null,lon:null,method:'Ufer',note:''},
     {...base,id:'ex-t-3',type:'trip',date:'2026-09-13',start:'15:00',end:'18:30',spotId:'ex-spot-1',water:'Main',lat:null,lon:null,method:'Ufer',note:''},
     {...base,id:'ex-t-4',type:'trip',date:'2026-09-06',start:'06:30',end:'09:00',spotId:'ex-spot-2',water:'Main / Nidda',lat:null,lon:null,method:'Ufer',note:'Hochwasser, stark angetrübt. Kein Biss.'},
-    {...base,id:'ex-c-3',type:'catch',tripId:'ex-t-3',species:'Hecht',dt:'2026-09-13T17:05',lengthCm:74,weightKg:2.9,released:true,spotId:'ex-spot-1',water:'Main',lat:50.0632,lon:8.5285,bait:'Gummifisch 10 cm',rig:'Free Rig',leader:'Titan',depthM:2.5,wx:{pressure:1009,trend:'fallend',temp:18,wind:15,windDir:'W',sky:'bedeckt',waterTemp:19,clarity:'angetrübt',source:'Beispiel'},note:'Vor der Kaltfront, ab 16 Uhr deutlich mehr Aktivität.',photos:[]}
+    {...base,id:'ex-c-3',type:'catch',rodId:'ex-rod-1',spoolId:'ex-sp-1',tripId:'ex-t-3',species:'Hecht',dt:'2026-09-13T17:05',lengthCm:74,weightKg:2.9,released:true,spotId:'ex-spot-1',water:'Main',lat:50.0632,lon:8.5285,bait:'Gummifisch 10 cm',rig:'Free Rig',leader:'Titan',depthM:2.5,wx:{pressure:1009,trend:'fallend',temp:18,wind:15,windDir:'W',sky:'bedeckt',waterTemp:19,clarity:'angetrübt',source:'Beispiel'},note:'Vor der Kaltfront, ab 16 Uhr deutlich mehr Aktivität.',photos:[]}
   ];
 }
 
@@ -1231,7 +1311,106 @@ function fillLureSelect(sel){
   $('#c-lure').value=sel||'';
 }
 
-function renderAll(){renderLures();renderCatches();renderSpots();renderLists();renderStore();renderRulesInfo();renderBackupInfo();renderSettings()}
+/* ---------- Gerät: Ruten, Rollen, Spulen ---------- */
+const LINE_DEFAULT={Geflecht:24,Monofil:12,Fluorocarbon:18};
+function addMonths(dateStr,m){const d=new Date(dateStr+'T12:00');d.setMonth(d.getMonth()+m);return d}
+function spoolInterval(sp){const base=sp.interval||LINE_DEFAULT[sp.lineType]||24;const stored=sp.lineBought&&sp.since?(new Date(sp.since)-new Date(sp.lineBought))/864e5/365:0;
+  if(sp.lineType!=='Geflecht'&&stored>2)return{m:Math.max(6,Math.round(base/2)),note:`verkürzt, weil die Schnur vor dem Aufspulen ${fmtN(stored)} Jahre lag`};return{m:base,note:''}}
+function spoolDays(sp){if(!sp.since)return 0;const ds=new Set([...catches().filter(c=>c.spoolId===sp.id&&c.dt.slice(0,10)>=sp.since).map(c=>c.dt.slice(0,10)),...trips().filter(t=>t.spoolId===sp.id&&t.date>=sp.since).map(t=>t.date)]);return ds.size}
+function spoolState(sp){
+  if(!sp.since)return{st:'soon',label:'Datum fehlt',text:'Aufspuldatum fehlt'};
+  const iv=spoolInterval(sp),due=addMonths(sp.since,iv.m),left=Math.round((due-Date.now())/864e5);
+  const age=Math.max(0,Math.floor((Date.now()-new Date(sp.since+'T00:00'))/864e5/30.44)),dd=spoolDays(sp);
+  const base=`${age?`seit ${age} ${age===1?'Monat':'Monaten'}`:'seit weniger als einem Monat'} · ${dd} ${dd===1?'Angeltag':'Angeltage'}`;
+  if(left<0)return{st:'due',label:'Wechsel fällig',text:`${base} · fällig seit ${fmtDate(localDT(due))}`,iv};
+  if(left<=30)return{st:'soon',label:'bald fällig',text:`${base} · fällig am ${fmtDate(localDT(due))}`,iv};
+  return{st:'ok',label:'in Ordnung',text:`${base} · Wechsel ${fmtDate(localDT(due))}`,iv};
+}
+const fmtMm=v=>v.toFixed(2).replace('.',',');
+const lineDesc=sp=>[sp.lineType,sp.lineName,sp.diameter!=null?fmtMm(sp.diameter)+' mm':'',sp.load!=null?fmtN(sp.load)+' kg':'',sp.lineLength?sp.lineLength+' m':''].filter(Boolean).join(' · ');
+const gearCatches=(k,id)=>catches().filter(c=>c[k]===id);
+function rodCard(r){const n=gearCatches('rodId',r.id).length;
+  return `<li><button type="button" class="card" data-act="open-gear" data-id="${esc(r.id)}">${r.example?'<span class="stamp">BEISPIEL</span>':''}<div class="bd"><h3>${esc([r.brand,r.name].filter(Boolean).join(' '))}</h3><div class="meta">${esc([r.length!=null?fmtN(r.length,2)+' m':'',r.cast].filter(Boolean).join(' · '))}</div><div class="lure-stats"><span>${n} ${n===1?'Fang':'Fänge'}</span>${r.bought?`<span>seit ${esc(r.bought.slice(0,4))}</span>`:''}</div></div></button></li>`}
+function reelCard(r){const sps=spoolsOf(r.id),n=gearCatches('reelId',r.id).length+sps.reduce((s,x)=>s+gearCatches('spoolId',x.id).length,0);
+  return `<li><div class="card" style="cursor:default">${r.example?'<span class="stamp">BEISPIEL</span>':''}<div class="bd"><h3>${esc([r.brand,r.name].filter(Boolean).join(' '))}</h3><div class="meta">${esc([r.size?'Größe '+r.size:'',r.ratio].filter(Boolean).join(' · '))} · ${n} ${n===1?'Fang':'Fänge'}</div>
+    <div class="spools">${sps.map(sp=>{const st=spoolState(sp);return `<button type="button" class="spool ${st.st}" style="border-top:0;border-right:0;border-bottom:0;text-align:left;cursor:pointer;width:100%" data-act="open-gear" data-id="${esc(sp.id)}"><span>${esc(sp.label||'Spule')}<small>${esc(lineDesc(sp))}</small><small>${esc(st.text)}</small></span><span class="lstate ${st.st}">${esc(st.label)}</span></button>`}).join('')||'<span class="hint">Noch keine Spule angelegt.</span>'}</div>
+    <div class="actions" style="margin-top:6px"><button type="button" class="btn btn-sm" data-act="open-gear" data-id="${esc(r.id)}">Details</button><button type="button" class="btn btn-sm" data-act="new-spool" data-id="${esc(r.id)}">+ Spule</button></div></div></div></li>`}
+function renderGear(){
+  const tab=S.tackleTab||'koeder';
+  $('#pane-geraet').hidden=tab!=='geraet';$('#pane-koeder').hidden=tab!=='koeder';
+  $$('[data-act="tackle-tab"]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===tab)));
+  $('#rod-list').innerHTML=rods().length?rods().sort((a,b)=>a.name.localeCompare(b.name,'de')).map(rodCard).join(''):'<li class="empty" style="grid-column:1/-1"><b>Keine Ruten</b>Leg deine Ruten an, dann kannst du sie jedem Fang zuordnen.</li>';
+  $('#reel-list').innerHTML=reels().length?reels().sort((a,b)=>a.name.localeCompare(b.name,'de')).map(reelCard).join(''):'<li class="empty" style="grid-column:1/-1"><b>Keine Rollen</b>Leg Rollen an und darin ihre Spulen mit Schnur und Aufspuldatum.</li>';
+  const due=spools().map(sp=>({sp,st:spoolState(sp)})).filter(x=>x.st.st!=='ok');
+  const reelName=id=>{const r=reels().find(x=>x.id===id);return r?[r.brand,r.name].filter(Boolean).join(' '):''};
+  $('#gear-due').innerHTML=due.map(x=>`<div class="rule ${x.st.st==='due'?'stop':'info'}"><b>${esc(x.st.label)}</b>${esc(reelName(x.sp.reelId))} · ${esc(x.sp.label||'Spule')}: ${esc(lineDesc(x.sp))}<small>${esc(x.st.text)}${x.st.iv&&x.st.iv.note?' · Intervall '+esc(x.st.iv.note):''}</small></div>`).join('');
+  const dueN=spools().filter(sp=>spoolState(sp).st==='due').length;
+  S.gearDue=dueN;
+}
+function gearKindName(k){return{rod:'Rute',reel:'Rolle',spool:'Spule'}[k]}
+function openGear(id){
+  const g=S.records.find(r=>r.id===id&&!r.deleted);if(!g)return;
+  const k=g.type;let body='';
+  if(k==='spool'){const st=spoolState(g),r=reels().find(x=>x.id===g.reelId),cs=gearCatches('spoolId',g.id);
+    body=`<h3 class="detail-title">${esc(g.label||'Spule')}</h3><div class="meta">${esc(r?[r.brand,r.name].filter(Boolean).join(' '):'')}</div>
+      <div class="rules" style="margin-top:12px"><div class="rule ${st.st==='due'?'stop':st.st==='soon'?'info':'ok'}"><b>${esc(st.label)}</b>${esc(st.text)}${st.iv&&st.iv.note?`<small>Intervall ${st.iv.m} Monate, ${esc(st.iv.note)}</small>`:st.iv?`<small>Intervall ${st.iv.m} Monate</small>`:''}</div></div>
+      <dl class="facts">${fact('Schnur',esc(lineDesc(g)))}${fact('Aufgespult',g.since?esc(fmtDate(g.since+'T12:00')):'')}${fact('Schnur gekauft',g.lineBought?esc(fmtDate(g.lineBought+'T12:00')):'')}${fact('Händler',esc(g.shop))}${fact('Preis',g.price!=null?fmtEuro(g.price):'')}${fact('Fänge gesamt',String(cs.length))}
+      ${fact('Frühere Schnüre',(g.history||[]).length?g.history.slice().reverse().map(h=>`${esc(fmtDate(h.since+'T12:00'))} bis ${esc(fmtDate(h.until+'T12:00'))}: ${esc(h.desc)}`).join('<br>'):'')}</dl>
+      ${g.note?`<div class="notebox">${esc(g.note)}</div>`:''}
+      <div class="actions"><button type="button" class="btn btn-primary" data-act="respool" data-id="${esc(g.id)}">Neue Schnur aufgespult</button><button type="button" class="btn" data-act="edit-gear" data-id="${esc(g.id)}">Bearbeiten</button><button type="button" class="btn btn-danger" data-act="ask-del" data-id="${esc(g.id)}">Löschen</button></div>`;
+  }else{const key=k==='rod'?'rodId':'reelId';let cs=gearCatches(key,g.id);if(k==='reel')cs=[...cs,...spoolsOf(g.id).flatMap(sp=>gearCatches('spoolId',sp.id))];
+    const bySp={};cs.forEach(c=>bySp[c.species]=(bySp[c.species]||0)+1);
+    body=`<h3 class="detail-title">${esc([g.brand,g.name].filter(Boolean).join(' '))}</h3><div class="meta">${gearKindName(k)}${g.example?' · Beispiel':''}</div>
+      <dl class="facts">${k==='rod'?fact('Länge',g.length!=null?fmtN(g.length,2)+' m':'')+fact('Wurfgewicht',esc(g.cast)):fact('Größe',esc(g.size))+fact('Übersetzung',esc(g.ratio))+fact('Spulen',spoolsOf(g.id).map(sp=>esc((sp.label||'Spule')+': '+lineDesc(sp))).join('<br>'))}
+      ${fact('Gekauft',esc([g.bought?fmtDate(g.bought+'T12:00'):'',g.shop].filter(Boolean).join(' · ')))}${fact('Preis',g.price!=null?fmtEuro(g.price):'')}
+      ${fact('Fänge',cs.length?Object.entries(bySp).map(([a,n])=>`${n}× ${esc(a)}`).join(', '):'noch keine')}</dl>
+      ${g.note?`<div class="notebox">${esc(g.note)}</div>`:''}
+      <div class="actions">${k==='reel'?`<button type="button" class="btn" data-act="new-spool" data-id="${esc(g.id)}">+ Spule</button>`:''}<button type="button" class="btn" data-act="edit-gear" data-id="${esc(g.id)}">Bearbeiten</button><button type="button" class="btn btn-danger" data-act="ask-del" data-id="${esc(g.id)}">Löschen</button></div>`;
+  }
+  $('#sd-title').textContent=gearKindName(k);$('#detail-body').innerHTML=body+'<div id="del-confirm"></div>';openSheet('sheet-detail');
+}
+function updateIntervalHint(){
+  const t=$('#g-ltype').value,iv=parseNum($('#g-interval').value);
+  $('#g-interval').placeholder=String(LINE_DEFAULT[t]);
+  const fake={lineType:t,interval:iv,since:$('#g-since').value,lineBought:$('#g-lbought').value},r=spoolInterval(fake);
+  $('#g-ihint').textContent=`Wechselintervall: ${r.m} Monate${r.note?', '+r.note:''}${iv?'':` (Standard für ${t})`}.`;
+}
+function openGearForm(kind,g,reelId){
+  S.editGear={kind,id:g?g.id:null,reelId:g?g.reelId:reelId};
+  $('#sg-title').textContent=(g?gearKindName(kind)+' bearbeiten':gearKindName(kind)+' anlegen');$('#g-legend').textContent=gearKindName(kind);
+  $$('#form-gear [data-kinds]').forEach(el=>el.hidden=!el.dataset.kinds.split(' ').includes(kind));
+  const v=(id,x)=>{$(id).value=x==null?'':x};
+  v('#g-name',g&&g.name);v('#g-brand',g&&g.brand);v('#g-length',g&&g.length!=null?fmtN(g.length,2):'');v('#g-cast',g&&g.cast);v('#g-size',g&&g.size);v('#g-ratio',g&&g.ratio);
+  v('#g-label',g?g.label:(kind==='spool'?(spoolsOf(reelId).length?'Ersatzspule':'Hauptspule'):''));$('#g-ltype').value=g&&g.lineType||'Geflecht';v('#g-lname',g&&g.lineName);v('#g-diam',g&&g.diameter!=null?fmtN(g.diameter,2):'');v('#g-load',g&&g.load!=null?fmtN(g.load):'');v('#g-llen',g&&g.lineLength);
+  v('#g-interval',g&&g.interval&&g.interval!==LINE_DEFAULT[g.lineType]?g.interval:'');v('#g-since',g?g.since:localDT(new Date()).slice(0,10));v('#g-lbought',g&&g.lineBought);
+  v('#g-bought',g&&g.bought);v('#g-shop',g&&g.shop);v('#g-price',g&&g.price!=null?fmtN(g.price,2):'');v('#g-note',g&&g.note);
+  updateIntervalHint();$('#g-err').hidden=true;openSheet('sheet-gear');
+}
+async function submitGear(e){
+  e.preventDefault();const err=$('#g-err');const fail=m=>{err.textContent=m;err.hidden=false};const {kind,id,reelId}=S.editGear;
+  const old=id?S.records.find(r=>r.id===id):null;const g=old?{...old}:{id:uid(),type:kind};
+  if(kind==='spool'){
+    if(!$('#g-since').value)return fail('Bitte das Aufspuldatum angeben.');
+    Object.assign(g,{reelId,label:$('#g-label').value.trim()||'Spule',lineType:$('#g-ltype').value,lineName:$('#g-lname').value.trim(),diameter:parseNum($('#g-diam').value),load:parseNum($('#g-load').value),lineLength:parseNum($('#g-llen').value),
+      interval:parseNum($('#g-interval').value)||LINE_DEFAULT[$('#g-ltype').value],since:$('#g-since').value,lineBought:$('#g-lbought').value||null,history:g.history||[]});
+  }else{
+    const name=$('#g-name').value.trim();if(!name)return fail('Bitte das Modell angeben.');
+    Object.assign(g,{name,brand:$('#g-brand').value.trim(),bought:$('#g-bought').value||null});
+    if(kind==='rod')Object.assign(g,{length:parseNum($('#g-length').value),cast:$('#g-cast').value.trim()});
+    else Object.assign(g,{size:$('#g-size').value.trim(),ratio:$('#g-ratio').value.trim()});
+  }
+  Object.assign(g,{shop:$('#g-shop').value.trim(),price:parseNum($('#g-price').value),note:$('#g-note').value.trim()});
+  stamp(g,!old);await save(g);closeSheet('sheet-gear');S.tackleTab='geraet';show('koeder');renderAll();
+  if(!$('#sheet-detail').hidden)openGear(g.id);
+  toast(gearKindName(kind)+(old?' aktualisiert':' gespeichert'));
+}
+function fillGearSelects(rodId,spoolId){
+  $('#c-rod').innerHTML='<option value="">–</option>'+rods().map(r=>`<option value="${esc(r.id)}">${esc([r.brand,r.name].filter(Boolean).join(' '))}${r.cast?' · '+esc(r.cast):''}</option>`).join('');
+  $('#c-spool').innerHTML='<option value="">–</option>'+reels().map(r=>spoolsOf(r.id).map(sp=>`<option value="${esc(sp.id)}">${esc(r.name)} · ${esc(sp.label||'Spule')} (${esc([sp.lineType,sp.diameter!=null?fmtMm(sp.diameter)+' mm':''].filter(Boolean).join(' '))})</option>`).join('')).join('');
+  $('#c-rod').value=rodId||'';$('#c-spool').value=spoolId||'';
+}
+
+function renderAll(){renderGear();renderLures();renderCatches();renderSpots();renderLists();renderStore();renderRulesInfo();renderBackupInfo();renderSettings()}
 
 /* ---------- Karte ---------- */
 function ensureMap(){
@@ -1320,6 +1499,7 @@ function openCatchForm(c,pre){
   fillSpotSelect(c?c.spotId:'');
   $('#c-water').value=c?c.water||'':'';
   $('#c-coords').value=c?fmtCoords(c.lat,c.lon):'';
+  {const last=c?null:catches().filter(x=>x.rodId||x.spoolId).sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''))[0];fillGearSelects(c?c.rodId:last&&last.rodId,c?c.spoolId:last&&last.spoolId)}
   fillLureSelect(c?c.lureId:'');$('#c-bait').value=c?c.bait||'':'';$('#c-rig').value=c?c.rig||'':'';$('#c-leader').value=c?c.leader||'':'';
   $('#c-depth').value=c&&c.depthM!=null?fmtN(c.depthM):'';
   $('#c-pressure').value=w.pressure??'';$('#c-trend').value=w.trend||'';$('#c-temp').value=w.temp!=null?fmtN(w.temp):'';
@@ -1380,7 +1560,7 @@ async function submitCatch(e){
   const c=old?{...old}:{id:uid(),type:'catch',tripId:S.prefTrip||null};const prevTrip=old?old.tripId:null;
   Object.assign(c,{species,waterType:$('#c-species').value===OTHER?getRadio('c-wt'):null,dt,lengthCm:parseNum($('#c-length').value),weightKg:parseNum($('#c-weight').value),released:$('#c-rel').checked,
     spotId:$('#c-spot').value||null,method:$('#c-method').value||null,water:$('#c-water').value.trim(),lat:co?co.lat:null,lon:co?co.lon:null,
-    lureId:$('#c-lure').value||null,bait:$('#c-bait').value.trim(),rig:$('#c-rig').value.trim(),leader:$('#c-leader').value.trim(),depthM:parseNum($('#c-depth').value),
+    lureId:$('#c-lure').value||null,rodId:$('#c-rod').value||null,spoolId:$('#c-spool').value||null,reelId:(spools().find(x=>x.id===$('#c-spool').value)||{}).reelId||null,bait:$('#c-bait').value.trim(),rig:$('#c-rig').value.trim(),leader:$('#c-leader').value.trim(),depthM:parseNum($('#c-depth').value),
     wx:{pressure:parseNum($('#c-pressure').value),trend:$('#c-trend').value||null,temp:parseNum($('#c-temp').value),wind:parseNum($('#c-wind').value),windDir:$('#c-winddir').value||null,sky:$('#c-sky').value||null,waterTemp:parseNum($('#c-watertemp').value),clarity:$('#c-clarity').value||null,source:S.wxSource||'manuell'},
     note:$('#c-note').value.trim()});
   for(const p of S.formPhotos.filter(p=>p.isNew))await dbPut('photos',{id:p.id,catchId:c.id,full:p.full,thumb:p.thumb,meta:p.meta||null});
@@ -1433,7 +1613,7 @@ function openCatch(id){
       ${fact('Angeltag',(()=>{const t=c.tripId&&trips().find(x=>x.id===c.tripId);return t?`<button type="button" class="link-btn" style="padding:0" data-act="open-trip" data-id="${esc(t.id)}">${esc(fmtDay(t.date))} · ${esc(tripPlace(t))}</button>`:''})())}
       ${fact('Spot',sp?esc(sp.name):'')}${fact('Angelart',esc(c.method))}${fact('Gewässer',esc(c.water))}${fact('Gewässertyp',esc(spotWater(sp)||c.waterType||speciesWater(c.species)||''))}
       ${fact('Koordinaten',c.lat!=null?`<span class="coord">${esc(fmtCoords(c.lat,c.lon))}</span><br><span class="priv">Privat · nur auf diesem Gerät</span>`:'')}
-      ${fact('Köder',esc(c.bait))}${fact('Montage',esc(c.rig))}${fact('Vorfach',esc(c.leader))}${fact('Tiefe',c.depthM!=null?fmtN(c.depthM)+' m':'')}
+      ${fact('Gerät',(()=>{const r=rods().find(x=>x.id===c.rodId),sp=spools().find(x=>x.id===c.spoolId),rl=sp&&reels().find(x=>x.id===sp.reelId);return esc([r?[r.brand,r.name].filter(Boolean).join(' '):'',rl?rl.name+' · '+(sp.label||'Spule')+' ('+lineDesc(sp)+')':''].filter(Boolean).join(' / '))})())}${fact('Köder',esc(c.bait))}${fact('Montage',esc(c.rig))}${fact('Vorfach',esc(c.leader))}${fact('Tiefe',c.depthM!=null?fmtN(c.depthM)+' m':'')}
       ${fact('Luftdruck',w.pressure!=null?`${w.pressure} hPa${w.trend?' · '+esc(w.trend)+' '+TREND[w.trend]:''}`:'')}
       ${fact('Luft',w.temp!=null?fmtN(w.temp)+' °C':'')}${fact('Wind',w.wind!=null?`${esc(w.windDir||'')} ${w.wind} km/h`:'')}${fact('Himmel',esc(w.sky))}
       ${fact('Wasser',[w.waterTemp!=null?fmtN(w.waterTemp)+' °C':'',w.clarity||''].filter(Boolean).map(esc).join(' · '))}
@@ -1511,11 +1691,12 @@ async function removeRecord(id){
   if(r.type==='spot')for(const c of catches().filter(c=>c.spotId===id)){const u={...c,spotId:null};stamp(u);await save(u)}
   if(r.type==='trip')for(const c of catchesOfTrip(id)){const u={...c,tripId:null};stamp(u);await save(u)}
   if(r.type==='lure')for(const ph of lurePhotos(r))await dbDel('photos',ph);
+  if(r.type==='reel')for(const sp of spoolsOf(id))await dropRecord(sp);
   const tripOfCatch=r.type==='catch'&&r.tripId?trips().find(x=>x.id===r.tripId):null;
   if(r.example){S.records=S.records.filter(x=>x.id!==id);await dbDel('records',id)}
   else{const u={...r,deleted:true,photos:[]};stamp(u);await save(u)}
   if(tripOfCatch&&tripOfCatch.auto&&!catchesOfTrip(tripOfCatch.id).length)await dropRecord(tripOfCatch);
-  closeSheet('sheet-detail');renderAll();toast({catch:'Fang gelöscht',spot:'Spot gelöscht',trip:'Angeltag gelöscht',lure:'Köder gelöscht'}[r.type]);
+  closeSheet('sheet-detail');renderAll();toast({catch:'Fang gelöscht',spot:'Spot gelöscht',trip:'Angeltag gelöscht',lure:'Köder gelöscht',rod:'Rute gelöscht',reel:'Rolle gelöscht',spool:'Spule gelöscht'}[r.type]);
 }
 
 /* ---------- Sicherung ---------- */
@@ -1542,6 +1723,7 @@ function renderBackupInfo(){
   $('#backup-last').textContent=last?`Letzte Sicherung: ${fmtDate(st.lastBackupAt)}${days?` (vor ${days} ${days===1?'Tag':'Tagen'})`:' (heute)'}.`:'Noch keine Sicherung erstellt.';
   const due=n>0&&(!last||days>=14||since>=10);
   $('#backup-note').hidden=!due;
+  const sd=spools().filter(sp=>spoolState(sp).st==='due');$('#line-note').hidden=!sd.length;if(sd.length)$('#line-note-text').textContent=`Schnurwechsel fällig: ${sd.map(sp=>{const r=reels().find(x=>x.id===sp.reelId);return (r?r.name+' · ':'')+(sp.label||'Spule')}).join(', ')}.`;
   if(due)$('#backup-note-text').textContent=!last?`Noch keine Sicherung. ${n} ${n===1?'Eintrag liegt':'Einträge liegen'} nur auf diesem Handy.`:since>=10?`${since} neue Einträge seit der letzten Sicherung.`:`Letzte Sicherung vor ${days} Tagen.`;
 }
 async function createBackup(){
@@ -1603,6 +1785,14 @@ document.addEventListener('click',async e=>{
     case 'tab':S.tab=a.dataset.tab;renderCatches();break;
     case 'new-trip':openTripForm(null);break;
     case 'new-lure':openLureForm(null);break;
+    case 'tackle-tab':S.tackleTab=a.dataset.tab;renderGear();break;
+    case 'new-gear':openGearForm(a.dataset.kind,null);break;
+    case 'new-spool':openGearForm('spool',null,id);break;
+    case 'open-gear':openGear(id);break;
+    case 'edit-gear':{const g=S.records.find(r=>r.id===id);if(g)openGearForm(g.type,g,g.reelId);break}
+    case 'goto-gear':S.tackleTab='geraet';show('koeder');renderGear();break;
+    case 'respool':{const sp=spools().find(x=>x.id===id);if(!sp)break;const today=localDT(new Date()).slice(0,10);
+      const u={...sp,history:[...(sp.history||[]),{since:sp.since,until:today,desc:lineDesc(sp)}],since:today,lineBought:null};stamp(u);await save(u);renderAll();openGearForm('spool',u,u.reelId);toast('Alte Schnur archiviert. Neue Schnur eintragen.');break}
     case 'open-lure':openLure(id);break;
     case 'edit-lure':openLureForm(lures().find(x=>x.id===id));break;
     case 'lure-filter':S.lureFilter=a.dataset.type;renderLures();break;
@@ -1653,6 +1843,9 @@ $('#form-catch').addEventListener('submit',submitCatch);
 $('#form-spot').addEventListener('submit',submitSpot);
 $('#form-trip').addEventListener('submit',submitTrip);
 $('#form-lure').addEventListener('submit',submitLure);
+$('#form-gear').addEventListener('submit',submitGear);
+['g-ltype','g-interval','g-since','g-lbought'].forEach(id=>$('#'+id).addEventListener('input',updateIntervalHint));
+$('#g-ltype').addEventListener('change',updateIntervalHint);
 ['l-price','l-pack'].forEach(id=>$('#'+id).addEventListener('input',updateUnit));
 $('#r-species').addEventListener('change',renderReco);$('#r-clarity').addEventListener('change',renderReco);
 $('#l-file').addEventListener('change',async e=>{const fs=[...e.target.files].slice(0,3-S.lurePhotos.length);e.target.value='';for(const f of fs){try{const img=await loadImg(f);const full=await reencode(img,1200,.82),thumb=await reencode(img,520,.78);S.lurePhotos.push({id:uid(),isNew:true,full,thumb,url:URL.createObjectURL(thumb)})}catch(err){toast('Foto konnte nicht gelesen werden')}}renderLurePhoto()});
@@ -1682,6 +1875,7 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const open=$$
   if(S.records.some(r=>r.id==='ex-c-1')&&!S.records.some(r=>r.id==='ex-t-1')){
     for(const r of examples()){if(r.type==='trip'||r.type==='catch'){const cur=S.records.find(x=>x.id===r.id);if(r.type==='trip'||cur)await save(r.type==='catch'?{...cur,tripId:r.tripId}:r)}}
   }
+  if(S.records.some(r=>r.id==='ex-c-1')&&!S.records.some(r=>r.id==='ex-rod-1')){for(const r of examples().filter(r=>['rod','reel','spool'].includes(r.type)))await save(r);for(const id of ['ex-c-1','ex-c-2','ex-c-3']){const c=S.records.find(x=>x.id===id);if(c)await save({...c,rodId:'ex-rod-1',spoolId:'ex-sp-1'})}}
   if(S.records.some(r=>r.id==='ex-c-1')&&!S.records.some(r=>r.id==='ex-l-1'))for(const r of examples().filter(r=>r.type==='lure'))await save(r);
   for(const c of catches().filter(c=>!c.tripId&&!c.example).sort((a,b)=>a.dt.localeCompare(b.dt)))await assignTrip(c,null);
   if(DB.db&&navigator.storage&&navigator.storage.persist){try{navigator.storage.persist()}catch(e){}}
