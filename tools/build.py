@@ -8,11 +8,16 @@
 Aufruf: python3 tools/build.py
 """
 import pathlib, re, sys
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import daten
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-VERSION = "0.8.0"
+VERSION = "0.9.0"
 
 src = (ROOT / "src" / "app.html").read_text(encoding="utf-8")
+# Regeldaten aus daten/*.json als Rückfall-Kopie einbetten, Prüfübersicht erzeugen
+src = daten.embed(src)
+daten.pruefstand()
 
 def sub(old, new, count=1):
     global src

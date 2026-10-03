@@ -1,0 +1,1900 @@
+{
+ "format": 1,
+ "datensatz": "schonzeiten-binnen",
+ "titel": "Schonzeiten, Mindest- und Höchstmaße in Binnengewässern",
+ "stand": "2026-10-02",
+ "pruefrhythmus_monate": 12,
+ "haftung": "Ohne Gewähr. Maßgeblich sind die Verordnung des Landes und die Gewässerordnung, die strenger sein kann.",
+ "eintraege": [
+  {
+   "id": "BW",
+   "name": "Baden-Württemberg",
+   "rechtsgrundlage": "Landesfischereiverordnung (LFischVO)",
+   "rechtsstand": "zuletzt geändert 18.01.2022",
+   "allgemein": "Für den Bodensee gilt eine eigene Verordnung.",
+   "quellen": [
+    {
+     "titel": "angelpuls.de: Schonzeiten Baden-Württemberg",
+     "url": "https://www.angelpuls.de/schonzeiten/baden-wuerttemberg/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Baden-Württemberg",
+     "url": "https://raubfischmagazin.com/baden-wuerttemberg/schonzeiten/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "abgeglichen",
+    "methode": "Raubfische mit zwei bis drei unabhängigen Sekundärquellen abgeglichen, übrige Arten nur mit einer. Originaltext noch nicht gelesen.",
+    "naechste": "2027-01-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": "15.02-15.05",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Zander": {
+     "schonzeit": "01.04-15.05",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null
+    },
+    "Bachforelle": {
+     "schonzeit": "01.10-28.02",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null,
+     "hinweis": "Mindestmaß gestaffelt: Hochrhein 35 cm, Gewässer über 800 m 20 cm, sonst 25 cm."
+    },
+    "Regenbogenforelle": {
+     "schonzeit": "01.10-28.02",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Seeforelle": {
+     "schonzeit": "01.10-28.02",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Seesaibling": {
+     "schonzeit": "01.10-28.02",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Bachsaibling": {
+     "schonzeit": "01.10-28.02",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Aal": {
+     "schonzeit": "15.09-01.03",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null,
+     "hinweis": "Gilt im Rhein und seinem Gewässersystem."
+    },
+    "Karpfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Schleie": {
+     "schonzeit": "15.05-30.06",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Äsche": {
+     "schonzeit": "01.02-30.04",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Rapfen": {
+     "schonzeit": "01.03-31.05",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null,
+     "hinweis": "Gilt in der Donau und ihrem Gewässersystem."
+    },
+    "Barbe": {
+     "schonzeit": "01.05-15.06",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Renke": {
+     "schonzeit": "15.10-10.01",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Quappe": {
+     "schonzeit": "01.11-28.02",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Nase": {
+     "schonzeit": "15.03-31.05",
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Aland": {
+     "schonzeit": "01.04-31.05",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Meerforelle": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Lachs": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Zährte": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    }
+   }
+  },
+  {
+   "id": "BY",
+   "name": "Bayern",
+   "rechtsgrundlage": "Verordnung zur Ausführung des Bayerischen Fischereigesetzes (AVBayFiG), Anlage",
+   "rechtsstand": "Anlage gültig ab 01.06.2025",
+   "allgemein": "Einige Regeln gelten nur in bestimmten Flussgebieten (Donau, Elbe, Rhein, Weser). Der Main gehört zum Rheingebiet.",
+   "quellen": [
+    {
+     "titel": "AVBayFiG, Anlage (gesetze-bayern.de)",
+     "url": "https://www.gesetze-bayern.de/Content/Document/BayAVFiG-ANL_1",
+     "art": "Originaltext"
+    },
+    {
+     "titel": "angelpuls.de: Schonzeiten Bayern",
+     "url": "https://www.angelpuls.de/schonzeiten/bayern/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Bayern",
+     "url": "https://raubfischmagazin.com/bayern/schonzeiten/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "geprueft",
+    "methode": "Konsolidierte Anlage im amtlichen Portal gelesen, gültig ab 01.06.2025.",
+    "naechste": "2027-10-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": "15.02-30.04",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Zander": {
+     "schonzeit": "15.02-30.04",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Huchen": {
+     "schonzeit": "15.02-30.06",
+     "mindestmass_cm": 90.0,
+     "hoechstmass_cm": null,
+     "hinweis": "Gilt im Donaugebiet."
+    },
+    "Bachforelle": {
+     "schonzeit": "01.10-15.03",
+     "mindestmass_cm": 26.0,
+     "hoechstmass_cm": null
+    },
+    "Regenbogenforelle": {
+     "schonzeit": "15.12-15.03",
+     "mindestmass_cm": 26.0,
+     "hoechstmass_cm": null
+    },
+    "Seeforelle": {
+     "schonzeit": "01.10-15.03",
+     "mindestmass_cm": 60.0,
+     "hoechstmass_cm": null,
+     "hinweis": "Gilt im Donau- und Rheingebiet."
+    },
+    "Äsche": {
+     "schonzeit": "01.01-30.04",
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Aal": {
+     "schonzeit": "01.10-31.12",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null,
+     "hinweis": "Gilt im Elbe-, Rhein- und Wesergebiet, nicht im Donaugebiet."
+    },
+    "Barbe": {
+     "schonzeit": "01.05-30.06",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Nase": {
+     "schonzeit": "01.03-30.04",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Aland": {
+     "schonzeit": "01.03-30.04",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Hasel": {
+     "schonzeit": "01.03-30.04",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Rapfen": {
+     "schonzeit": "01.03-30.04",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Schleie": {
+     "schonzeit": "01.05-30.06",
+     "mindestmass_cm": 26.0,
+     "hoechstmass_cm": null
+    },
+    "Karpfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Quappe": {
+     "schonzeit": null,
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Renke": {
+     "schonzeit": "15.10-31.12",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Seesaibling": {
+     "schonzeit": "01.10-31.12",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null,
+     "hinweis": "Gilt im Donaugebiet."
+    },
+    "Lachs": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Meerforelle": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Karausche": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    }
+   }
+  },
+  {
+   "id": "BE",
+   "name": "Berlin",
+   "rechtsgrundlage": "Berliner Landesfischereiordnung (LFischO)",
+   "rechtsstand": "zuletzt geändert 27.10.2025",
+   "allgemein": "",
+   "quellen": [
+    {
+     "titel": "angelpuls.de: Schonzeiten Berlin",
+     "url": "https://www.angelpuls.de/schonzeiten/berlin/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Berlin",
+     "url": "https://raubfischmagazin.com/berlin/schonzeiten/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "abgeglichen",
+    "methode": "Raubfische mit zwei bis drei unabhängigen Sekundärquellen abgeglichen, übrige Arten nur mit einer. Originaltext noch nicht gelesen.",
+    "naechste": "2027-01-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": "01.01-30.04",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null
+    },
+    "Zander": {
+     "schonzeit": "01.01-31.05",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null
+    },
+    "Bachforelle": {
+     "schonzeit": "01.10-30.04",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Regenbogenforelle": {
+     "schonzeit": "01.10-30.04",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Bachsaibling": {
+     "schonzeit": "01.10-30.04",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Seeforelle": {
+     "schonzeit": "01.10-31.05",
+     "mindestmass_cm": 60.0,
+     "hoechstmass_cm": null
+    },
+    "Aal": {
+     "schonzeit": null,
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Karpfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Wels": {
+     "schonzeit": null,
+     "mindestmass_cm": 75.0,
+     "hoechstmass_cm": null
+    },
+    "Schleie": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Döbel": {
+     "schonzeit": null,
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Äsche": {
+     "schonzeit": "01.12-31.05",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Rapfen": {
+     "schonzeit": "01.04-30.06",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Renke": {
+     "schonzeit": "01.10-31.12",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Quappe": {
+     "schonzeit": null,
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Aland": {
+     "schonzeit": null,
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Hasel": {
+     "schonzeit": null,
+     "mindestmass_cm": 15.0,
+     "hoechstmass_cm": null
+    },
+    "Meerforelle": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Barbe": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Lachs": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Nase": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Zährte": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Karausche": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    }
+   }
+  },
+  {
+   "id": "BB",
+   "name": "Brandenburg",
+   "rechtsgrundlage": "Fischereiordnung des Landes Brandenburg (BbgFischO)",
+   "rechtsstand": "geändert 05.03.2024",
+   "allgemein": "",
+   "quellen": [
+    {
+     "titel": "angelpuls.de: Schonzeiten Brandenburg",
+     "url": "https://www.angelpuls.de/schonzeiten/brandenburg/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Brandenburg",
+     "url": "https://raubfischmagazin.com/brandenburg/schonzeiten/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "abgeglichen",
+    "methode": "Raubfische mit zwei bis drei unabhängigen Sekundärquellen abgeglichen, übrige Arten nur mit einer. Originaltext noch nicht gelesen.",
+    "naechste": "2027-01-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": "01.02-31.03",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null
+    },
+    "Zander": {
+     "schonzeit": "01.04-31.05",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null
+    },
+    "Bachforelle": {
+     "schonzeit": "16.10-15.04",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Aal": {
+     "schonzeit": null,
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Karpfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Schleie": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Äsche": {
+     "schonzeit": "01.12-31.05",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Rapfen": {
+     "schonzeit": "01.04-30.06",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Barbe": {
+     "schonzeit": "01.05-31.07",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Renke": {
+     "schonzeit": "01.10-31.12",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Quappe": {
+     "schonzeit": null,
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Aland": {
+     "schonzeit": null,
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Hasel": {
+     "schonzeit": null,
+     "mindestmass_cm": 15.0,
+     "hoechstmass_cm": null
+    },
+    "Meerforelle": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Lachs": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Seeforelle": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Nase": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Zährte": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    }
+   }
+  },
+  {
+   "id": "HB",
+   "name": "Bremen",
+   "rechtsgrundlage": "Bremische Binnenfischereiverordnung",
+   "rechtsstand": "Fassung vom 30.09.2011",
+   "allgemein": "",
+   "quellen": [
+    {
+     "titel": "Bremische Binnenfischereiverordnung 2006 (PDF, Ortsamt Strom)",
+     "url": "https://www.ortsamt-strom.bremen.de/sixcms/media.php/13/bremische_binnenfischereiverordnung.pdf",
+     "art": "Originaltext (alte Fassung)"
+    },
+    {
+     "titel": "angelpuls.de: Schonzeiten Bremen",
+     "url": "https://www.angelpuls.de/schonzeiten/bremen/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Bremen",
+     "url": "https://raubfischmagazin.com/bremen/schonzeiten/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "abweichung",
+    "methode": "Gelesen wurde nur die Fassung von 2006. Sie weicht von den Sekundärquellen zur Fassung 2011 ab (Bachforelle Schonzeitende, Aal-Mindestmaß). Übernommen sind die Werte zur Fassung 2011. Original der Fassung 2011 prüfen.",
+    "naechste": "2027-01-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": "01.02-15.05",
+     "mindestmass_cm": 60.0,
+     "hoechstmass_cm": null
+    },
+    "Zander": {
+     "schonzeit": "01.02-15.05",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Barsch": {
+     "schonzeit": "01.02-15.05",
+     "mindestmass_cm": 15.0,
+     "hoechstmass_cm": null
+    },
+    "Bachforelle": {
+     "schonzeit": "15.10-15.03",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Meerforelle": {
+     "schonzeit": "15.10-15.03",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Lachs": {
+     "schonzeit": "15.10-15.03",
+     "mindestmass_cm": 60.0,
+     "hoechstmass_cm": null
+    },
+    "Aal": {
+     "schonzeit": null,
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null
+    },
+    "Döbel": {
+     "schonzeit": null,
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Äsche": {
+     "schonzeit": "01.03-15.05",
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Rapfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Quappe": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Zährte": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    }
+   }
+  },
+  {
+   "id": "HH",
+   "name": "Hamburg",
+   "rechtsgrundlage": "Verordnung zur Durchführung des Hamburgischen Fischerei- und Angelgesetzes (HmbFAnGDVO)",
+   "rechtsstand": "zuletzt geändert 01.02.2022",
+   "allgemein": "In Hamburg gelten für viele Arten Entnahmefenster: Fische über dem Höchstmaß müssen zurückgesetzt werden.",
+   "quellen": [
+    {
+     "titel": "angelpuls.de: Schonzeiten Hamburg",
+     "url": "https://www.angelpuls.de/schonzeiten/hamburg/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Hamburg",
+     "url": "https://raubfischmagazin.com/hamburg/schonzeiten/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "simfisch.de: Hamburg",
+     "url": "https://www.simfisch.de/schonzeiten-und-mindestmasse-in-hamburg/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "abgeglichen",
+    "methode": "Raubfische mit zwei bis drei unabhängigen Sekundärquellen abgeglichen, übrige Arten nur mit einer. Originaltext noch nicht gelesen.",
+    "naechste": "2027-01-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": "01.02-31.05",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": 75.0
+    },
+    "Zander": {
+     "schonzeit": "01.02-31.05",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": 75.0
+    },
+    "Barsch": {
+     "schonzeit": null,
+     "mindestmass_cm": 10.0,
+     "hoechstmass_cm": 35.0
+    },
+    "Bachforelle": {
+     "schonzeit": "15.10-15.02",
+     "mindestmass_cm": 20.0,
+     "hoechstmass_cm": 40.0
+    },
+    "Meerforelle": {
+     "schonzeit": "15.10-15.02",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": 65.0
+    },
+    "Aal": {
+     "schonzeit": null,
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": 75.0
+    },
+    "Karpfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Schleie": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": 45.0
+    },
+    "Äsche": {
+     "schonzeit": "01.01-15.05",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Rapfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": 70.0
+    },
+    "Quappe": {
+     "schonzeit": null,
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": 50.0
+    },
+    "Lachs": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Zährte": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Hasel": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    }
+   }
+  },
+  {
+   "id": "HE",
+   "name": "Hessen",
+   "rechtsgrundlage": "Hessische Fischereiverordnung (HFischV) vom 14.04.2023",
+   "rechtsstand": "zuletzt geändert 16.12.2025",
+   "allgemein": "In Hessen gelten für viele Arten Entnahmefenster: Fische über dem Höchstmaß müssen zurückgesetzt werden.",
+   "quellen": [
+    {
+     "titel": "HFischV vom 14.04.2023 (GVBl., PDF beim RP Kassel)",
+     "url": "https://rp-kassel.hessen.de/sites/rp-kassel.hessen.de/files/2023-04/HFischV_14.04.2023.pdf",
+     "art": "Originaltext"
+    },
+    {
+     "titel": "angelpuls.de: Schonzeiten Hessen",
+     "url": "https://www.angelpuls.de/schonzeiten/hessen/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Hessen",
+     "url": "https://raubfischmagazin.com/hessen/schonzeiten/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "teilgeprueft",
+    "methode": "Originaltext der Fassung 2023 gelesen. Die Änderung vom 16.12.2025 ist nur aus Sekundärquellen bekannt und nicht im Original geprüft.",
+    "naechste": "2027-01-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": "01.02-15.04",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": 90.0
+    },
+    "Zander": {
+     "schonzeit": null,
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Bachforelle": {
+     "schonzeit": "01.10-31.03",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": 60.0
+    },
+    "Meerforelle": {
+     "schonzeit": "01.10-31.03",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": 60.0
+    },
+    "Seeforelle": {
+     "schonzeit": "01.10-31.03",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": 60.0
+    },
+    "Aal": {
+     "schonzeit": "15.09-01.03",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": 70.0
+    },
+    "Karpfen": {
+     "schonzeit": "15.03-31.05",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": 60.0,
+     "hinweis": "Gilt für die Wildform."
+    },
+    "Schleie": {
+     "schonzeit": "01.05-30.06",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": 45.0
+    },
+    "Äsche": {
+     "schonzeit": "01.03-15.05",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": 45.0
+    },
+    "Barbe": {
+     "schonzeit": "01.05-30.06",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": 60.0
+    },
+    "Nase": {
+     "schonzeit": "15.03-30.04",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": 40.0
+    },
+    "Rotfeder": {
+     "schonzeit": "15.03-31.05",
+     "mindestmass_cm": 20.0,
+     "hoechstmass_cm": 30.0
+    },
+    "Lachs": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Renke": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Quappe": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Zährte": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Karausche": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    }
+   }
+  },
+  {
+   "id": "MV",
+   "name": "Mecklenburg-Vorpommern",
+   "rechtsgrundlage": "Binnenfischereiverordnung (BiFVO M-V), Übersicht LALLF",
+   "rechtsstand": "Übersicht vom 30.03.2026",
+   "allgemein": "Für Hecht und Zander legen die Fischereiberechtigten meist eigene Schonzeiten fest. Küste: Küstenfischereiverordnung und EU-Regeln (u. a. Dorsch).",
+   "quellen": [
+    {
+     "titel": "LALLF M-V: Mindestmaße und Schonzeiten (Übersicht der Landesbehörde)",
+     "url": "https://www.lallf.de/fischerei/fischereischutz/mindestmasseschonzeiten/",
+     "art": "Behördenübersicht"
+    },
+    {
+     "titel": "angelpuls.de: Schonzeiten Mecklenburg-Vorpommern",
+     "url": "https://www.angelpuls.de/schonzeiten/mecklenburg-vorpommern/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Mecklenburg-Vorpommern",
+     "url": "https://raubfischmagazin.com/mecklenburg-vorpommern/schonzeiten/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "geprueft",
+    "methode": "Übersicht der Landesbehörde vom 30.03.2026 gelesen.",
+    "naechste": "2027-10-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": null,
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null,
+     "hinweis": "Schonzeit legt der Fischereiberechtigte fest. Gewässerordnung prüfen."
+    },
+    "Zander": {
+     "schonzeit": null,
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null,
+     "hinweis": "Schonzeit legt der Fischereiberechtigte fest. Gewässerordnung prüfen."
+    },
+    "Barsch": {
+     "schonzeit": null,
+     "mindestmass_cm": 17.0,
+     "hoechstmass_cm": null
+    },
+    "Bachforelle": {
+     "schonzeit": "01.10-31.03",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Meerforelle": {
+     "schonzeit": "01.09-31.03",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null
+    },
+    "Lachs": {
+     "schonzeit": "01.09-31.03",
+     "mindestmass_cm": 60.0,
+     "hoechstmass_cm": null
+    },
+    "Aal": {
+     "schonzeit": "01.12-28.02",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Karpfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Wels": {
+     "schonzeit": "01.05-30.06",
+     "mindestmass_cm": 70.0,
+     "hoechstmass_cm": null
+    },
+    "Schleie": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Äsche": {
+     "schonzeit": null,
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Rapfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Renke": {
+     "schonzeit": "01.10-31.12",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Quappe": {
+     "schonzeit": "01.01-15.02",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Aland": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Zährte": {
+     "schonzeit": "01.05-31.07",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Hasel": {
+     "schonzeit": "01.03-31.05",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Barbe": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Nase": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    }
+   }
+  },
+  {
+   "id": "NI",
+   "name": "Niedersachsen",
+   "rechtsgrundlage": "Binnenfischereiordnung (BiFischO)",
+   "rechtsstand": "zuletzt geändert 22.12.2005",
+   "allgemein": "Für einige Arten weichen Werte je nach Gewässer ab. Küstengewässer: eigene Küstenfischereiordnung.",
+   "quellen": [
+    {
+     "titel": "angelpuls.de: Schonzeiten Niedersachsen",
+     "url": "https://www.angelpuls.de/schonzeiten/niedersachsen/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Niedersachsen",
+     "url": "https://raubfischmagazin.com/niedersachsen/schonzeiten/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "simfisch.de: Niedersachsen",
+     "url": "https://www.simfisch.de/schonzeiten-und-mindestmasse-in-niedersachsen/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "abgeglichen",
+    "methode": "Raubfische mit zwei bis drei unabhängigen Sekundärquellen abgeglichen, übrige Arten nur mit einer. Originaltext noch nicht gelesen.",
+    "naechste": "2027-01-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": "01.02-15.04",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Zander": {
+     "schonzeit": "15.03-30.04",
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Bachforelle": {
+     "schonzeit": "15.10-15.02",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Regenbogenforelle": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Aal": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Wels": {
+     "schonzeit": null,
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Äsche": {
+     "schonzeit": "01.03-15.05",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Barbe": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Quappe": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Meerforelle": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null,
+     "hinweis": "Besatzfische: Schonzeit 15.10.–15.02., 40 cm. Wildfische ganzjährig geschont."
+    },
+    "Lachs": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null,
+     "hinweis": "Besatzfische: Schonzeit 01.10.–15.03., 50 cm. Wildfische ganzjährig geschont."
+    },
+    "Rapfen": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null,
+     "hinweis": "Besatzfische: keine Schonzeit, 40 cm. Wildfische ganzjährig geschont."
+    },
+    "Nase": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null,
+     "hinweis": "Besatzfische: keine Schonzeit, 25 cm. Wildfische ganzjährig geschont."
+    }
+   }
+  },
+  {
+   "id": "NW",
+   "name": "Nordrhein-Westfalen",
+   "rechtsgrundlage": "Landesfischereiverordnung (LFischVO NRW)",
+   "rechtsstand": "Fassung gültig ab 03.07.2026",
+   "allgemein": "In festgelegten Gewässerabschnitten gilt für die Äsche ein ganzjähriges Entnahmeverbot.",
+   "quellen": [
+    {
+     "titel": "angelpuls.de: Schonzeiten Nordrhein-Westfalen",
+     "url": "https://www.angelpuls.de/schonzeiten/nordrhein-westfalen/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Nordrhein-Westfalen",
+     "url": "https://raubfischmagazin.com/nordrhein-westfalen/schonzeiten/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "abgeglichen",
+    "methode": "Raubfische mit zwei bis drei unabhängigen Sekundärquellen abgeglichen, übrige Arten nur mit einer. Originaltext noch nicht gelesen.",
+    "naechste": "2027-01-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": "15.02-30.04",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null
+    },
+    "Zander": {
+     "schonzeit": "01.04-31.05",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Bachforelle": {
+     "schonzeit": "20.10-15.03",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Seeforelle": {
+     "schonzeit": "20.10-15.03",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Seesaibling": {
+     "schonzeit": "20.10-15.03",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Aal": {
+     "schonzeit": "01.10-01.03",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null,
+     "hinweis": "Schonzeit gilt nur im Rheinhauptstrom ohne Nebengewässer."
+    },
+    "Karpfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Schleie": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Äsche": {
+     "schonzeit": "01.03-30.04",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Barbe": {
+     "schonzeit": "15.05-15.06",
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Nase": {
+     "schonzeit": "01.03-30.04",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Aland": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Meerforelle": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Lachs": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Quappe": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    }
+   }
+  },
+  {
+   "id": "RP",
+   "name": "Rheinland-Pfalz",
+   "rechtsgrundlage": "Landesfischereiordnung Rheinland-Pfalz (§§ 17–20)",
+   "rechtsstand": "zuletzt geändert 23.07.2024",
+   "allgemein": "Für die Grenzgewässer Mosel, Sauer und Our gelten abweichende Regeln.",
+   "quellen": [
+    {
+     "titel": "Landesfischereiordnung RLP, konsolidierte Fassung (PDF-Abdruck, Stand 15.06.2025)",
+     "url": "https://storage.e.jimdo.com/file/099d1a05-5c58-422f-9804-e81e6e9763de/Landesfischereiordnung.pdf",
+     "art": "Originaltext (Abdruck)"
+    },
+    {
+     "titel": "angelpuls.de: Schonzeiten Rheinland-Pfalz",
+     "url": "https://www.angelpuls.de/schonzeiten/rheinland-pfalz/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Rheinland-Pfalz",
+     "url": "https://raubfischmagazin.com/rheinland-pfalz/schonzeiten/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "teilgeprueft",
+    "methode": "Konsolidierter Verordnungstext gelesen, aber als Abdruck auf einer Vereinsseite, nicht im amtlichen Portal.",
+    "naechste": "2027-01-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": "01.02-31.05",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Zander": {
+     "schonzeit": "15.03-15.05",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null,
+     "hinweis": "In der Lahn: 01.04.–31.05."
+    },
+    "Bachforelle": {
+     "schonzeit": "15.10-15.03",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null,
+     "hinweis": "Schonzeit gilt in Gewässern ohne Winterschonzeit."
+    },
+    "Aal": {
+     "schonzeit": null,
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Karpfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Schleie": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Rotauge": {
+     "schonzeit": null,
+     "mindestmass_cm": 15.0,
+     "hoechstmass_cm": null
+    },
+    "Rotfeder": {
+     "schonzeit": null,
+     "mindestmass_cm": 15.0,
+     "hoechstmass_cm": null
+    },
+    "Hasel": {
+     "schonzeit": null,
+     "mindestmass_cm": 15.0,
+     "hoechstmass_cm": null
+    },
+    "Äsche": {
+     "schonzeit": "15.02-30.04",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Barbe": {
+     "schonzeit": "01.05-15.06",
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Renke": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Seeforelle": {
+     "schonzeit": null,
+     "mindestmass_cm": 60.0,
+     "hoechstmass_cm": null
+    },
+    "Nase": {
+     "schonzeit": "15.03-30.04",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null,
+     "hinweis": "Schonzeit gilt nicht in Rhein, Mosel und Lahn."
+    },
+    "Meerforelle": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Lachs": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Quappe": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Aland": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Karausche": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    }
+   }
+  },
+  {
+   "id": "SL",
+   "name": "Saarland",
+   "rechtsgrundlage": "Landesfischereiordnung (LFO SL)",
+   "rechtsstand": "Fassung vom 05.02.2020",
+   "allgemein": "",
+   "quellen": [
+    {
+     "titel": "angelpuls.de: Schonzeiten Saarland",
+     "url": "https://www.angelpuls.de/schonzeiten/saarland/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Saarland",
+     "url": "https://raubfischmagazin.com/saarland/schonzeiten/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "abgeglichen",
+    "methode": "Raubfische mit zwei bis drei unabhängigen Sekundärquellen abgeglichen, übrige Arten nur mit einer. Originaltext noch nicht gelesen.",
+    "naechste": "2027-01-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": "15.02-31.05",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Zander": {
+     "schonzeit": "15.02-31.05",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null
+    },
+    "Bachforelle": {
+     "schonzeit": "01.10-31.03",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Aal": {
+     "schonzeit": null,
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Karpfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Schleie": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Äsche": {
+     "schonzeit": "01.03-30.04",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Barbe": {
+     "schonzeit": "15.03-15.06",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Nase": {
+     "schonzeit": "15.03-15.06",
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Meerforelle": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Lachs": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Quappe": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    }
+   }
+  },
+  {
+   "id": "SN",
+   "name": "Sachsen",
+   "rechtsgrundlage": "Sächsische Fischereiverordnung (SächsFischVO)",
+   "rechtsstand": "Fassung vom 22.04.2022",
+   "allgemein": "",
+   "quellen": [
+    {
+     "titel": "angelpuls.de: Schonzeiten Sachsen",
+     "url": "https://www.angelpuls.de/schonzeiten/sachsen/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Sachsen",
+     "url": "https://raubfischmagazin.com/sachsen/schonzeiten/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "abgeglichen",
+    "methode": "Raubfische mit zwei bis drei unabhängigen Sekundärquellen abgeglichen, übrige Arten nur mit einer. Originaltext noch nicht gelesen.",
+    "naechste": "2027-01-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": "01.02-30.04",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Zander": {
+     "schonzeit": "01.02-31.05",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Bachforelle": {
+     "schonzeit": "01.10-30.04",
+     "mindestmass_cm": 28.0,
+     "hoechstmass_cm": null
+    },
+    "Regenbogenforelle": {
+     "schonzeit": "01.10-30.04",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null,
+     "hinweis": "Schonzeit gilt nur in Fließgewässern."
+    },
+    "Meerforelle": {
+     "schonzeit": "01.10-30.04",
+     "mindestmass_cm": 60.0,
+     "hoechstmass_cm": null
+    },
+    "Lachs": {
+     "schonzeit": "01.10-30.04",
+     "mindestmass_cm": 60.0,
+     "hoechstmass_cm": null
+    },
+    "Seeforelle": {
+     "schonzeit": "01.10-30.04",
+     "mindestmass_cm": 60.0,
+     "hoechstmass_cm": null
+    },
+    "Seesaibling": {
+     "schonzeit": "01.10-30.04",
+     "mindestmass_cm": 28.0,
+     "hoechstmass_cm": null
+    },
+    "Bachsaibling": {
+     "schonzeit": "01.10-30.04",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Aal": {
+     "schonzeit": null,
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Karpfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Schleie": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Äsche": {
+     "schonzeit": "01.01-15.06",
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Rapfen": {
+     "schonzeit": "01.01-31.05",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Barbe": {
+     "schonzeit": "15.04-30.06",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Renke": {
+     "schonzeit": "01.10-31.12",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Aland": {
+     "schonzeit": null,
+     "mindestmass_cm": 20.0,
+     "hoechstmass_cm": null
+    },
+    "Rotfeder": {
+     "schonzeit": null,
+     "mindestmass_cm": 20.0,
+     "hoechstmass_cm": null,
+     "hinweis": "Mindestmaß gilt nur in Fließgewässern."
+    },
+    "Karausche": {
+     "schonzeit": "01.02-30.06",
+     "mindestmass_cm": 15.0,
+     "hoechstmass_cm": null
+    },
+    "Quappe": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null,
+     "hinweis": "In Elbe, Vereinigter Mulde und Weißer Elster befristet nur 01.01.–31.03."
+    },
+    "Nase": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null,
+     "hinweis": "In der Elbe befristet nur 01.01.–15.06."
+    },
+    "Zährte": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    }
+   }
+  },
+  {
+   "id": "ST",
+   "name": "Sachsen-Anhalt",
+   "rechtsgrundlage": "Fischereiordnung des Landes Sachsen-Anhalt (FischO LSA)",
+   "rechtsstand": "zuletzt geändert 06.03.2013",
+   "allgemein": "",
+   "quellen": [
+    {
+     "titel": "FischO LSA, Abdruck beim Landesanglerverband (PDF)",
+     "url": "https://www.lav-sachsen-anhalt.de/PDF/Gewaesserwirtschaft/Fischereiverordnung_20130306.pdf",
+     "art": "Originaltext (Abdruck)"
+    },
+    {
+     "titel": "angelpuls.de: Schonzeiten Sachsen-Anhalt",
+     "url": "https://www.angelpuls.de/schonzeiten/sachsen-anhalt/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Sachsen-Anhalt",
+     "url": "https://raubfischmagazin.com/sachsen-anhalt/schonzeiten/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "geprueft",
+    "methode": "Verordnungstext §§ 3–4 gelesen (letzte Änderung 06.03.2013).",
+    "naechste": "2027-10-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": "15.02-30.04",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Zander": {
+     "schonzeit": "15.02-31.05",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Bachforelle": {
+     "schonzeit": "15.09-31.03",
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Regenbogenforelle": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Aal": {
+     "schonzeit": null,
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Karpfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Schleie": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Äsche": {
+     "schonzeit": "01.12-15.05",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Rapfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Barbe": {
+     "schonzeit": "01.04-30.06",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null
+    },
+    "Quappe": {
+     "schonzeit": null,
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Zährte": {
+     "schonzeit": null,
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Meerforelle": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Lachs": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Nase": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    }
+   }
+  },
+  {
+   "id": "SH",
+   "name": "Schleswig-Holstein",
+   "rechtsgrundlage": "Binnenfischereiverordnung (BiFVO), Anlage 1",
+   "rechtsstand": "Anlage gültig ab 09.07.2021",
+   "allgemein": "In 44 gelisteten Fließgewässern gilt für Forellen und Lachs zusätzlich eine Winterschonzeit. Küste: Küstenfischereiverordnung.",
+   "quellen": [
+    {
+     "titel": "angelpuls.de: Schonzeiten Schleswig-Holstein",
+     "url": "https://www.angelpuls.de/schonzeiten/schleswig-holstein/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Schleswig-Holstein",
+     "url": "https://raubfischmagazin.com/schleswig-holstein/schonzeiten/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "abgeglichen",
+    "methode": "Raubfische mit zwei bis drei unabhängigen Sekundärquellen abgeglichen, übrige Arten nur mit einer. Originaltext noch nicht gelesen.",
+    "naechste": "2027-01-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": "15.02-15.04",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null
+    },
+    "Zander": {
+     "schonzeit": "15.03-15.05",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null
+    },
+    "Bachforelle": {
+     "schonzeit": "01.10-28.02",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Meerforelle": {
+     "schonzeit": "01.10-28.02",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Lachs": {
+     "schonzeit": "01.10-28.02",
+     "mindestmass_cm": 60.0,
+     "hoechstmass_cm": null
+    },
+    "Aal": {
+     "schonzeit": null,
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Karpfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Schleie": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Äsche": {
+     "schonzeit": "01.01-30.04",
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Rapfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Renke": {
+     "schonzeit": null,
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Quappe": {
+     "schonzeit": "01.01-28.02",
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Barbe": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Zährte": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Hasel": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    }
+   }
+  },
+  {
+   "id": "TH",
+   "name": "Thüringen",
+   "rechtsgrundlage": "Thüringer Fischereiausführungsverordnung (ThürFischAVO)",
+   "rechtsstand": "Fassung vom 11.08.2020",
+   "allgemein": "Regenbogenforelle und Bachsaibling müssen unabhängig von Maß und Zeit entnommen werden.",
+   "quellen": [
+    {
+     "titel": "ThürFischAVO 2020, Auszug auf der Seite des SAV Barchfeld",
+     "url": "https://www.sav-barchfeld.de/blog/ausfuehrungsverordnung-thuerfischavo-11-08-2020",
+     "art": "Auszug"
+    },
+    {
+     "titel": "angelpuls.de: Schonzeiten Thüringen",
+     "url": "https://www.angelpuls.de/schonzeiten/thueringen/",
+     "art": "Sekundärquelle"
+    },
+    {
+     "titel": "raubfischmagazin.com: Thüringen",
+     "url": "https://raubfischmagazin.com/thueringen/schonzeiten/",
+     "art": "Sekundärquelle"
+    }
+   ],
+   "pruefung": {
+    "am": "2026-10-02",
+    "von": "Claude (Recherche)",
+    "status": "teilgeprueft",
+    "methode": "Sieben Arten mit einem Auszug des Verordnungstextes abgeglichen, die übrigen nur über Sekundärquellen.",
+    "naechste": "2027-01-02"
+   },
+   "arten": {
+    "Hecht": {
+     "schonzeit": "15.02-30.04",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Zander": {
+     "schonzeit": "01.04-31.05",
+     "mindestmass_cm": 45.0,
+     "hoechstmass_cm": null
+    },
+    "Bachforelle": {
+     "schonzeit": "01.10-31.03",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Aal": {
+     "schonzeit": "01.11-28.02",
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Karpfen": {
+     "schonzeit": null,
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Wels": {
+     "schonzeit": null,
+     "mindestmass_cm": 50.0,
+     "hoechstmass_cm": null
+    },
+    "Schleie": {
+     "schonzeit": null,
+     "mindestmass_cm": 25.0,
+     "hoechstmass_cm": null
+    },
+    "Döbel": {
+     "schonzeit": null,
+     "mindestmass_cm": 20.0,
+     "hoechstmass_cm": null
+    },
+    "Äsche": {
+     "schonzeit": "01.02-31.05",
+     "mindestmass_cm": 35.0,
+     "hoechstmass_cm": null
+    },
+    "Barbe": {
+     "schonzeit": "01.04-31.08",
+     "mindestmass_cm": 40.0,
+     "hoechstmass_cm": null
+    },
+    "Quappe": {
+     "schonzeit": "01.11-31.03",
+     "mindestmass_cm": 30.0,
+     "hoechstmass_cm": null
+    },
+    "Rotfeder": {
+     "schonzeit": null,
+     "mindestmass_cm": 15.0,
+     "hoechstmass_cm": null
+    },
+    "Hasel": {
+     "schonzeit": "01.04-31.05",
+     "mindestmass_cm": 20.0,
+     "hoechstmass_cm": null
+    },
+    "Karausche": {
+     "schonzeit": "01.04-31.05",
+     "mindestmass_cm": 15.0,
+     "hoechstmass_cm": null
+    },
+    "Meerforelle": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Lachs": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Rapfen": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Nase": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Aland": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    },
+    "Zährte": {
+     "schonzeit": "ganzjaehrig",
+     "mindestmass_cm": null,
+     "hoechstmass_cm": null
+    }
+   }
+  }
+ ]
+}

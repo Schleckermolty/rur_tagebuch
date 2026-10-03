@@ -14,6 +14,7 @@ Angel- und (bald) Jagdtagebuch von [Rute & Revier](https://www.rute-und-revier.d
 
 | Pfad | Inhalt |
 |---|---|
+| `daten/` | Regeldatenbank: Schonzeiten und Maße mit Quelle, Rechtsstand und Prüfdatum. Format in `daten/FORMAT.md`, Übersicht in `daten/PRUEFSTAND.md` |
 | `src/app.html` | Quelle der App (identisch mit der Vorschau-Fassung) |
 | `tools/build.py` | erzeugt `index.html` und `sw.js` aus der Quelle |
 | `tools/sw.template.js` | Service Worker für den Offline-Betrieb |
@@ -29,6 +30,8 @@ git add -A && git commit -m "…" && git push
 ```
 
 GitHub Pages veröffentlicht den Stand von `main` automatisch.
+
+Regeldaten ändern: nur die Datei in `daten/` bearbeiten (Ablauf in `daten/FORMAT.md`). Die App lädt sie beim Start und nimmt die neue Fassung ohne App-Update. Der Build bettet zusätzlich eine Kopie als Rückfall ein.
 
 ## Daten und Quellen
 

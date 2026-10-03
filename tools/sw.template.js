@@ -7,7 +7,8 @@ const SHELL = [
   'fonts/amatic-sc-latin-700-normal.woff2', 'fonts/cabin-sketch-latin-700-normal.woff2',
   'fonts/roboto-condensed-latin-400-normal.woff2', 'fonts/roboto-condensed-latin-600-normal.woff2',
   'fonts/roboto-mono-latin-400-normal.woff2', 'fonts/roboto-mono-latin-600-normal.woff2',
-  'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'
+  'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
+  'daten/schonzeiten-binnen.json'
 ];
 
 self.addEventListener('install', e => {
@@ -22,7 +23,14 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   const req = e.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+  const url = new URL(req.url);
+  if (req.method !== 'GET' || url.origin !== self.location.origin) return;
+  /* Regeldaten: zuerst aus dem Netz, damit Korrekturen sofort ankommen; offline aus dem Speicher */
+  if (url.pathname.includes('/daten/')) {
+    e.respondWith(caches.open(CACHE).then(cache => fetch(req).then(res => { if (res.ok) cache.put(req, res.clone()); return res; })
+      .catch(() => cache.match(req, { ignoreSearch: true }).then(hit => hit || Response.error()))));
+    return;
+  }
   e.respondWith(caches.open(CACHE).then(async cache => {
     const hit = await cache.match(req, { ignoreSearch: true });
     const net = fetch(req).then(res => { if (res.ok) cache.put(req, res.clone()); return res; }).catch(() => null);
