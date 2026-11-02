@@ -457,6 +457,11 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
           <input type="radio" name="set-sec" id="set-sec-b" value="both"><label for="set-sec-b">Beides</label>
         </div>
       </div></article>
+      <article class="card" id="mytargets-card"><div class="bd" style="gap:10px">
+        <h2>Meine Zielfische</h2>
+        <p>Nur diese Arten erscheinen bei Tackle, im Köderformular und in der Köderempfehlung. Ohne Auswahl siehst du alle.</p>
+        <div class="targets" id="set-targets"></div>
+      </div></article>
       <article class="card"><div class="bd" style="gap:10px">
         <h2>Schonzeiten &amp; Maße</h2>
         <label class="f"><span>Dein Bundesland</span><select id="home-state"></select></label>
@@ -617,16 +622,17 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
         <label class="f"><span>Name / Modell</span><input id="l-name" autocomplete="off" placeholder="Nays CRW 35"></label>
         <div class="grid2">
           <label class="f"><span>Hersteller</span><input id="l-brand" list="dl-brand" autocomplete="off" placeholder="Nays"></label>
-          <label class="f"><span>Typ</span><select id="l-type"><option value="">–</option><option>Gummifisch</option><option>Creature / Krebs</option><option>Wobbler</option><option>Jerkbait</option><option>Swimbait</option><option>Spinner</option><option>Blinker</option><option>Spinnerbait</option><option>Jig</option><option>Oberflächenköder</option><option>Pilker</option><option>Fliege</option><option>Sonstiges</option></select></label>
+          <label class="f"><span>Typ</span><select id="l-type"><option value="">–</option><option>Gummifisch</option><option>Twister</option><option>Creature / Krebs</option><option>Finesse / No-Action</option><option>Wobbler</option><option>Jerkbait</option><option>Swimbait</option><option>Spinner</option><option>Blinker</option><option>Spinnerbait</option><option>Chatterbait</option><option>Jig</option><option>Oberflächenköder</option><option>Pilker</option><option>Fliege</option><option>Zubehör</option><option>Sonstiges</option></select></label>
           <label class="f"><span>Länge (cm)</span><input id="l-size" inputmode="decimal" autocomplete="off" placeholder="9"></label>
           <label class="f"><span>Gewicht (g)</span><input id="l-weight" inputmode="decimal" autocomplete="off" placeholder="7"></label>
           <label class="f"><span>Farbe</span><input id="l-color" autocomplete="off" placeholder="Motoroil"></label>
-          <label class="f"><span>Farbwirkung</span><select id="l-colortype"><option value="">–</option><option>natürlich</option><option>auffällig</option><option>dunkel</option></select></label>
+          <label class="f"><span>Farbwirkung</span><select id="l-colortype"><option value="">–</option><option>natürlich</option><option>auffällig</option><option>dunkel</option><option>Kontrast</option><option>Flash</option></select></label>
           <label class="f"><span>Lauftiefe (m)</span><input id="l-depth" autocomplete="off" placeholder="2–3"></label>
           <label class="f"><span>Bestand (Stück)</span><input id="l-qty" inputmode="numeric" autocomplete="off" placeholder="5"></label>
+          <div class="targets" style="grid-column:1/-1"><label><input type="checkbox" id="l-uv">UV-aktiv (laut Packung)</label></div>
           <label class="f" style="grid-column:1/-1"><span>Laufverhalten</span><select id="l-buoy"><option value="">–</option><option value="schwimmend">schwimmend (Floating)</option><option value="schwebend">schwebend (Suspending)</option><option value="langsam sinkend">langsam sinkend (Slow Sinking)</option><option value="sinkend">sinkend (Sinking)</option></select></label>
         </div>
-        <div class="f"><span class="lbl">Zielfische</span><div class="targets" id="l-targets"></div></div>
+        <div class="f"><span class="lbl">Zielfische</span><div class="targets" id="l-targets"></div><button type="button" class="btn btn-sm" id="l-targets-all" data-act="lure-targets-all" hidden style="margin-top:8px;align-self:flex-start">Alle Arten zeigen</button></div>
       </fieldset>
       <fieldset><legend>Kauf</legend>
         <div class="grid2">
@@ -798,11 +804,11 @@ const BAITS=['Nays CRW 35','Craby Lui'];
 const LURE_TYPES=["Gummifisch", "Creature / Krebs", "Wobbler", "Jerkbait", "Swimbait", "Spinner", "Blinker", "Spinnerbait", "Jig", "Oberflächenköder", "Pilker", "Fliege", "Sonstiges"];
 /* Grundprofile je Zielfisch: passende Ködertypen und Längen in cm. Ausgangspunkt, eigene Fänge zählen stärker. */
 const PROFILE={
-  Zander:{t:['Gummifisch','Creature / Krebs','Jig','Wobbler'],min:7,max:13},
-  Barsch:{t:['Gummifisch','Creature / Krebs','Spinner','Wobbler','Jig'],min:3,max:9},
-  Hecht:{t:['Gummifisch','Wobbler','Jerkbait','Swimbait','Spinnerbait','Blinker'],min:10,max:25},
+  Zander:{t:['Gummifisch','Twister','Creature / Krebs','Finesse / No-Action','Jig','Wobbler'],min:7,max:13},
+  Barsch:{t:['Gummifisch','Twister','Creature / Krebs','Finesse / No-Action','Spinner','Wobbler','Jig','Chatterbait'],min:3,max:9},
+  Hecht:{t:['Gummifisch','Twister','Wobbler','Jerkbait','Swimbait','Spinnerbait','Chatterbait','Blinker'],min:10,max:25},
   Rapfen:{t:['Blinker','Jerkbait','Wobbler','Spinner'],min:6,max:13},
-  Wels:{t:['Gummifisch','Swimbait','Wobbler'],min:12,max:30},
+  Wels:{t:['Gummifisch','Twister','Swimbait','Wobbler'],min:12,max:30},
   Huchen:{t:['Gummifisch','Wobbler','Swimbait'],min:12,max:25},
   Bachforelle:{t:['Spinner','Wobbler','Blinker'],min:2,max:7},
   Regenbogenforelle:{t:['Spinner','Wobbler','Blinker'],min:2,max:7},
@@ -850,11 +856,13 @@ async function dbGet(store,id){if(DB.mem[store].has(id))return DB.mem[store].get
 
 /* ---------- Zustand ---------- */
 const S={records:[],tab:'faenge',year:new Date().getFullYear(),layers:{spots:true,catches:true},mapYear:'Alle',mapSpecies:'Alle',linkCatches:[],view:'faenge',section:'angeln',filter:'Alle',editCatch:null,editSpot:null,formPhotos:[],removedPhotos:[],pick:false,map:null,layer:null,tilesFailed:false};
-/* Einstellungen je Gerät (werden nicht mitgesichert) */
+/* Einstellungen je Gerät (nur „Meine Zielfische“ wird mitgesichert) */
 const SET_ID='_settings';
 const settings=()=>S.records.find(r=>r.id===SET_ID)||{id:SET_ID,type:'settings',sections:null,lastBackupAt:null,lastBackupCount:0};
 async function saveSettings(patch){const cur=settings();const n={...cur,...patch,updatedAt:new Date().toISOString()};await save(n);return n}
 const sections=()=>settings().sections||'both';
+const myTargets=()=>settings().myTargets||[];
+const allSpecies=()=>[...new Set([...Object.keys(PROFILE),...catches().map(c=>c.species),...lures().flatMap(l=>l.targets||[]),...myTargets()])].filter(Boolean).sort((a,b)=>a.localeCompare(b,'de'));
 const allowed=sec=>sections()==='both'||sections()===sec;
 const realRecords=()=>S.records.filter(r=>!r.example&&!r.deleted&&r.type!=='settings');
 const lures=()=>S.records.filter(r=>r.type==='lure'&&!r.deleted);
@@ -1213,7 +1221,7 @@ function renderLures(){
   $('#lure-list').innerHTML=list.length?list.map(l=>S.lureView==='grid'?lureTile(l,'open-lure'):lureCard(l)).join(''):`<li class="empty" style="grid-column:1/-1"><b>Noch keine Köder</b>Leg deine Köder an. Beim Fang wählst du sie dann aus der Köderbox, und die App lernt, was bei dir fängt.</li>`;
   hydratePhotos($('#lure-list'));
   const rs=$('#r-species'),keep=rs.value||S.recoSpecies||'Zander';
-  const spp=[...new Set([...Object.keys(PROFILE),...catches().map(c=>c.species),...lures().flatMap(l=>l.targets||[])])].sort((a,b)=>a.localeCompare(b,'de'));
+  const mt=myTargets(),spp=mt.length?[...mt].sort((a,b)=>a.localeCompare(b,'de')):allSpecies();
   rs.innerHTML=spp.map(x=>`<option>${esc(x)}</option>`).join('');rs.value=spp.includes(keep)?keep:spp[0];
   renderReco();
 }
@@ -1226,17 +1234,17 @@ function scoreLure(l,sp,clarity){
     if(l.lureType&&pr.t.includes(l.lureType)){s+=3;why.push(`${l.lureType} passt zum ${sp}`)}
     if(l.size!=null){if(l.size>=pr.min&&l.size<=pr.max){s+=2;why.push(`${fmtN(l.size)} cm liegt im üblichen Bereich (${pr.min}–${pr.max} cm)`)}else s-=2}
   }
-  if(clarity&&l.colorType){const good=clarity==='klar'?'natürlich':'auffällig';if(l.colorType===good||(clarity==='trüb'&&l.colorType==='dunkel')){s+=2;why.push(`${{natürlich:'natürliche',auffällig:'auffällige',dunkel:'dunkle'}[l.colorType]} Farbe bei ${{klar:'klarem',angetrübt:'angetrübtem',trüb:'trübem'}[clarity]} Wasser`)}}
+  if(clarity&&l.colorType){const good={klar:['natürlich','Flash'],angetrübt:['auffällig','Kontrast'],trüb:['auffällig','dunkel','Kontrast']}[clarity]||[];if(good.includes(l.colorType)){s+=2;why.push(`${{natürlich:'natürliche Farbe',auffällig:'auffällige Farbe',dunkel:'dunkle Farbe',Kontrast:'Kontrastfarbe',Flash:'Flash-Dekor'}[l.colorType]} bei ${{klar:'klarem',angetrübt:'angetrübtem',trüb:'trübem'}[clarity]} Wasser`)}}
   const strong=n>0||(l.targets||[]).includes(sp)||(pr&&l.lureType&&pr.t.includes(l.lureType));
   return {l,s:strong?s:0,why};
 }
 function renderReco(){
   const sp=$('#r-species').value,clarity=$('#r-clarity').value;S.recoSpecies=sp;
   if(!sp){$('#r-out').innerHTML='';return}
-  const ranked=lures().filter(l=>l.qty!==0).map(l=>scoreLure(l,sp,clarity)).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).slice(0,3);
+  const ranked=lures().filter(l=>l.qty!==0&&l.lureType!=='Zubehör').map(l=>scoreLure(l,sp,clarity)).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).slice(0,3);
   const pr=PROFILE[sp];
   const closed=(()=>{const r=checkRules(sp,localDT(new Date()),null,true,null);return r&&r.items.find(i=>i.level==='stop')})();
-  const empty=lures().filter(l=>l.qty===0&&scoreLure(l,sp,clarity).s>=10);
+  const empty=lures().filter(l=>l.qty===0&&l.lureType!=='Zubehör'&&scoreLure(l,sp,clarity).s>=10);
   $('#r-out').innerHTML=(closed?`<div class="rule stop"><b>${esc(closed.title.split(' · ')[0])}</b>${esc(closed.text)}</div>`:'')+
     (ranked.length?`<ol>${ranked.map((x,i)=>`<li><button type="button" data-act="open-lure" data-id="${esc(x.l.id)}"><span class="rank">${i===0?'Erste Wahl':i===1?'Zweite Wahl':'Dritte Wahl'}</span><b>${esc(x.l.name)}</b><small>${esc(x.why.join(' · '))}</small></button></li>`).join('')}</ol>`
       :`<p class="hint" style="margin:0">Kein passender Köder in deiner Box.${pr?` Für ${esc(sp)} eignen sich meist ${esc(pr.t.slice(0,3).join(', '))} mit ${pr.min}–${pr.max} cm.`:''}</p>`)+
@@ -1252,7 +1260,7 @@ function openLure(id){
     <h3 class="detail-title">${esc(l.name)}</h3>
     <div class="meta">${esc([l.brand,l.lureType].filter(Boolean).join(' · '))}${l.example?' · Beispiel':''}</div>
     <dl class="facts">
-      ${fact('Länge',l.size!=null?fmtN(l.size)+' cm':'')}${fact('Gewicht',l.weight!=null?fmtN(l.weight)+' g':'')}${fact('Farbe',esc([l.color,l.colorType].filter(Boolean).join(' · ')))}${fact('Lauftiefe',l.depth?esc(l.depth)+' m':'')}${fact('Laufverhalten',l.buoyancy?esc(l.buoyancy+({schwimmend:' (Floating)',schwebend:' (Suspending)','langsam sinkend':' (Slow Sinking)',sinkend:' (Sinking)'}[l.buoyancy]||'')):'')}
+      ${fact('Länge',l.size!=null?fmtN(l.size)+' cm':'')}${fact('Gewicht',l.weight!=null?fmtN(l.weight)+' g':'')}${fact('Farbe',esc([l.color,l.colorType,l.uv?'UV-aktiv':''].filter(Boolean).join(' · ')))}${fact('Lauftiefe',l.depth?esc(l.depth)+' m':'')}${fact('Laufverhalten',l.buoyancy?esc(l.buoyancy+({schwimmend:' (Floating)',schwebend:' (Suspending)','langsam sinkend':' (Slow Sinking)',sinkend:' (Sinking)'}[l.buoyancy]||'')):'')}
       ${fact('Zielfische',esc((l.targets||[]).join(', ')))}
       ${fact('Bestand',l.qty==null?'':l.qty===0?'nicht vorrätig':l.qty+' Stück')}
       ${fact('Gekauft',esc([l.bought?fmtDate(l.bought+'T12:00'):'',l.shop].filter(Boolean).join(' · ')))}
@@ -1267,17 +1275,19 @@ function openLure(id){
   hydratePhotos($('#detail-body'));openSheet('sheet-detail');
 }
 function renderLureTargets(sel){
-  const spp=[...new Set([...Object.keys(PROFILE),...(sel||[])])].sort((a,b)=>a.localeCompare(b,'de'));
+  const mt=myTargets(),lim=mt.length&&!S.lureTargetsAll;
+  const spp=[...new Set([...(lim?mt:[...Object.keys(PROFILE),...myTargets()]),...(sel||[])])].sort((a,b)=>a.localeCompare(b,'de'));
+  $('#l-targets-all').hidden=!lim;
   $('#l-targets').innerHTML=spp.map((x,i)=>`<label><input type="checkbox" value="${esc(x)}" ${sel&&sel.includes(x)?'checked':''}>${esc(x)}</label>`).join('');
 }
 function updateUnit(){const pr=parseNum($('#l-price').value),pk=parseNum($('#l-pack').value)||1;$('#l-unit').textContent=pr!=null&&pk>1?`Stückpreis: ${fmtEuro(pr/pk)}`:''}
 function renderLurePhoto(){const b=$('#l-photo');b.innerHTML=S.lurePhotos.map((ph,i)=>`<figure><img alt="Köderfoto ${i+1}" ${ph.url?`src="${ph.url}"`:`data-photo="${esc(ph.id)}"`}><button type="button" data-act="rm-lure-photo" data-i="${i}" aria-label="Foto entfernen">✕</button></figure>`).join('');hydratePhotos(b);$('#l-file-btn').hidden=S.lurePhotos.length>=3}
 function openLureForm(l){
-  S.editLure=l?l.id:null;S.lurePhotos=l?lurePhotos(l).map(id=>({id,isNew:false})):[];S.lurePhotosRemoved=[];
+  S.editLure=l?l.id:null;S.lureTargetsAll=false;S.lurePhotos=l?lurePhotos(l).map(id=>({id,isNew:false})):[];S.lurePhotosRemoved=[];
   $('#sl-title').textContent=l?'Köder bearbeiten':'Köder anlegen';
   const v=(id,x)=>{$(id).value=x==null?'':x};
   v('#l-name',l&&l.name);v('#l-brand',l&&l.brand);v('#l-type',l&&l.lureType);v('#l-size',l&&l.size!=null?fmtN(l.size):'');v('#l-weight',l&&l.weight!=null?fmtN(l.weight):'');
-  v('#l-color',l&&l.color);v('#l-colortype',l&&l.colorType);v('#l-depth',l&&l.depth);v('#l-buoy',l&&l.buoyancy);v('#l-qty',l&&l.qty);
+  v('#l-color',l&&l.color);v('#l-colortype',l&&l.colorType);v('#l-depth',l&&l.depth);v('#l-buoy',l&&l.buoyancy);$('#l-uv').checked=!!(l&&l.uv);v('#l-qty',l&&l.qty);
   v('#l-bought',l&&l.bought);v('#l-shop',l&&l.shop);v('#l-price',l&&l.price!=null?fmtN(l.price,2):'');v('#l-pack',l&&l.pack&&l.pack>1?l.pack:'');v('#l-note',l&&l.note);
   renderLureTargets(l?l.targets:[]);updateUnit();renderLurePhoto();$('#l-err').hidden=true;openSheet('sheet-lure');
 }
@@ -1290,7 +1300,7 @@ async function submitLure(e){
   for(const id of S.lurePhotosRemoved)await dbDel('photos',id);
   const qty=parseNum($('#l-qty').value);
   Object.assign(l,{name,brand:$('#l-brand').value.trim(),lureType:$('#l-type').value||null,size:parseNum($('#l-size').value),weight:parseNum($('#l-weight').value),
-    color:$('#l-color').value.trim(),colorType:$('#l-colortype').value||null,depth:$('#l-depth').value.trim(),buoyancy:$('#l-buoy').value||null,qty:qty==null?null:Math.max(0,Math.round(qty)),
+    color:$('#l-color').value.trim(),colorType:$('#l-colortype').value||null,depth:$('#l-depth').value.trim(),buoyancy:$('#l-buoy').value||null,uv:$('#l-uv').checked||undefined,qty:qty==null?null:Math.max(0,Math.round(qty)),
     targets:$$('#l-targets input:checked').map(i=>i.value),bought:$('#l-bought').value||null,shop:$('#l-shop').value.trim(),price:parseNum($('#l-price').value),
     pack:Math.max(1,Math.round(parseNum($('#l-pack').value)||1)),note:$('#l-note').value.trim(),photos:S.lurePhotos.map(x=>x.id),photo:null});
   stamp(l,!old);await save(l);closeSheet('sheet-lure');show('koeder');renderAll();
@@ -1298,7 +1308,7 @@ async function submitLure(e){
   toast(old?'Köder aktualisiert':'Köder gespeichert');
 }
 function fillLureSelect(sel){
-  $('#c-lure').innerHTML='<option value="">Nicht aus der Box</option>'+lures().filter(l=>l.qty!==0||l.id===sel).sort((a,b)=>a.name.localeCompare(b.name,'de')).map(l=>`<option value="${esc(l.id)}">${esc(l.name)}${l.size!=null?' · '+fmtN(l.size)+' cm':''}${l.color?' · '+esc(l.color):''}</option>`).join('');
+  $('#c-lure').innerHTML='<option value="">Nicht aus der Box</option>'+lures().filter(l=>(l.qty!==0&&l.lureType!=='Zubehör')||l.id===sel).sort((a,b)=>a.name.localeCompare(b.name,'de')).map(l=>`<option value="${esc(l.id)}">${esc(l.name)}${l.size!=null?' · '+fmtN(l.size)+' cm':''}${l.color?' · '+esc(l.color):''}</option>`).join('');
   $('#c-lure').value=sel||'';
 }
 
@@ -1725,7 +1735,7 @@ async function createBackup(){
     const recs=S.records.filter(r=>!r.example&&r.type!=='settings'),live=recs.filter(r=>!r.deleted).length;
     const ids=new Set([...recs.filter(r=>r.type==='catch').flatMap(c=>c.photos||[]),...recs.filter(r=>r.type==='lure').flatMap(l=>lurePhotos(l))]);
     const photos=[];for(const id of ids){const ph=await dbGet('photos',id);if(ph)photos.push({id:ph.id,catchId:ph.catchId,lureId:ph.lureId,meta:ph.meta||null,full:await blobToB64(ph.full),thumb:await blobToB64(ph.thumb)})}
-    const data={app:'rute-und-revier-tagebuch',schema:2,created:new Date().toISOString(),records:recs,photos};
+    const data={app:'rute-und-revier-tagebuch',schema:2,created:new Date().toISOString(),records:recs,photos,prefs:{myTargets:myTargets()}};
     let text=JSON.stringify(data);
     if(pw)text=JSON.stringify(await encryptText(text,pw));
     const day=localDT(new Date()).slice(0,10),name=`rur-sicherung-${day}${pw?'-verschluesselt':''}.json`;
@@ -1754,9 +1764,11 @@ async function restoreBackup(file){
   for(const ph of d.photos||[]){if(!ph.id)continue;if(await dbGet('photos',ph.id))continue;await dbPut('photos',{id:ph.id,catchId:ph.catchId,lureId:ph.lureId,meta:ph.meta||null,full:b64ToBlob(ph.full),thumb:b64ToBlob(ph.thumb)});np++}
   for(const r of d.records){if(!r.id||!r.type||r.type==='settings')continue;const cur=S.records.find(x=>x.id===r.id);
     if(!cur||(r.updatedAt||'')>(cur.updatedAt||'')){await save(r);n++}}
+  if(d.prefs&&Array.isArray(d.prefs.myTargets)&&d.prefs.myTargets.length&&!myTargets().length)await saveSettings({myTargets:d.prefs.myTargets});
   renderAll();setStatus('backup-status',`Eingelesen: ${n} ${n===1?'Eintrag':'Einträge'} und ${np} ${np===1?'Foto':'Fotos'} übernommen.${n?'':' Alles war schon auf dem neuesten Stand.'}`,'good');
 }
-function renderSettings(){const v=sections();const r=document.querySelector(`input[name="set-sec"][value="${v}"]`);if(r)r.checked=true}
+function renderSettings(){const v=sections();const r=document.querySelector(`input[name="set-sec"][value="${v}"]`);if(r)r.checked=true;
+  const mt=myTargets();$('#set-targets').innerHTML=allSpecies().map(x=>`<label><input type="checkbox" value="${esc(x)}" ${mt.includes(x)?'checked':''}>${esc(x)}</label>`).join('')}
 
 /* ---------- Ereignisse ---------- */
 document.addEventListener('click',async e=>{
@@ -1786,6 +1798,7 @@ document.addEventListener('click',async e=>{
       const u={...sp,history:[...(sp.history||[]),{since:sp.since,until:today,desc:lineDesc(sp)}],since:today,lineBought:null};stamp(u);await save(u);renderAll();openGearForm('spool',u,u.reelId);toast('Alte Schnur archiviert. Neue Schnur eintragen.');break}
     case 'open-lure':openLure(id);break;
     case 'edit-lure':openLureForm(lures().find(x=>x.id===id));break;
+    case 'lure-targets-all':{const sel=$$('#l-targets input:checked').map(i=>i.value);S.lureTargetsAll=true;renderLureTargets(sel);break}
     case 'lure-filter':S.lureFilter=a.dataset.type;renderLures();break;
     case 'rm-lure-photo':{const ph=S.lurePhotos.splice(Number(a.dataset.i),1)[0];if(ph&&!ph.isNew)S.lurePhotosRemoved.push(ph.id);renderLurePhoto();break}
     case 'lure-view':S.lureView=a.dataset.v;renderLures();break;
@@ -1838,7 +1851,8 @@ $('#form-gear').addEventListener('submit',submitGear);
 ['g-ltype','g-interval','g-since','g-lbought'].forEach(id=>$('#'+id).addEventListener('input',updateIntervalHint));
 $('#g-ltype').addEventListener('change',updateIntervalHint);
 ['l-price','l-pack'].forEach(id=>$('#'+id).addEventListener('input',updateUnit));
-$('#r-species').addEventListener('change',renderReco);$('#r-clarity').addEventListener('change',renderReco);
+$('#r-species').addEventListener('change',renderReco);
+$('#set-targets').addEventListener('change',async()=>{await saveSettings({myTargets:$$('#set-targets input:checked').map(i=>i.value)});renderLures()});$('#r-clarity').addEventListener('change',renderReco);
 $('#l-file').addEventListener('change',async e=>{const fs=[...e.target.files].slice(0,3-S.lurePhotos.length);e.target.value='';for(const f of fs){try{const img=await loadImg(f);const full=await reencode(img,1200,.82),thumb=await reencode(img,520,.78);S.lurePhotos.push({id:uid(),isNew:true,full,thumb,url:URL.createObjectURL(thumb)})}catch(err){toast('Foto konnte nicht gelesen werden')}}renderLurePhoto()});
 $('#c-lure').addEventListener('change',()=>{const l=lures().find(x=>x.id===$('#c-lure').value);if(l)$('#c-bait').value=l.name});
 $('#c-bait').addEventListener('input',()=>{const l=lures().find(x=>x.id===$('#c-lure').value);if(l&&$('#c-bait').value.trim().toLowerCase()!==l.name.toLowerCase())$('#c-lure').value=''});
