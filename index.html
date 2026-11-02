@@ -443,7 +443,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
     <div class="view-head">
       <h1 class="display">Info</h1>
       <div class="brush" aria-hidden="true"></div>
-      <div class="meta">Version 0.9.0</div>
+      <div class="meta">Version 0.9.1</div>
     </div>
     <div class="info-grid">
       <article class="card"><div class="bd" style="gap:10px">
@@ -643,6 +643,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
           <label class="f"><span>Farbwirkung</span><select id="l-colortype"><option value="">–</option><option>natürlich</option><option>auffällig</option><option>dunkel</option></select></label>
           <label class="f"><span>Lauftiefe (m)</span><input id="l-depth" autocomplete="off" placeholder="2–3"></label>
           <label class="f"><span>Bestand (Stück)</span><input id="l-qty" inputmode="numeric" autocomplete="off" placeholder="5"></label>
+          <label class="f" style="grid-column:1/-1"><span>Laufverhalten</span><select id="l-buoy"><option value="">–</option><option value="schwimmend">schwimmend (Floating)</option><option value="schwebend">schwebend (Suspending)</option><option value="langsam sinkend">langsam sinkend (Slow Sinking)</option><option value="sinkend">sinkend (Sinking)</option></select></label>
         </div>
         <div class="f"><span class="lbl">Zielfische</span><div class="targets" id="l-targets"></div></div>
       </fieldset>
@@ -1270,7 +1271,7 @@ function openLure(id){
     <h3 class="detail-title">${esc(l.name)}</h3>
     <div class="meta">${esc([l.brand,l.lureType].filter(Boolean).join(' · '))}${l.example?' · Beispiel':''}</div>
     <dl class="facts">
-      ${fact('Länge',l.size!=null?fmtN(l.size)+' cm':'')}${fact('Gewicht',l.weight!=null?fmtN(l.weight)+' g':'')}${fact('Farbe',esc([l.color,l.colorType].filter(Boolean).join(' · ')))}${fact('Lauftiefe',l.depth?esc(l.depth)+' m':'')}
+      ${fact('Länge',l.size!=null?fmtN(l.size)+' cm':'')}${fact('Gewicht',l.weight!=null?fmtN(l.weight)+' g':'')}${fact('Farbe',esc([l.color,l.colorType].filter(Boolean).join(' · ')))}${fact('Lauftiefe',l.depth?esc(l.depth)+' m':'')}${fact('Laufverhalten',l.buoyancy?esc(l.buoyancy+({schwimmend:' (Floating)',schwebend:' (Suspending)','langsam sinkend':' (Slow Sinking)',sinkend:' (Sinking)'}[l.buoyancy]||'')):'')}
       ${fact('Zielfische',esc((l.targets||[]).join(', ')))}
       ${fact('Bestand',l.qty==null?'':l.qty===0?'nicht vorrätig':l.qty+' Stück')}
       ${fact('Gekauft',esc([l.bought?fmtDate(l.bought+'T12:00'):'',l.shop].filter(Boolean).join(' · ')))}
@@ -1295,7 +1296,7 @@ function openLureForm(l){
   $('#sl-title').textContent=l?'Köder bearbeiten':'Köder anlegen';
   const v=(id,x)=>{$(id).value=x==null?'':x};
   v('#l-name',l&&l.name);v('#l-brand',l&&l.brand);v('#l-type',l&&l.lureType);v('#l-size',l&&l.size!=null?fmtN(l.size):'');v('#l-weight',l&&l.weight!=null?fmtN(l.weight):'');
-  v('#l-color',l&&l.color);v('#l-colortype',l&&l.colorType);v('#l-depth',l&&l.depth);v('#l-qty',l&&l.qty);
+  v('#l-color',l&&l.color);v('#l-colortype',l&&l.colorType);v('#l-depth',l&&l.depth);v('#l-buoy',l&&l.buoyancy);v('#l-qty',l&&l.qty);
   v('#l-bought',l&&l.bought);v('#l-shop',l&&l.shop);v('#l-price',l&&l.price!=null?fmtN(l.price,2):'');v('#l-pack',l&&l.pack&&l.pack>1?l.pack:'');v('#l-note',l&&l.note);
   renderLureTargets(l?l.targets:[]);updateUnit();renderLurePhoto();$('#l-err').hidden=true;openSheet('sheet-lure');
 }
@@ -1308,7 +1309,7 @@ async function submitLure(e){
   for(const id of S.lurePhotosRemoved)await dbDel('photos',id);
   const qty=parseNum($('#l-qty').value);
   Object.assign(l,{name,brand:$('#l-brand').value.trim(),lureType:$('#l-type').value||null,size:parseNum($('#l-size').value),weight:parseNum($('#l-weight').value),
-    color:$('#l-color').value.trim(),colorType:$('#l-colortype').value||null,depth:$('#l-depth').value.trim(),qty:qty==null?null:Math.max(0,Math.round(qty)),
+    color:$('#l-color').value.trim(),colorType:$('#l-colortype').value||null,depth:$('#l-depth').value.trim(),buoyancy:$('#l-buoy').value||null,qty:qty==null?null:Math.max(0,Math.round(qty)),
     targets:$$('#l-targets input:checked').map(i=>i.value),bought:$('#l-bought').value||null,shop:$('#l-shop').value.trim(),price:parseNum($('#l-price').value),
     pack:Math.max(1,Math.round(parseNum($('#l-pack').value)||1)),note:$('#l-note').value.trim(),photos:S.lurePhotos.map(x=>x.id),photo:null});
   stamp(l,!old);await save(l);closeSheet('sheet-lure');show('koeder');renderAll();
