@@ -452,7 +452,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
     <div class="view-head">
       <h1 class="display">Info</h1>
       <div class="brush" aria-hidden="true"></div>
-      <div class="meta">Version 0.9.5</div>
+      <div class="meta">Version 0.9.6</div>
     </div>
     <div class="info-grid">
       <article class="card"><div class="bd" style="gap:10px">
@@ -580,6 +580,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
           <label class="f"><span>Rute</span><select id="c-rod"></select></label>
           <label class="f"><span>Rolle / Spule</span><select id="c-spool"></select></label>
           <label class="f"><span>Montage</span><input id="c-rig" list="dl-rig" autocomplete="off" placeholder="Texas Rig"></label>
+          <label class="f"><span>Jigkopf / Haken</span><select id="c-rigitem"></select></label>
           <label class="f"><span>Vorfach</span><input id="c-leader" list="dl-leader" autocomplete="off" placeholder="Fluorocarbon 0,30 mm"></label>
           <label class="f"><span>Tiefe (m)</span><input id="c-depth" inputmode="decimal" autocomplete="off" placeholder="3,5"></label>
         </div>
@@ -651,17 +652,20 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
         <div class="grid2">
           <label class="f"><span>Hersteller</span><input id="l-brand" list="dl-brand" autocomplete="off" placeholder="Nays"></label>
           <label class="f"><span>Typ</span><select id="l-type"></select></label>
-          <label class="f"><span>Länge (cm)</span><input id="l-size" inputmode="decimal" autocomplete="off" placeholder="9"></label>
+          <label class="f" data-rig="1" hidden><span>Art</span><select id="l-rigkind"><option value="">–</option><option>Jigkopf</option><option>Offsethaken</option><option>Cheburashka</option><option>Bullet-Blei (Texas)</option><option>Dropshot-Blei</option><option>Tungsten-Jig</option><option>Wurmhaken</option><option>Sonstiges</option></select></label>
+          <label class="f" data-rig="1" hidden><span>Hakengröße</span><input id="l-righook" autocomplete="off" placeholder="3/0"></label>
+          <label class="f" data-notrig="1"><span>Länge (cm)</span><input id="l-size" inputmode="decimal" autocomplete="off" placeholder="9"></label>
           <label class="f"><span>Gewicht (g)</span><input id="l-weight" inputmode="decimal" autocomplete="off" placeholder="7"></label>
-          <label class="f"><span>Farbe</span><input id="l-color" autocomplete="off" placeholder="Motoroil"></label>
-          <label class="f"><span>Farbwirkung</span><select id="l-colortype"><option value="">–</option><option>natürlich</option><option>auffällig</option><option>dunkel</option><option>Kontrast</option><option>Flash</option></select></label>
-          <label class="f"><span>Lauftiefe (m)</span><input id="l-depth" autocomplete="off" placeholder="2–3"></label>
+          <label class="f" data-notrig="1"><span>Farbe</span><input id="l-color" autocomplete="off" placeholder="Motoroil"></label>
+          <label class="f" data-notrig="1"><span>Farbwirkung</span><select id="l-colortype"><option value="">–</option><option>natürlich</option><option>auffällig</option><option>dunkel</option><option>Kontrast</option><option>Flash</option></select></label>
+          <label class="f" data-notrig="1"><span>Lauftiefe (m)</span><input id="l-depth" autocomplete="off" placeholder="2–3"></label>
           <label class="f"><span>Bestand (Stück)</span><input id="l-qty" inputmode="numeric" autocomplete="off" placeholder="5"></label>
-          <div class="targets" style="grid-column:1/-1"><label><input type="checkbox" id="l-uv">UV-aktiv (laut Packung)</label></div>
-          <label class="f" style="grid-column:1/-1"><span>Laufverhalten</span><select id="l-buoy"><option value="">–</option><option value="schwimmend">schwimmend (Floating)</option><option value="schwebend">schwebend (Suspending)</option><option value="langsam sinkend">langsam sinkend (Slow Sinking)</option><option value="sinkend">sinkend (Sinking)</option></select></label>
+          <div class="targets" data-notrig="1" style="grid-column:1/-1"><label><input type="checkbox" id="l-uv">UV-aktiv (laut Packung)</label></div>
+          <label class="f" data-notrig="1" style="grid-column:1/-1"><span>Standard-Montage</span><select id="l-rigid"></select></label>
+          <label class="f" data-notrig="1" style="grid-column:1/-1"><span>Laufverhalten</span><select id="l-buoy"><option value="">–</option><option value="schwimmend">schwimmend (Floating)</option><option value="schwebend">schwebend (Suspending)</option><option value="langsam sinkend">langsam sinkend (Slow Sinking)</option><option value="sinkend">sinkend (Sinking)</option></select></label>
         </div>
-        <div class="f"><span class="lbl">Zielfische</span><div class="targets" id="l-targets"></div><button type="button" class="btn btn-sm" id="l-targets-all" data-act="lure-targets-all" hidden style="margin-top:8px;align-self:flex-start">Alle Arten zeigen</button></div>
-        <details class="more" id="l-more"><summary>Details: Haken, weitere Typen, Lagerort, Link</summary>
+        <div class="f" data-notrig="1"><span class="lbl">Zielfische</span><div class="targets" id="l-targets"></div><button type="button" class="btn btn-sm" id="l-targets-all" data-act="lure-targets-all" hidden style="margin-top:8px;align-self:flex-start">Alle Arten zeigen</button></div>
+        <details class="more" id="l-more" data-notrig="1"><summary>Details: Haken, weitere Typen, Lagerort, Link</summary>
           <div class="grid2">
             <div class="f" style="grid-column:1/-1"><span class="lbl">Weitere Typen</span><div class="targets" id="l-xtypes"></div></div>
             <label class="f"><span>Schwanzform</span><select id="l-tail"><option value="">–</option><option value="Schaufel">Schaufelschwanz</option><option value="Sichel">Sichelschwanz</option><option value="Fransen">Fransen</option><option value="ohne">ohne (No-Action)</option></select></label>
@@ -846,8 +850,17 @@ const spotWater=sp=>sp?(sp.waterType||'Süßwasser'):null;
 const RIGS=['Texas Rig','Carolina Rig','Dropshot','Jigkopf','Free Rig','Wobbler','Spinner','Spinnerbait','Köderfisch','Pose','Grundmontage'];
 const BAITS=['Nays CRW 35','Craby Lui'];
 /* Grundprofile je Zielfisch: passende Ködertypen und Längen in cm. Ausgangspunkt, eigene Fänge zählen stärker. */
-const LURE_TYPES=[['Gummifisch','Gummifisch / Shad'],['Twister'],['Creature / Krebs'],['Finesse / No-Action'],['Wobbler'],['Jerkbait'],['Swimbait'],['Spinner'],['Blinker'],['Spinnerbait'],['Chatterbait','Chatterbait / Bladed Jig'],['Jig'],['Oberflächenköder'],['Pilker'],['Fliege'],['Zubehör'],['Sonstiges']];
+const LURE_TYPES=[['Gummifisch','Gummifisch / Shad'],['Twister'],['Creature / Krebs'],['Finesse / No-Action'],['Wobbler'],['Jerkbait'],['Swimbait'],['Spinner'],['Blinker'],['Spinnerbait'],['Chatterbait','Chatterbait / Bladed Jig'],['Jig'],['Oberflächenköder'],['Pilker'],['Fliege'],['Montage','Montage (Jigkopf, Haken, Blei)'],['Zubehör'],['Sonstiges']];
 const SOFT_TYPES=['Gummifisch','Twister','Creature / Krebs','Finesse / No-Action'];
+/* Montage: eigene Einträge in der Köderbox (Jigkopf, Offsethaken …), am Köder als Standard verknüpft, beim Fang überschreibbar */
+const RIG_KINDS=['Jigkopf','Offsethaken','Cheburashka','Bullet-Blei (Texas)','Dropshot-Blei','Tungsten-Jig','Wurmhaken','Sonstiges'];
+const isRig=l=>!!l&&l.lureType==='Montage';
+const isBait=l=>!!l&&l.lureType!=='Zubehör'&&l.lureType!=='Montage';
+const rigs=()=>lures().filter(isRig);
+const rigOf=l=>l&&l.rigId?rigs().find(r=>r.id===l.rigId)||null:null;
+const rigName=r=>{if(!r)return'';const w=r.weight!=null?fmtN(r.weight)+' g':'',inName=w&&r.name.replace(/\s+/g,'').includes(w.replace(/\s+/g,''));return[r.name,inName?'':w,r.hookSize].filter(Boolean).join(' · ')};
+/* Wurfgewicht eines Köders mit Montage (Standard am Köder oder übergeben) */
+function totalWeight(l,rig){const r=rig===undefined?rigOf(l):rig;if(l.weight==null&&!(r&&r.weight!=null))return null;return Math.round(((l.weight||0)+(r&&r.weight||0))*10)/10}
 const lureTypesOf=l=>[l.lureType,...(l.extraTypes||[])].filter((x,i,a)=>x&&a.indexOf(x)===i);
 const safeUrl=u=>/^https?:\/\/[^\s]+$/i.test(u||'')?u:'';
 /* Wurfgewicht: gespeichert als castMin/castMax in g. parseCast liest alte Textangaben („2–14 g“, „bis 40 g“, „1/4–3/4 oz“) für die Umstellung. */
@@ -1091,7 +1104,8 @@ function examples(){
     {...base,id:'ex-sp-2',type:'spool',reelId:'ex-reel-1',label:'Ersatzspule',lineType:'Fluorocarbon',lineName:'Fluorocarbon 0,30',diameter:0.3,load:6.2,lineLength:150,since:'2025-11-20',lineBought:'2023-03-01',interval:18,shop:'',price:null,note:'',history:[]},
     {...base,id:'ex-l-1',type:'lure',name:'Nays CRW 35',brand:'Nays',lureType:'Creature / Krebs',size:9,weight:null,color:'Motoroil',colorType:'dunkel',depth:'',qty:4,targets:['Barsch','Zander'],bought:'2026-04-12',shop:'Angel-Bär Frankfurt',price:8.49,pack:6,note:'Am Texas Rig, 7 g Bullet.',photo:null,lost:['2026-06-14','2026-08-02']},
     {...base,id:'ex-l-2',type:'lure',name:'Craby Lui',brand:'',lureType:'Creature / Krebs',size:7,weight:null,color:'Natur',colorType:'natürlich',depth:'',qty:5,targets:['Barsch'],bought:'2026-05-03',shop:'Online',price:6.99,pack:8,note:'Carolina Rig, langsam schleifen.',photo:null,lost:[]},
-    {...base,id:'ex-l-3',type:'lure',name:'Gummifisch 10 cm',brand:'',lureType:'Gummifisch',size:10,weight:null,color:'Firetiger',colorType:'auffällig',depth:'',qty:0,targets:['Hecht','Zander'],bought:'2026-03-20',shop:'Angel-Bär Frankfurt',price:5.99,pack:4,note:'',photo:null,lost:['2026-09-13','2026-09-26','2026-09-26','2026-07-11']},
+    {...base,id:'ex-l-3',type:'lure',rigId:'ex-l-4',name:'Gummifisch 10 cm',brand:'',lureType:'Gummifisch',size:10,weight:null,color:'Firetiger',colorType:'auffällig',depth:'',qty:0,targets:['Hecht','Zander'],bought:'2026-03-20',shop:'Angel-Bär Frankfurt',price:5.99,pack:4,note:'',photo:null,lost:['2026-09-13','2026-09-26','2026-09-26','2026-07-11']},
+    {...base,id:'ex-l-4',type:'lure',name:'Jigkopf 14 g',brand:'',lureType:'Montage',rigKind:'Jigkopf',weight:14,hookSize:'3/0',qty:6,targets:[],bought:'2026-03-20',shop:'',price:4.99,pack:5,note:'',lost:[],photos:[]},
     {...base,id:'ex-t-1',type:'trip',date:'2026-09-26',start:'18:00',end:'21:30',spotId:'ex-spot-1',water:'Main',lat:null,lon:null,method:'Ufer',note:''},
     {...base,id:'ex-t-2',type:'trip',date:'2026-09-20',start:'07:00',end:'10:00',spotId:'ex-spot-2',water:'Main / Nidda',lat:null,lon:null,method:'Ufer',note:''},
     {...base,id:'ex-t-3',type:'trip',date:'2026-09-13',start:'15:00',end:'18:30',spotId:'ex-spot-1',water:'Main',lat:null,lon:null,method:'Ufer',note:''},
@@ -1247,7 +1261,7 @@ function renderRulesInfo(){
 const lurePhotos=l=>l.photos&&l.photos.length?l.photos:(l.photo?[l.photo]:[]);
 const unitPrice=l=>l.price!=null?l.price/(l.pack||1):null;
 const fmtEuro=v=>v==null?'':v.toLocaleString('de-DE',{style:'currency',currency:'EUR'});
-function catchesWithLure(l){return catches().filter(c=>c.lureId===l.id||(!c.lureId&&c.bait&&c.bait.trim().toLowerCase()===l.name.trim().toLowerCase()))}
+function catchesWithLure(l){if(isRig(l))return catches().filter(c=>c.rigId===l.id);return catches().filter(c=>c.lureId===l.id||(!c.lureId&&c.bait&&c.bait.trim().toLowerCase()===l.name.trim().toLowerCase()))}
 function lureLostYear(l,y){return (l.lost||[]).filter(d=>d.startsWith(String(y))).length}
 function lureCard(l){
   const cs=catchesWithLure(l),y=new Date().getFullYear(),lostY=lureLostYear(l,y);
@@ -1297,10 +1311,10 @@ function scoreLure(l,sp,clarity){
 function renderReco(){
   const sp=$('#r-species').value,clarity=$('#r-clarity').value;S.recoSpecies=sp;
   if(!sp){$('#r-out').innerHTML='';return}
-  const ranked=lures().filter(l=>l.qty!==0&&l.lureType!=='Zubehör').map(l=>scoreLure(l,sp,clarity)).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).slice(0,3);
+  const ranked=lures().filter(l=>l.qty!==0&&isBait(l)).map(l=>scoreLure(l,sp,clarity)).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).slice(0,3);
   const pr=PROFILE[sp];
   const closed=(()=>{const r=checkRules(sp,localDT(new Date()),null,true,null);return r&&r.items.find(i=>i.level==='stop')})();
-  const empty=lures().filter(l=>l.qty===0&&l.lureType!=='Zubehör'&&scoreLure(l,sp,clarity).s>=10);
+  const empty=lures().filter(l=>l.qty===0&&isBait(l)&&scoreLure(l,sp,clarity).s>=10);
   $('#r-out').innerHTML=(closed?`<div class="rule stop"><b>${esc(closed.title.split(' · ')[0])}</b>${esc(closed.text)}</div>`:'')+
     (ranked.length?`<ol>${ranked.map((x,i)=>`<li><button type="button" data-act="open-lure" data-id="${esc(x.l.id)}"><span class="rank">${i===0?'Erste Wahl':i===1?'Zweite Wahl':'Dritte Wahl'}</span><b>${esc(x.l.name)}</b><small>${esc(x.why.join(' · '))}</small></button></li>`).join('')}</ol>`
       :`<p class="hint" style="margin:0">Kein passender Köder in deiner Box.${pr?` Für ${esc(sp)} eignen sich meist ${esc(pr.t.slice(0,3).join(', '))} mit ${pr.min}–${pr.max} cm.`:''}</p>`)+
@@ -1309,11 +1323,11 @@ function renderReco(){
 }
 function monthsAgo(d){const m=Math.floor((Date.now()-new Date(d+'T12:00').getTime())/(30.44*864e5));return m<1?'':m===1?' (vor 1 Monat)':` (vor ${m} Monaten)`}
 function rodFit(l){
-  if(l.weight==null||l.lureType==='Zubehör')return'';
+  if(!isBait(l))return'';const rig=rigOf(l),w=totalWeight(l,rig);if(w==null)return'';
   const rs=rods().map(r=>({r,c:castOf(r)})).filter(x=>x.c);if(!rs.length)return'';
-  const w=l.weight,ok=rs.filter(x=>w>=x.c.min&&w<=x.c.max),nm=x=>[x.r.brand,x.r.name].filter(Boolean).join(' ')+` (${castTxt(x.r)})`;
-  const soft=lureTypesOf(l).some(t=>SOFT_TYPES.includes(t))?' · Gewicht ohne Jigkopf':'';
-  return fact('Passt zur Rute',esc(ok.length?ok.map(nm).join(', ')+soft:`keine Rute für ${fmtN(w)} g`+soft));
+  const ok=rs.filter(x=>w>=x.c.min&&w<=x.c.max),nm=x=>[x.r.brand,x.r.name].filter(Boolean).join(' ')+` (${castTxt(x.r)})`;
+  const note=rig?` · ${fmtN(w)} g mit ${rig.name}`:lureTypesOf(l).some(t=>SOFT_TYPES.includes(t))?' · Gewicht ohne Jigkopf':'';
+  return fact('Passt zur Rute',esc(ok.length?ok.map(nm).join(', ')+note:`keine Rute für ${fmtN(w)} g`+note));
 }
 function openLure(id){
   const l=lures().find(x=>x.id===id);if(!l)return;const cs=catchesWithLure(l).sort((a,b)=>b.dt.localeCompare(a.dt)),up=unitPrice(l);
@@ -1327,6 +1341,7 @@ function openLure(id){
       ${fact('Länge',l.size!=null?fmtN(l.size)+' cm':'')}${fact('Gewicht',l.weight!=null?fmtN(l.weight)+' g':'')}${fact('Farbe',esc([l.color,l.colorType,l.uv?'UV-aktiv':''].filter(Boolean).join(' · ')))}${fact('Lauftiefe',l.depth?esc(l.depth)+' m':'')}${fact('Laufverhalten',l.buoyancy?esc(l.buoyancy+({schwimmend:' (Floating)',schwebend:' (Suspending)','langsam sinkend':' (Slow Sinking)',sinkend:' (Sinking)'}[l.buoyancy]||'')):'')}
       ${fact('Schwanzform',esc({Schaufel:'Schaufelschwanz',Sichel:'Sichelschwanz',Fransen:'Fransen',ohne:'ohne (No-Action)'}[l.tail]||''))}
       ${fact('Haken',esc([[l.hookN?l.hookN+'×':'',l.hookType,l.hookSize].filter(Boolean).join(' '),l.hookChanged?'getauscht '+fmtDate(l.hookChanged+'T12:00')+monthsAgo(l.hookChanged):''].filter(Boolean).join(' · ')))}
+      ${isRig(l)?fact('Art',esc(l.rigKind||'')):fact('Standard-Montage',esc(rigName(rigOf(l))))}
       ${rodFit(l)}
       ${fact('Zielfische',esc((l.targets||[]).join(', ')))}
       ${fact('Bestand',l.qty==null?'':l.qty===0?'nicht vorrätig':l.qty+' Stück')}
@@ -1349,6 +1364,7 @@ function renderLureTargets(sel){
   $('#l-targets-all').hidden=!lim;
   $('#l-targets').innerHTML=spp.map((x,i)=>`<label><input type="checkbox" value="${esc(x)}" ${sel&&sel.includes(x)?'checked':''}>${esc(x)}</label>`).join('');
 }
+function lureFormKind(){const r=$('#l-type').value==='Montage';$$('#form-lure [data-rig]').forEach(e=>e.hidden=!r);$$('#form-lure [data-notrig]').forEach(e=>e.hidden=r);$('#l-name').placeholder=r?'Jigkopf 14 g':'Nays CRW 35'}
 function renderXTypes(sel){const main=$('#l-type').value;
   $('#l-xtypes').innerHTML=LURE_TYPES.filter(([v])=>v!==main&&v!=='Sonstiges').map(([v])=>`<label><input type="checkbox" value="${esc(v)}" ${sel.includes(v)?'checked':''}>${esc(v)}</label>`).join('')}
 function updateUnit(){const pr=parseNum($('#l-price').value),pk=parseNum($('#l-pack').value)||1;$('#l-unit').textContent=pr!=null&&pk>1?`Stückpreis: ${fmtEuro(pr/pk)}`:''}
@@ -1363,6 +1379,8 @@ function openLureForm(l){
   $('#l-type').innerHTML='<option value="">–</option>'+LURE_TYPES.map(([v,lb])=>`<option value="${esc(v)}">${esc(lb||v)}</option>`).join('');
   const lt=l&&l.lureType&&!LURE_TYPES.some(([v])=>v===l.lureType)?l.lureType:null;if(lt)$('#l-type').insertAdjacentHTML('beforeend',`<option value="${esc(lt)}">${esc(lt)}</option>`);
   v('#l-type',l&&l.lureType);renderXTypes(l?l.extraTypes||[]:[]);
+  $('#l-rigid').innerHTML='<option value="">keine</option>'+rigs().filter(r=>r.qty!==0||(l&&r.id===l.rigId)).sort((a,b)=>(a.weight??0)-(b.weight??0)).map(r=>`<option value="${esc(r.id)}">${esc(rigName(r))}</option>`).join('');
+  v('#l-rigid',l&&l.rigId);v('#l-rigkind',l&&l.rigKind);v('#l-righook',l&&isRig(l)?l.hookSize:'');lureFormKind();
   v('#l-tail',l&&l.tail);v('#l-hooktype',l&&l.hookType);v('#l-hooksize',l&&l.hookSize);v('#l-hookn',l&&l.hookN);v('#l-hookdate',l&&l.hookChanged);v('#l-sku',l&&l.sku);v('#l-place',l&&l.place);v('#l-url',l&&l.url);
   $('#l-more').open=!!(l&&((l.extraTypes||[]).length||l.tail||l.hookType||l.hookSize||l.hookN||l.hookChanged||l.sku||l.place||l.url));
   renderLureTargets(l?l.targets:[]);updateUnit();renderLurePhoto();$('#l-err').hidden=true;openSheet('sheet-lure');
@@ -1382,12 +1400,18 @@ async function submitLure(e){
     sku:$('#l-sku').value.trim(),place:$('#l-place').value.trim(),url:$('#l-url').value.trim(),qty:qty==null?null:Math.max(0,Math.round(qty)),
     targets:$$('#l-targets input:checked').map(i=>i.value),bought:$('#l-bought').value||null,shop:$('#l-shop').value.trim(),price:parseNum($('#l-price').value),
     pack:Math.max(1,Math.round(parseNum($('#l-pack').value)||1)),note:$('#l-note').value.trim(),photos:S.lurePhotos.map(x=>x.id),photo:null});
+  if(isRig(l)){Object.assign(l,{rigKind:$('#l-rigkind').value||null,hookSize:$('#l-righook').value.trim(),rigId:null,targets:[],extraTypes:[]})}
+  else{l.rigId=$('#l-rigid').value||null;l.rigKind=null}
   stamp(l,!old);await save(l);closeSheet('sheet-lure');show('koeder');renderAll();
   if(!$('#sheet-detail').hidden)openLure(l.id);
   toast(old?'Köder aktualisiert':'Köder gespeichert');
 }
+function fillRigSelect(sel){
+  $('#c-rigitem').innerHTML='<option value="">–</option>'+rigs().filter(r=>r.qty!==0||r.id===sel).sort((a,b)=>(a.weight??0)-(b.weight??0)).map(r=>`<option value="${esc(r.id)}">${esc(rigName(r))}</option>`).join('');
+  $('#c-rigitem').value=sel||'';
+}
 function fillLureSelect(sel){
-  $('#c-lure').innerHTML='<option value="">Nicht aus der Box</option>'+lures().filter(l=>(l.qty!==0&&l.lureType!=='Zubehör')||l.id===sel).sort((a,b)=>a.name.localeCompare(b.name,'de')).map(l=>`<option value="${esc(l.id)}">${esc(l.name)}${l.size!=null?' · '+fmtN(l.size)+' cm':''}${l.color?' · '+esc(l.color):''}</option>`).join('');
+  $('#c-lure').innerHTML='<option value="">Nicht aus der Box</option>'+lures().filter(l=>(l.qty!==0&&isBait(l))||l.id===sel).sort((a,b)=>a.name.localeCompare(b.name,'de')).map(l=>`<option value="${esc(l.id)}">${esc(l.name)}${l.size!=null?' · '+fmtN(l.size)+' cm':''}${l.color?' · '+esc(l.color):''}</option>`).join('');
   $('#c-lure').value=sel||'';
 }
 
@@ -1587,7 +1611,7 @@ function openCatchForm(c,pre){
   $('#c-water').value=c?c.water||'':'';
   $('#c-coords').value=c?fmtCoords(c.lat,c.lon):'';
   {const last=c?null:catches().filter(x=>x.rodId||x.spoolId).sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''))[0];fillGearSelects(c?c.rodId:last&&last.rodId,c?c.spoolId:last&&last.spoolId)}
-  fillLureSelect(c?c.lureId:'');$('#c-bait').value=c?c.bait||'':'';$('#c-rig').value=c?c.rig||'':'';$('#c-leader').value=c?c.leader||'':'';
+  fillLureSelect(c?c.lureId:'');fillRigSelect(c?c.rigId:'');$('#c-bait').value=c?c.bait||'':'';$('#c-rig').value=c?c.rig||'':'';$('#c-leader').value=c?c.leader||'':'';
   $('#c-depth').value=c&&c.depthM!=null?fmtN(c.depthM):'';
   $('#c-pressure').value=w.pressure??'';$('#c-trend').value=w.trend||'';$('#c-temp').value=w.temp!=null?fmtN(w.temp):'';
   $('#c-sky').value=w.sky||'';$('#c-wind').value=w.wind??'';$('#c-winddir').value=w.windDir||'';
@@ -1647,7 +1671,7 @@ async function submitCatch(e){
   const c=old?{...old}:{id:uid(),type:'catch',tripId:S.prefTrip||null};const prevTrip=old?old.tripId:null;
   Object.assign(c,{species,waterType:$('#c-species').value===OTHER?getRadio('c-wt'):null,dt,lengthCm:parseNum($('#c-length').value),weightKg:parseNum($('#c-weight').value),released:$('#c-rel').checked,
     spotId:$('#c-spot').value||null,method:$('#c-method').value||null,water:$('#c-water').value.trim(),lat:co?co.lat:null,lon:co?co.lon:null,
-    lureId:$('#c-lure').value||null,rodId:$('#c-rod').value||null,spoolId:$('#c-spool').value||null,reelId:(spools().find(x=>x.id===$('#c-spool').value)||{}).reelId||null,bait:$('#c-bait').value.trim(),rig:$('#c-rig').value.trim(),leader:$('#c-leader').value.trim(),depthM:parseNum($('#c-depth').value),
+    lureId:$('#c-lure').value||null,rigId:$('#c-rigitem').value||null,rodId:$('#c-rod').value||null,spoolId:$('#c-spool').value||null,reelId:(spools().find(x=>x.id===$('#c-spool').value)||{}).reelId||null,bait:$('#c-bait').value.trim(),rig:$('#c-rig').value.trim(),leader:$('#c-leader').value.trim(),depthM:parseNum($('#c-depth').value),
     wx:{pressure:parseNum($('#c-pressure').value),trend:$('#c-trend').value||null,temp:parseNum($('#c-temp').value),wind:parseNum($('#c-wind').value),windDir:$('#c-winddir').value||null,sky:$('#c-sky').value||null,waterTemp:parseNum($('#c-watertemp').value),clarity:$('#c-clarity').value||null,source:S.wxSource||'manuell'},
     note:$('#c-note').value.trim()});
   for(const p of S.formPhotos.filter(p=>p.isNew))await dbPut('photos',{id:p.id,catchId:c.id,full:p.full,thumb:p.thumb,meta:p.meta||null});
@@ -1700,7 +1724,7 @@ function openCatch(id){
       ${fact('Angeltag',(()=>{const t=c.tripId&&trips().find(x=>x.id===c.tripId);return t?`<button type="button" class="link-btn" style="padding:0" data-act="open-trip" data-id="${esc(t.id)}">${esc(fmtDay(t.date))} · ${esc(tripPlace(t))}</button>`:''})())}
       ${fact('Spot',sp?esc(sp.name):'')}${fact('Angelart',esc(c.method))}${fact('Gewässer',esc(c.water))}${fact('Gewässertyp',esc(spotWater(sp)||c.waterType||speciesWater(c.species)||''))}
       ${fact('Koordinaten',c.lat!=null?`<span class="coord">${esc(fmtCoords(c.lat,c.lon))}</span><br><span class="priv">Privat · nur auf diesem Gerät</span>`:'')}
-      ${fact('Gerät',(()=>{const r=rods().find(x=>x.id===c.rodId),sp=spools().find(x=>x.id===c.spoolId),rl=sp&&reels().find(x=>x.id===sp.reelId);return esc([r?[r.brand,r.name].filter(Boolean).join(' '):'',rl?rl.name+' · '+(sp.label||'Spule')+' ('+lineDesc(sp)+')':''].filter(Boolean).join(' / '))})())}${fact('Köder',esc(c.bait))}${fact('Montage',esc(c.rig))}${fact('Vorfach',esc(c.leader))}${fact('Tiefe',c.depthM!=null?fmtN(c.depthM)+' m':'')}
+      ${fact('Gerät',(()=>{const r=rods().find(x=>x.id===c.rodId),sp=spools().find(x=>x.id===c.spoolId),rl=sp&&reels().find(x=>x.id===sp.reelId);return esc([r?[r.brand,r.name].filter(Boolean).join(' '):'',rl?rl.name+' · '+(sp.label||'Spule')+' ('+lineDesc(sp)+')':''].filter(Boolean).join(' / '))})())}${fact('Köder',esc(c.bait))}${fact('Montage',esc([c.rig,rigName(rigs().find(r=>r.id===c.rigId))].filter(Boolean).join(' · ')))}${fact('Vorfach',esc(c.leader))}${fact('Tiefe',c.depthM!=null?fmtN(c.depthM)+' m':'')}
       ${fact('Luftdruck',w.pressure!=null?`${w.pressure} hPa${w.trend?' · '+esc(w.trend)+' '+TREND[w.trend]:''}`:'')}
       ${fact('Luft',w.temp!=null?fmtN(w.temp)+' °C':'')}${fact('Wind',w.wind!=null?`${esc(w.windDir||'')} ${w.wind} km/h`:'')}${fact('Himmel',esc(w.sky))}
       ${fact('Wasser',[w.waterTemp!=null?fmtN(w.waterTemp)+' °C':'',w.clarity||''].filter(Boolean).map(esc).join(' · '))}
@@ -1890,8 +1914,8 @@ document.addEventListener('click',async e=>{
     case 'lure-filter':S.lureFilter=a.dataset.type;renderLures();break;
     case 'rm-lure-photo':{const ph=S.lurePhotos.splice(Number(a.dataset.i),1)[0];if(ph&&!ph.isNew)S.lurePhotosRemoved.push(ph.id);renderLurePhoto();break}
     case 'lure-view':S.lureView=a.dataset.v;renderLures();break;
-    case 'pick-lure-photo':{const ls=lures().filter(l=>l.qty!==0||l.id===$('#c-lure').value).sort((x,y)=>x.name.localeCompare(y.name,'de'));$('#lurepick-grid').innerHTML=ls.length?ls.map(l=>lureTile(l,'pick-lure')).join(''):'<li class="empty" style="grid-column:1/-1"><b>Box ist leer</b>Leg zuerst Köder in der Köderbox an.</li>';hydratePhotos($('#lurepick-grid'));openSheet('sheet-lurepick');break}
-    case 'pick-lure':{const l=lures().find(x=>x.id===id);if(l){$('#c-lure').value=l.id;$('#c-bait').value=l.name}closeSheet('sheet-lurepick');break}
+    case 'pick-lure-photo':{const ls=lures().filter(l=>(l.qty!==0&&isBait(l))||l.id===$('#c-lure').value).sort((x,y)=>x.name.localeCompare(y.name,'de'));$('#lurepick-grid').innerHTML=ls.length?ls.map(l=>lureTile(l,'pick-lure')).join(''):'<li class="empty" style="grid-column:1/-1"><b>Box ist leer</b>Leg zuerst Köder in der Köderbox an.</li>';hydratePhotos($('#lurepick-grid'));openSheet('sheet-lurepick');break}
+    case 'pick-lure':{const l=lures().find(x=>x.id===id);if(l){$('#c-lure').value=l.id;$('#c-bait').value=l.name;if(l.rigId&&rigs().some(r=>r.id===l.rigId))$('#c-rigitem').value=l.rigId}closeSheet('sheet-lurepick');break}
     case 'lure-lost':{const l=lures().find(x=>x.id===id);if(!l||l.qty===0)break;const u={...l,qty:l.qty==null?null:Math.max(0,l.qty-1),lost:[...(l.lost||[]),localDT(new Date()).slice(0,10)]};stamp(u);await save(u);renderAll();openLure(id);toast(u.qty===0?'Verloren. Bestand ist jetzt leer.':'Verlust eingetragen');break}
     case 'pick-sec':await saveSettings({sections:a.dataset.sec});closeSheet('sheet-welcome');renderSettings();show(a.dataset.sec==='jagd'?'jagd':'faenge');break;
     case 'create-backup':createBackup();break;
@@ -1940,10 +1964,10 @@ $('#form-gear').addEventListener('submit',submitGear);
 $('#g-ltype').addEventListener('change',updateIntervalHint);
 ['l-price','l-pack'].forEach(id=>$('#'+id).addEventListener('input',updateUnit));
 $('#r-species').addEventListener('change',renderReco);
-$('#l-type').addEventListener('change',()=>renderXTypes($$('#l-xtypes input:checked').map(i=>i.value)));
+$('#l-type').addEventListener('change',()=>{renderXTypes($$('#l-xtypes input:checked').map(i=>i.value));lureFormKind()});
 $('#set-targets').addEventListener('change',async()=>{await saveSettings({myTargets:$$('#set-targets input:checked').map(i=>i.value)});renderLures()});$('#r-clarity').addEventListener('change',renderReco);
 $('#l-file').addEventListener('change',async e=>{const fs=[...e.target.files].slice(0,3-S.lurePhotos.length);e.target.value='';for(const f of fs){try{const img=await loadImg(f);const full=await reencode(img,1200,.82),thumb=await reencode(img,520,.78);S.lurePhotos.push({id:uid(),isNew:true,full,thumb,url:URL.createObjectURL(thumb)})}catch(err){toast('Foto konnte nicht gelesen werden')}}renderLurePhoto()});
-$('#c-lure').addEventListener('change',()=>{const l=lures().find(x=>x.id===$('#c-lure').value);if(l)$('#c-bait').value=l.name});
+$('#c-lure').addEventListener('change',()=>{const l=lures().find(x=>x.id===$('#c-lure').value);if(l){$('#c-bait').value=l.name;if(l.rigId&&rigs().some(r=>r.id===l.rigId))$('#c-rigitem').value=l.rigId}});
 $('#c-bait').addEventListener('input',()=>{const l=lures().find(x=>x.id===$('#c-lure').value);if(l&&$('#c-bait').value.trim().toLowerCase()!==l.name.toLowerCase())$('#c-lure').value=''});
 $$('input[name="set-sec"]').forEach(r=>r.addEventListener('change',async e=>{await saveSettings({sections:e.target.value});renderSettings();show(S.view==='info'?'info':e.target.value==='jagd'?'jagd':'faenge')}));
 $('#bk-file').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';if(f)restoreBackup(f)});
