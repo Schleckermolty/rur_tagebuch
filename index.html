@@ -454,7 +454,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
     <div class="view-head">
       <h1 class="display">Info</h1>
       <div class="brush" aria-hidden="true"></div>
-      <div class="meta">Version 0.9.9</div>
+      <div class="meta">Version 0.9.10</div>
     </div>
     <div class="info-grid">
       <article class="card"><div class="bd" style="gap:10px">
@@ -1458,7 +1458,9 @@ function fillLureSelect(sel){
 const LINE_DEFAULT={Geflecht:24,Monofil:12,Fluorocarbon:18};
 function addMonths(dateStr,m){const d=new Date(dateStr+'T12:00');d.setMonth(d.getMonth()+m);return d}
 function spoolInterval(sp){const base=sp.interval||LINE_DEFAULT[sp.lineType]||24;const stored=sp.lineBought&&sp.since?(new Date(sp.since)-new Date(sp.lineBought))/864e5/365:0;
-  if(sp.lineType!=='Geflecht'&&stored>2)return{m:Math.max(6,Math.round(base/2)),note:`verkürzt, weil die Schnur vor dem Aufspulen ${fmtN(stored)} Jahre lag`};return{m:base,note:''}}
+  /* Lange Lagerung (> 2 Jahre vor dem Aufspulen): Monofil altert, Intervall halbiert. Fluorocarbon kaum, daher nur Hinweis auf einen Knotentest. */
+  if(sp.lineType==='Monofil'&&stored>2)return{m:Math.max(6,Math.round(base/2)),note:`verkürzt, weil die Schnur vor dem Aufspulen ${fmtN(stored)} Jahre lag`};
+  if(sp.lineType==='Fluorocarbon'&&stored>2)return{m:base,note:`Schnur lag vor dem Aufspulen ${fmtN(stored)} Jahre: vor dem ersten Einsatz Knoten testen`};return{m:base,note:''}}
 function spoolDays(sp){if(!sp.since)return 0;const ds=new Set([...catches().filter(c=>c.spoolId===sp.id&&c.dt.slice(0,10)>=sp.since).map(c=>c.dt.slice(0,10)),...trips().filter(t=>t.spoolId===sp.id&&t.date>=sp.since).map(t=>t.date)]);return ds.size}
 function spoolState(sp){
   if(!sp.since)return{st:'soon',label:'Datum fehlt',text:'Aufspuldatum fehlt'};
