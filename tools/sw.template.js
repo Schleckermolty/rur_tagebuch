@@ -8,7 +8,7 @@ const SHELL = [
   'fonts/roboto-condensed-latin-400-normal.woff2', 'fonts/roboto-condensed-latin-600-normal.woff2',
   'fonts/roboto-mono-latin-400-normal.woff2', 'fonts/roboto-mono-latin-600-normal.woff2',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
-  'daten/schonzeiten-binnen.json'
+  'daten/schonzeiten-binnen.json', 'daten/aktivitaet.json'
 ];
 
 self.addEventListener('install', e => {

@@ -9,6 +9,7 @@ Die aktuelle Prüfübersicht steht in [PRUEFSTAND.md](PRUEFSTAND.md). Sie wird b
 | Datei | Inhalt | Prüfrhythmus |
 |---|---|---|
 | `schonzeiten-binnen.json` | Schonzeiten, Mindest- und Höchstmaße der 16 Länder (Binnengewässer) | 12 Monate |
+| `aktivitaet.json` | Temperatur-Richtwerte je Fischart (keine Rechtsdaten, Faustregel) | 24 Monate |
 
 Geplant: `kuestenregeln.json` (6 Monate), `jagdzeiten.json` (12 Monate), `reiseziele.json` (12 Monate).
 
@@ -53,6 +54,7 @@ Geplant: `kuestenregeln.json` (6 Monate), `jagdzeiten.json` (12 Monate), `reisez
 | `teilgeprueft` | Original gelesen, aber nicht die jüngste Änderung oder nicht alle Arten |
 | `abgeglichen` | Mit mindestens zwei unabhängigen Sekundärquellen abgeglichen, Original offen |
 | `abweichung` | Quellen widersprechen sich, Klärung offen |
+| `einzelquelle` | Nur eine Sekundärquelle, nicht abgeglichen (bisher nur in `aktivitaet.json`) |
 
 ### Regel je Art
 
@@ -73,3 +75,17 @@ Arten ohne landesweite Regel werden weggelassen.
 3. `pruefung.am`, `von`, `status`, `methode`, `naechste` setzen.
 4. `stand` der Datei auf das heutige Datum setzen, wenn sich Werte geändert haben.
 5. `python3 tools/build.py`, dann committen. Die Commit-Nachricht nennt Land und Änderung.
+
+## Temperatur-Richtwerte (`aktivitaet.json`)
+
+Keine Rechtsdaten, daher ohne `rechtsgrundlage` und `rechtsstand`. Ein Eintrag je Art (`id` = Artname wie in der App):
+
+```json
+{ "id": "Zander", "name": "Zander",
+  "werte": { "traege_unter": 12, "aktiv": [12, 30], "vorzug": [24, 24], "stress_ab": 32 },
+  "hinweis": "…", "quellen": [ … ], "pruefung": { … } }
+```
+
+- Alle Werte in °C Wassertemperatur, jeder Wert darf `null` sein, wenn die Quelle nichts hergibt.
+- `pruefung.methode` nennt, welche Originalarbeit die Sekundärquelle für welchen Wert zitiert.
+- Arten ohne belegte Werte werden weggelassen, nicht geschätzt.

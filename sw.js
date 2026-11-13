@@ -1,14 +1,14 @@
 /* Service Worker: hält die App offline verfügbar.
    Eigene Dateien: aus dem Speicher, im Hintergrund aktualisiert.
    Wetter (Open-Meteo) und Kartenkacheln (OpenStreetMap): nur online, werden nicht gespeichert. */
-const CACHE = 'rur-tagebuch-0.9.10';
+const CACHE = 'rur-tagebuch-0.9.11';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'vendor/leaflet.js', 'fonts/fonts.css',
   'fonts/amatic-sc-latin-700-normal.woff2', 'fonts/cabin-sketch-latin-700-normal.woff2',
   'fonts/roboto-condensed-latin-400-normal.woff2', 'fonts/roboto-condensed-latin-600-normal.woff2',
   'fonts/roboto-mono-latin-400-normal.woff2', 'fonts/roboto-mono-latin-600-normal.woff2',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
-  'daten/schonzeiten-binnen.json'
+  'daten/schonzeiten-binnen.json', 'daten/aktivitaet.json'
 ];
 
 self.addEventListener('install', e => {

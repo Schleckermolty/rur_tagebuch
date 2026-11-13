@@ -1,0 +1,398 @@
+{
+  "format": 1,
+  "datensatz": "aktivitaet",
+  "titel": "Temperatur-Richtwerte je Fischart",
+  "stand": "2026-11-13",
+  "pruefrhythmus_monate": 24,
+  "haftung": "Faustregel aus der Fachliteratur zur Physiologie der Fische, keine Beißgarantie. Eigene Messungen und Fänge sind aussagekräftiger.",
+  "erklaerung": {
+    "traege_unter": "unterhalb des günstigen Bereichs, Stoffwechsel und Nahrungsaufnahme gedrosselt",
+    "aktiv": "günstiger Bereich (Optimum oder Vorzugsbereich laut Quelle)",
+    "vorzug": "bevorzugte Temperatur",
+    "stress_ab": "Beginn des kritischen Bereichs, Fische schonen"
+  },
+  "eintraege": [
+    {
+      "id": "Zander",
+      "name": "Zander",
+      "werte": {
+        "traege_unter": 12,
+        "aktiv": [
+          12,
+          30
+        ],
+        "vorzug": [
+          24,
+          24
+        ],
+        "stress_ab": 32
+      },
+      "hinweis": "",
+      "quellen": [
+        {
+          "titel": "Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern",
+          "url": "https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf",
+          "art": "Sekundärquelle"
+        }
+      ],
+      "pruefung": {
+        "am": "2026-11-13",
+        "von": "Claude (Recherche), Freigabe Malte",
+        "status": "einzelquelle",
+        "methode": "Optimum 12–30 °C (Elliott 1981), Vorzug adult 24 °C (Hokanson 1977), kritisch ab 32 °C (Elliott 1981), zitiert nach LfU-Studie.",
+        "naechste": "2028-11-13"
+      }
+    },
+    {
+      "id": "Hecht",
+      "name": "Hecht",
+      "werte": {
+        "traege_unter": 9,
+        "aktiv": [
+          9,
+          25
+        ],
+        "vorzug": [
+          24,
+          26
+        ],
+        "stress_ab": 30
+      },
+      "hinweis": "",
+      "quellen": [
+        {
+          "titel": "Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern",
+          "url": "https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf",
+          "art": "Sekundärquelle"
+        }
+      ],
+      "pruefung": {
+        "am": "2026-11-13",
+        "von": "Claude (Recherche), Freigabe Malte",
+        "status": "einzelquelle",
+        "methode": "Optimum 9–25 °C (Elliott 1981), Vorzug 24–26 °C und kritisch ab 30 °C (Müller 1997), zitiert nach LfU-Studie.",
+        "naechste": "2028-11-13"
+      }
+    },
+    {
+      "id": "Barsch",
+      "name": "Barsch",
+      "werte": {
+        "traege_unter": 8,
+        "aktiv": [
+          8,
+          27
+        ],
+        "vorzug": [
+          20,
+          25
+        ],
+        "stress_ab": 30
+      },
+      "hinweis": "Der aktive Bereich ist hier der weite Vorzugsbereich nach Müller (1997), kein Optimum nach Elliott.",
+      "quellen": [
+        {
+          "titel": "Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern",
+          "url": "https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf",
+          "art": "Sekundärquelle"
+        }
+      ],
+      "pruefung": {
+        "am": "2026-11-13",
+        "von": "Claude (Recherche), Freigabe Malte",
+        "status": "einzelquelle",
+        "methode": "Vorzugsbereich 8–27 °C und 20–25 °C, kritisch ab 30 °C (Müller 1997), zitiert nach LfU-Studie.",
+        "naechste": "2028-11-13"
+      }
+    },
+    {
+      "id": "Döbel",
+      "name": "Döbel",
+      "werte": {
+        "traege_unter": 8,
+        "aktiv": [
+          8,
+          25
+        ],
+        "vorzug": null,
+        "stress_ab": 27
+      },
+      "hinweis": "",
+      "quellen": [
+        {
+          "titel": "Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern",
+          "url": "https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf",
+          "art": "Sekundärquelle"
+        }
+      ],
+      "pruefung": {
+        "am": "2026-11-13",
+        "von": "Claude (Recherche), Freigabe Malte",
+        "status": "einzelquelle",
+        "methode": "Optimum 8–25 °C, kritisch ab 27 °C (Elliott 1981), zitiert nach LfU-Studie.",
+        "naechste": "2028-11-13"
+      }
+    },
+    {
+      "id": "Äsche",
+      "name": "Äsche",
+      "werte": {
+        "traege_unter": 4,
+        "aktiv": [
+          4,
+          18
+        ],
+        "vorzug": [
+          15,
+          17
+        ],
+        "stress_ab": 18
+      },
+      "hinweis": "",
+      "quellen": [
+        {
+          "titel": "Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern",
+          "url": "https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf",
+          "art": "Sekundärquelle"
+        }
+      ],
+      "pruefung": {
+        "am": "2026-11-13",
+        "von": "Claude (Recherche), Freigabe Malte",
+        "status": "einzelquelle",
+        "methode": "Optimum 4–18 °C, oberer kritischer Bereich 18–24 °C (Elliott 1981), Vorzug 15–17 °C (Müller 1997), zitiert nach LfU-Studie.",
+        "naechste": "2028-11-13"
+      }
+    },
+    {
+      "id": "Bachforelle",
+      "name": "Bachforelle",
+      "werte": {
+        "traege_unter": 4,
+        "aktiv": [
+          4,
+          19
+        ],
+        "vorzug": [
+          14,
+          17
+        ],
+        "stress_ab": 19
+      },
+      "hinweis": "Ab etwa 25 °C kritisch (Müller 1997).",
+      "quellen": [
+        {
+          "titel": "Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern",
+          "url": "https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf",
+          "art": "Sekundärquelle"
+        }
+      ],
+      "pruefung": {
+        "am": "2026-11-13",
+        "von": "Claude (Recherche), Freigabe Malte",
+        "status": "einzelquelle",
+        "methode": "Optimum 4–19 °C, kritischer Bereich 19–30 °C (Elliott 1981), Vorzug adult 14–17 °C (Müller 1997), zitiert nach LfU-Studie.",
+        "naechste": "2028-11-13"
+      }
+    },
+    {
+      "id": "Regenbogenforelle",
+      "name": "Regenbogenforelle",
+      "werte": {
+        "traege_unter": 10,
+        "aktiv": [
+          10,
+          22
+        ],
+        "vorzug": [
+          16,
+          19
+        ],
+        "stress_ab": 26
+      },
+      "hinweis": "",
+      "quellen": [
+        {
+          "titel": "Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern",
+          "url": "https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf",
+          "art": "Sekundärquelle"
+        }
+      ],
+      "pruefung": {
+        "am": "2026-11-13",
+        "von": "Claude (Recherche), Freigabe Malte",
+        "status": "einzelquelle",
+        "methode": "Optimum 10–22 °C (Elliott 1981), Vorzug 16–19 °C und kritisch 26 °C (Müller 1997), zitiert nach LfU-Studie.",
+        "naechste": "2028-11-13"
+      }
+    },
+    {
+      "id": "Karpfen",
+      "name": "Karpfen",
+      "werte": {
+        "traege_unter": 15,
+        "aktiv": [
+          15,
+          32
+        ],
+        "vorzug": null,
+        "stress_ab": 36
+      },
+      "hinweis": "Nimmt laut Arrignon (1998) ab etwa 5 °C noch Nahrung auf. Angaben zur Vorzugstemperatur widersprechen sich in der Literatur.",
+      "quellen": [
+        {
+          "titel": "Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern",
+          "url": "https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf",
+          "art": "Sekundärquelle"
+        }
+      ],
+      "pruefung": {
+        "am": "2026-11-13",
+        "von": "Claude (Recherche), Freigabe Malte",
+        "status": "einzelquelle",
+        "methode": "Optimum 15–32 °C (Elliott 1981), oberer kritischer Wert 36 °C (Müller 1997), zitiert nach LfU-Studie.",
+        "naechste": "2028-11-13"
+      }
+    },
+    {
+      "id": "Schleie",
+      "name": "Schleie",
+      "werte": {
+        "traege_unter": 20,
+        "aktiv": [
+          20,
+          26
+        ],
+        "vorzug": null,
+        "stress_ab": 32
+      },
+      "hinweis": "",
+      "quellen": [
+        {
+          "titel": "Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern",
+          "url": "https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf",
+          "art": "Sekundärquelle"
+        }
+      ],
+      "pruefung": {
+        "am": "2026-11-13",
+        "von": "Claude (Recherche), Freigabe Malte",
+        "status": "einzelquelle",
+        "methode": "Optimum adult 20–26 °C (Elliott 1981), Störtemperatur 32 °C (Alabaster & Lloyd 1980), zitiert nach LfU-Studie.",
+        "naechste": "2028-11-13"
+      }
+    },
+    {
+      "id": "Brasse",
+      "name": "Brasse",
+      "werte": {
+        "traege_unter": 8,
+        "aktiv": [
+          8,
+          28
+        ],
+        "vorzug": [
+          23,
+          26
+        ],
+        "stress_ab": 29
+      },
+      "hinweis": "",
+      "quellen": [
+        {
+          "titel": "Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern",
+          "url": "https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf",
+          "art": "Sekundärquelle"
+        }
+      ],
+      "pruefung": {
+        "am": "2026-11-13",
+        "von": "Claude (Recherche), Freigabe Malte",
+        "status": "einzelquelle",
+        "methode": "Optimum 8–28 °C (Elliott 1981), Vorzug adult 23–26 °C (Müller 1997), Störtemperatur 29 °C (EIFAC 1969), zitiert nach LfU-Studie.",
+        "naechste": "2028-11-13"
+      }
+    },
+    {
+      "id": "Aal",
+      "name": "Aal",
+      "werte": {
+        "traege_unter": 8,
+        "aktiv": [
+          8,
+          29
+        ],
+        "vorzug": null,
+        "stress_ab": 30
+      },
+      "hinweis": "",
+      "quellen": [
+        {
+          "titel": "Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern",
+          "url": "https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf",
+          "art": "Sekundärquelle"
+        }
+      ],
+      "pruefung": {
+        "am": "2026-11-13",
+        "von": "Claude (Recherche), Freigabe Malte",
+        "status": "einzelquelle",
+        "methode": "Optimum 8–29 °C, kritisch ab 30 °C (Elliott 1981), zitiert nach LfU-Studie.",
+        "naechste": "2028-11-13"
+      }
+    },
+    {
+      "id": "Barbe",
+      "name": "Barbe",
+      "werte": {
+        "traege_unter": 14,
+        "aktiv": null,
+        "vorzug": null,
+        "stress_ab": 30
+      },
+      "hinweis": "Nur Teilwerte, kein belegter aktiver Bereich für erwachsene Barben.",
+      "quellen": [
+        {
+          "titel": "Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern",
+          "url": "https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf",
+          "art": "Sekundärquelle"
+        }
+      ],
+      "pruefung": {
+        "am": "2026-11-13",
+        "von": "Claude (Recherche), Freigabe Malte",
+        "status": "einzelquelle",
+        "methode": "Jungfische wachsen unter 14 °C nicht (Baras & Philippart 1999), obere Letaltemperatur 30 °C (Kraiem & Pattee 1980), zitiert nach LfU-Studie.",
+        "naechste": "2028-11-13"
+      }
+    },
+    {
+      "id": "Wels",
+      "name": "Wels",
+      "werte": {
+        "traege_unter": null,
+        "aktiv": null,
+        "vorzug": [
+          25,
+          27
+        ],
+        "stress_ab": null
+      },
+      "hinweis": "Nur das physiologische Optimum ist belegt, keine Untergrenze.",
+      "quellen": [
+        {
+          "titel": "Cucherousset et al. (2018): Ecology, behaviour and management of the European catfish. Reviews in Fish Biology and Fisheries 28, 177–190",
+          "url": "https://orbi.uliege.be/bitstream/2268/216704/1/ReviewFBF_Catfishr_Ecology_review_2018.pdf",
+          "art": "Sekundärquelle"
+        }
+      ],
+      "pruefung": {
+        "am": "2026-11-13",
+        "von": "Claude (Recherche), Freigabe Malte",
+        "status": "einzelquelle",
+        "methode": "Physiologisches Optimum 25–27 °C (Copp et al. 2009), zitiert nach Cucherousset et al. 2018.",
+        "naechste": "2028-11-13"
+      }
+    }
+  ]
+}

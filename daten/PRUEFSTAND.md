@@ -1,6 +1,6 @@
 # Prüfstand der Regeldaten
 
-Erzeugt am 2026-10-03 aus den Dateien in diesem Ordner. Nicht von Hand bearbeiten.
+Erzeugt am 2026-11-13 aus den Dateien in diesem Ordner. Nicht von Hand bearbeiten.
 
 ## Schonzeiten, Mindest- und Höchstmaße in Binnengewässern
 
@@ -24,3 +24,23 @@ Datei `schonzeiten-binnen.json`, Stand 2026-10-02, Prüfrhythmus 12 Monate. 16 E
 | Bayern | geprüft (Original) | Anlage gültig ab 01.06.2025 | 2026-10-02 | 2027-10-02 | [Originaltext](https://www.gesetze-bayern.de/Content/Document/BayAVFiG-ANL_1) |
 | Mecklenburg-Vorpommern | geprüft (Original) | Übersicht vom 30.03.2026 | 2026-10-02 | 2027-10-02 | [Behördenübersicht](https://www.lallf.de/fischerei/fischereischutz/mindestmasseschonzeiten/) |
 | Sachsen-Anhalt | geprüft (Original) | zuletzt geändert 06.03.2013 | 2026-10-02 | 2027-10-02 | [Originaltext (Abdruck)](https://www.lav-sachsen-anhalt.de/PDF/Gewaesserwirtschaft/Fischereiverordnung_20130306.pdf) |
+
+## Temperatur-Richtwerte je Fischart
+
+Datei `aktivitaet.json`, Stand 2026-11-13, Prüfrhythmus 24 Monate. 13 Einträge, davon 0 am Original geprüft, 0 fällig.
+
+| Eintrag | Status | Geprüft am | Nächste Prüfung | Hauptquelle |
+|---|---|---|---|---|
+| Aal | eine Sekundärquelle | 2026-11-13 | 2028-11-13 | [Sekundärquelle](https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf) |
+| Bachforelle | eine Sekundärquelle | 2026-11-13 | 2028-11-13 | [Sekundärquelle](https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf) |
+| Barbe | eine Sekundärquelle | 2026-11-13 | 2028-11-13 | [Sekundärquelle](https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf) |
+| Barsch | eine Sekundärquelle | 2026-11-13 | 2028-11-13 | [Sekundärquelle](https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf) |
+| Brasse | eine Sekundärquelle | 2026-11-13 | 2028-11-13 | [Sekundärquelle](https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf) |
+| Döbel | eine Sekundärquelle | 2026-11-13 | 2028-11-13 | [Sekundärquelle](https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf) |
+| Hecht | eine Sekundärquelle | 2026-11-13 | 2028-11-13 | [Sekundärquelle](https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf) |
+| Karpfen | eine Sekundärquelle | 2026-11-13 | 2028-11-13 | [Sekundärquelle](https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf) |
+| Regenbogenforelle | eine Sekundärquelle | 2026-11-13 | 2028-11-13 | [Sekundärquelle](https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf) |
+| Schleie | eine Sekundärquelle | 2026-11-13 | 2028-11-13 | [Sekundärquelle](https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf) |
+| Wels | eine Sekundärquelle | 2026-11-13 | 2028-11-13 | [Sekundärquelle](https://orbi.uliege.be/bitstream/2268/216704/1/ReviewFBF_Catfishr_Ecology_review_2018.pdf) |
+| Zander | eine Sekundärquelle | 2026-11-13 | 2028-11-13 | [Sekundärquelle](https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf) |
+| Äsche | eine Sekundärquelle | 2026-11-13 | 2028-11-13 | [Sekundärquelle](https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf) |

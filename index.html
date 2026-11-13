@@ -436,6 +436,8 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
         <label class="f"><span>Zielfisch</span><select id="r-species"></select></label>
         <label class="f"><span>Wasser</span><select id="r-clarity"><option value="">egal</option><option>klar</option><option>angetrübt</option><option>trüb</option></select></label>
       </div>
+      <div class="f"><label class="lbl" for="r-water">Wasser heute (°C)</label><div class="row"><input id="r-water" inputmode="decimal" autocomplete="off" placeholder="gemessen" style="flex:1;min-width:0"><button type="button" class="btn btn-sm" data-act="estimate-water">Schätzen</button></div><small class="hint" id="r-water-hint"></small></div>
+      <div id="r-act"></div>
       <div class="f" id="r-rods-f" hidden><span class="lbl">Heute dabei</span><div class="targets" id="r-rods"></div><small class="hint" id="r-rods-hint" hidden></small></div>
       <div id="r-out"></div>
     </div>
@@ -454,7 +456,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
     <div class="view-head">
       <h1 class="display">Info</h1>
       <div class="brush" aria-hidden="true"></div>
-      <div class="meta">Version 0.9.10</div>
+      <div class="meta">Version 0.9.11</div>
     </div>
     <div class="info-grid">
       <article class="card"><div class="bd" style="gap:10px">
@@ -508,6 +510,12 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
         <div style="overflow-x:auto"><table class="season" id="rules-table"></table></div>
         <p class="hint" id="rules-source" style="line-height:1.5"></p>
         <p class="hint">Ohne Gewähr. Maßgeblich sind die Verordnung des Landes und die Gewässerordnung deines Vereins, die strenger sein kann. Fangbegrenzungen pro Tag sind nicht enthalten.</p>
+      </div></article>
+      <article class="card"><div class="bd" style="gap:10px">
+        <h2>Temperatur-Richtwerte</h2>
+        <p class="hint">Wassertemperatur in °C. Physiologische Werte aus der Fachliteratur: in welchem Bereich Fische aktiv sind und ab wann es kritisch wird. Faustregel, keine Beißgarantie.</p>
+        <div style="overflow-x:auto"><table class="season" id="act-table"></table></div>
+        <p class="hint" id="act-source" style="line-height:1.5"></p>
       </div></article>
       <article class="card"><div class="bd" style="gap:10px">
         <h2>Quellen</h2>
@@ -915,7 +923,35 @@ const RULES_DS=/*DATA:schonzeiten-binnen*/{"format":1,"datensatz":"schonzeiten-b
 function rulesFromDs(ds){const o={};for(const e of ds.eintraege||[]){const r={},n={};for(const [a,v] of Object.entries(e.arten)){r[a]=[v.schonzeit==='ganzjaehrig'?'all':v.schonzeit,v.mindestmass_cm,v.hoechstmass_cm];if(v.hinweis)n[a]=v.hinweis}
   o[e.id]={name:e.name,src:e.rechtsgrundlage,stand:e.rechtsstand,general:e.allgemein||'',r,n,pr:e.pruefung,quellen:e.quellen}}return o}
 let RULES=rulesFromDs(RULES_DS),RULES_STAND=RULES_DS.stand||'';
-const PR_STATUS={geprueft:'am Originaltext geprüft',teilgeprueft:'teilweise am Original geprüft',abgeglichen:'mit Sekundärquellen abgeglichen',abweichung:'Abweichung zwischen Quellen offen'};
+const PR_STATUS={geprueft:'am Originaltext geprüft',teilgeprueft:'teilweise am Original geprüft',abgeglichen:'mit Sekundärquellen abgeglichen',abweichung:'Abweichung zwischen Quellen offen',einzelquelle:'aus einer Sekundärquelle'};
+/* Temperatur-Richtwerte je Art. Quelle der Wahrheit: daten/aktivitaet.json. Faustregel, keine Rechtsdaten. */
+const ACT_DS=/*DATA:aktivitaet*/{"format":1,"datensatz":"aktivitaet","titel":"Temperatur-Richtwerte je Fischart","stand":"2026-11-13","pruefrhythmus_monate":24,"haftung":"Faustregel aus der Fachliteratur zur Physiologie der Fische, keine Beißgarantie. Eigene Messungen und Fänge sind aussagekräftiger.","erklaerung":{"traege_unter":"unterhalb des günstigen Bereichs, Stoffwechsel und Nahrungsaufnahme gedrosselt","aktiv":"günstiger Bereich (Optimum oder Vorzugsbereich laut Quelle)","vorzug":"bevorzugte Temperatur","stress_ab":"Beginn des kritischen Bereichs, Fische schonen"},"eintraege":[{"id":"Zander","name":"Zander","werte":{"traege_unter":12,"aktiv":[12,30],"vorzug":[24,24],"stress_ab":32},"hinweis":"","quellen":[{"titel":"Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern","url":"https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf","art":"Sekundärquelle"}],"pruefung":{"am":"2026-11-13","von":"Claude (Recherche), Freigabe Malte","status":"einzelquelle","methode":"Optimum 12–30 °C (Elliott 1981), Vorzug adult 24 °C (Hokanson 1977), kritisch ab 32 °C (Elliott 1981), zitiert nach LfU-Studie.","naechste":"2028-11-13"}},{"id":"Hecht","name":"Hecht","werte":{"traege_unter":9,"aktiv":[9,25],"vorzug":[24,26],"stress_ab":30},"hinweis":"","quellen":[{"titel":"Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern","url":"https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf","art":"Sekundärquelle"}],"pruefung":{"am":"2026-11-13","von":"Claude (Recherche), Freigabe Malte","status":"einzelquelle","methode":"Optimum 9–25 °C (Elliott 1981), Vorzug 24–26 °C und kritisch ab 30 °C (Müller 1997), zitiert nach LfU-Studie.","naechste":"2028-11-13"}},{"id":"Barsch","name":"Barsch","werte":{"traege_unter":8,"aktiv":[8,27],"vorzug":[20,25],"stress_ab":30},"hinweis":"Der aktive Bereich ist hier der weite Vorzugsbereich nach Müller (1997), kein Optimum nach Elliott.","quellen":[{"titel":"Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern","url":"https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf","art":"Sekundärquelle"}],"pruefung":{"am":"2026-11-13","von":"Claude (Recherche), Freigabe Malte","status":"einzelquelle","methode":"Vorzugsbereich 8–27 °C und 20–25 °C, kritisch ab 30 °C (Müller 1997), zitiert nach LfU-Studie.","naechste":"2028-11-13"}},{"id":"Döbel","name":"Döbel","werte":{"traege_unter":8,"aktiv":[8,25],"vorzug":null,"stress_ab":27},"hinweis":"","quellen":[{"titel":"Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern","url":"https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf","art":"Sekundärquelle"}],"pruefung":{"am":"2026-11-13","von":"Claude (Recherche), Freigabe Malte","status":"einzelquelle","methode":"Optimum 8–25 °C, kritisch ab 27 °C (Elliott 1981), zitiert nach LfU-Studie.","naechste":"2028-11-13"}},{"id":"Äsche","name":"Äsche","werte":{"traege_unter":4,"aktiv":[4,18],"vorzug":[15,17],"stress_ab":18},"hinweis":"","quellen":[{"titel":"Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern","url":"https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf","art":"Sekundärquelle"}],"pruefung":{"am":"2026-11-13","von":"Claude (Recherche), Freigabe Malte","status":"einzelquelle","methode":"Optimum 4–18 °C, oberer kritischer Bereich 18–24 °C (Elliott 1981), Vorzug 15–17 °C (Müller 1997), zitiert nach LfU-Studie.","naechste":"2028-11-13"}},{"id":"Bachforelle","name":"Bachforelle","werte":{"traege_unter":4,"aktiv":[4,19],"vorzug":[14,17],"stress_ab":19},"hinweis":"Ab etwa 25 °C kritisch (Müller 1997).","quellen":[{"titel":"Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern","url":"https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf","art":"Sekundärquelle"}],"pruefung":{"am":"2026-11-13","von":"Claude (Recherche), Freigabe Malte","status":"einzelquelle","methode":"Optimum 4–19 °C, kritischer Bereich 19–30 °C (Elliott 1981), Vorzug adult 14–17 °C (Müller 1997), zitiert nach LfU-Studie.","naechste":"2028-11-13"}},{"id":"Regenbogenforelle","name":"Regenbogenforelle","werte":{"traege_unter":10,"aktiv":[10,22],"vorzug":[16,19],"stress_ab":26},"hinweis":"","quellen":[{"titel":"Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern","url":"https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf","art":"Sekundärquelle"}],"pruefung":{"am":"2026-11-13","von":"Claude (Recherche), Freigabe Malte","status":"einzelquelle","methode":"Optimum 10–22 °C (Elliott 1981), Vorzug 16–19 °C und kritisch 26 °C (Müller 1997), zitiert nach LfU-Studie.","naechste":"2028-11-13"}},{"id":"Karpfen","name":"Karpfen","werte":{"traege_unter":15,"aktiv":[15,32],"vorzug":null,"stress_ab":36},"hinweis":"Nimmt laut Arrignon (1998) ab etwa 5 °C noch Nahrung auf. Angaben zur Vorzugstemperatur widersprechen sich in der Literatur.","quellen":[{"titel":"Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern","url":"https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf","art":"Sekundärquelle"}],"pruefung":{"am":"2026-11-13","von":"Claude (Recherche), Freigabe Malte","status":"einzelquelle","methode":"Optimum 15–32 °C (Elliott 1981), oberer kritischer Wert 36 °C (Müller 1997), zitiert nach LfU-Studie.","naechste":"2028-11-13"}},{"id":"Schleie","name":"Schleie","werte":{"traege_unter":20,"aktiv":[20,26],"vorzug":null,"stress_ab":32},"hinweis":"","quellen":[{"titel":"Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern","url":"https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf","art":"Sekundärquelle"}],"pruefung":{"am":"2026-11-13","von":"Claude (Recherche), Freigabe Malte","status":"einzelquelle","methode":"Optimum adult 20–26 °C (Elliott 1981), Störtemperatur 32 °C (Alabaster & Lloyd 1980), zitiert nach LfU-Studie.","naechste":"2028-11-13"}},{"id":"Brasse","name":"Brasse","werte":{"traege_unter":8,"aktiv":[8,28],"vorzug":[23,26],"stress_ab":29},"hinweis":"","quellen":[{"titel":"Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern","url":"https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf","art":"Sekundärquelle"}],"pruefung":{"am":"2026-11-13","von":"Claude (Recherche), Freigabe Malte","status":"einzelquelle","methode":"Optimum 8–28 °C (Elliott 1981), Vorzug adult 23–26 °C (Müller 1997), Störtemperatur 29 °C (EIFAC 1969), zitiert nach LfU-Studie.","naechste":"2028-11-13"}},{"id":"Aal","name":"Aal","werte":{"traege_unter":8,"aktiv":[8,29],"vorzug":null,"stress_ab":30},"hinweis":"","quellen":[{"titel":"Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern","url":"https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf","art":"Sekundärquelle"}],"pruefung":{"am":"2026-11-13","von":"Claude (Recherche), Freigabe Malte","status":"einzelquelle","methode":"Optimum 8–29 °C, kritisch ab 30 °C (Elliott 1981), zitiert nach LfU-Studie.","naechste":"2028-11-13"}},{"id":"Barbe","name":"Barbe","werte":{"traege_unter":14,"aktiv":null,"vorzug":null,"stress_ab":30},"hinweis":"Nur Teilwerte, kein belegter aktiver Bereich für erwachsene Barben.","quellen":[{"titel":"Reinartz (2007): Auswirkungen der Gewässererwärmung auf die Physiologie und Ökologie der Süßwasserfische Bayerns. Literaturstudie im Auftrag des LfU Bayern","url":"https://www.nid.bayern.de/doc/Auswirkungen%20der%20Gew%C3%A4sserw%C3%A4rmung-Literaturstudie%20LFU%20Bayern_Datum.pdf","art":"Sekundärquelle"}],"pruefung":{"am":"2026-11-13","von":"Claude (Recherche), Freigabe Malte","status":"einzelquelle","methode":"Jungfische wachsen unter 14 °C nicht (Baras & Philippart 1999), obere Letaltemperatur 30 °C (Kraiem & Pattee 1980), zitiert nach LfU-Studie.","naechste":"2028-11-13"}},{"id":"Wels","name":"Wels","werte":{"traege_unter":null,"aktiv":null,"vorzug":[25,27],"stress_ab":null},"hinweis":"Nur das physiologische Optimum ist belegt, keine Untergrenze.","quellen":[{"titel":"Cucherousset et al. (2018): Ecology, behaviour and management of the European catfish. Reviews in Fish Biology and Fisheries 28, 177–190","url":"https://orbi.uliege.be/bitstream/2268/216704/1/ReviewFBF_Catfishr_Ecology_review_2018.pdf","art":"Sekundärquelle"}],"pruefung":{"am":"2026-11-13","von":"Claude (Recherche), Freigabe Malte","status":"einzelquelle","methode":"Physiologisches Optimum 25–27 °C (Copp et al. 2009), zitiert nach Cucherousset et al. 2018.","naechste":"2028-11-13"}}]}/*END:aktivitaet*/;
+let ACT=ACT_DS,ACT_STAND=ACT_DS.stand||'';
+const actOf=sp=>(ACT.eintraege||[]).find(e=>e.id===sp)||null;
+/* Einordnung einer Wassertemperatur: stress, best, aktiv, warm (über dem günstigen Bereich), traege, unbekannt */
+function actClass(sp,t){const e=actOf(sp);if(!e||t==null)return{st:'unbekannt',e};const w=e.werte||{};
+  if(w.stress_ab!=null&&t>=w.stress_ab)return{st:'stress',e};
+  if(w.aktiv&&t>=w.aktiv[0]&&t<=w.aktiv[1])return{st:w.vorzug&&t>=w.vorzug[0]-2&&t<=w.vorzug[1]+2?'best':'aktiv',e};
+  if(w.traege_unter!=null&&t<w.traege_unter)return{st:'traege',e};
+  if(w.aktiv&&t>w.aktiv[1])return{st:'warm',e};
+  return{st:'unbekannt',e}}
+const OWN_MIN=3;/* ab so vielen eigenen Fängen bei ±2 °C zählt die eigene Erfahrung vor dem Richtwert */
+const ownNear=(sp,t)=>ownTemps(sp).filter(x=>Math.abs(x-t)<=2).length;
+const ACT_LABEL={own:'aktiv laut deinen Fängen',best:'beste Bedingungen',aktiv:'aktiv',warm:'eher träge (zu warm)',traege:'eher träge (zu kalt)',stress:'Stress, schonen',unbekannt:'keine Richtwerte'};
+const actRange=e=>{const w=e&&e.werte||{};return w.aktiv?`günstig ${fmtN(w.aktiv[0])}–${fmtN(w.aktiv[1])} °C`:w.vorzug?`Optimum ${fmtN(w.vorzug[0])}–${fmtN(w.vorzug[1])} °C`:w.traege_unter!=null?`unter ${fmtN(w.traege_unter)} °C ungünstig`:''};
+/* Eigene Fänge mit Wassertemperatur je Art */
+function ownTemps(sp){return catches().filter(c=>!c.example&&c.species===sp&&c.wx&&c.wx.waterTemp!=null).map(c=>c.wx.waterTemp).sort((a,b)=>a-b)}
+/* Wassertemperatur heute: gemessen oder geschätzt, gilt für den laufenden Tag, nur in diesem Browser */
+function todayWater(){try{const o=JSON.parse(flag.get('rr-today-water')||'null');return o&&o.day===localDT(new Date()).slice(0,10)&&typeof o.t==='number'?o:null}catch(e){return null}}
+function setTodayWater(t,est){flag.set('rr-today-water',JSON.stringify({day:localDT(new Date()).slice(0,10),t,est:!!est}))}
+/* Grobe Schätzung: Mittel der Lufttemperatur der letzten 14 Tage, nicht unter 1 °C. Koordinaten auf 0,1° gerundet. */
+async function estimateWater(lat,lon){
+  const la=(Math.round(lat*10)/10).toFixed(1),lo=(Math.round(lon*10)/10).toFixed(1);
+  const url=`https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&daily=temperature_2m_mean&past_days=14&forecast_days=1&timezone=auto`;
+  const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),9000);
+  let j;try{const r=await fetch(url,{signal:ctrl.signal});if(!r.ok)throw new Error('http');j=await r.json()}finally{clearTimeout(to)}
+  const v=((j.daily||{}).temperature_2m_mean||[]).slice(0,14).filter(x=>typeof x==='number');if(v.length<7)throw new Error('daten');
+  return Math.max(1,Math.round(v.reduce((a,b)=>a+b,0)/v.length))}
 function prMeta(st){const p=st.pr;if(!p)return'';const today=localDT(new Date()).slice(0,10);
   return `Rechtsstand: ${st.stand||st.src} · geprüft ${fmtDate(p.am+'T12:00')} (${PR_STATUS[p.status]||p.status})${p.naechste<today?` · Prüfung überfällig seit ${fmtDate(p.naechste+'T12:00')}`:''}`}
 /* Vereinfachte Ländergrenzen (lon,lat), Genauigkeit rund 1 km. Daten: deutschlandGeoJSON */
@@ -1265,6 +1301,12 @@ function renderStore(){
   const el=$('#store-state');if(!el)return;
   el.innerHTML=DB.db?'<span class="pill good">Gerät</span> bleibt nach dem Schließen erhalten':'<span class="pill bad">Nur Sitzung</span> geht beim Schließen verloren. Sicherung kopieren!';
 }
+function renderActInfo(){
+  const es=[...(ACT.eintraege||[])].sort((a,b)=>a.name.localeCompare(b.name,'de')),r=x=>x?`${fmtN(x[0])}${x[1]!==x[0]?'–'+fmtN(x[1]):''}`:'–';
+  $('#act-table').innerHTML='<tr><th>Art</th><th>träge unter</th><th>günstig</th><th>Vorzug</th><th>Stress ab</th></tr>'+es.map(e=>{const w=e.werte||{};return`<tr><td>${esc(e.name)}${e.hinweis?`<br><small>${esc(e.hinweis)}</small>`:''}</td><td>${w.traege_unter!=null?fmtN(w.traege_unter):'–'}</td><td>${r(w.aktiv)}</td><td>${r(w.vorzug)}</td><td>${w.stress_ab!=null?fmtN(w.stress_ab):'–'}</td></tr>`}).join('');
+  const qs=[...new Map(es.flatMap(e=>e.quellen||[]).map(q=>[q.url,q])).values()];
+  $('#act-source').innerHTML=`Stand ${esc(ACT.stand||'')}, Status: ${esc([...new Set(es.map(e=>PR_STATUS[e.pruefung&&e.pruefung.status]||''))].join(', '))}. Quellen: `+qs.map(q=>{const u=safeUrl(q.url);return u?`<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(q.titel)}</a>`:esc(q.titel)}).join('; ')+'. Arten ohne belegte Werte fehlen bewusst.';
+}
 function renderRulesInfo(){
   const sel=$('#home-state'),h=homeState();
   if(!sel.options.length)sel.innerHTML=Object.keys(RULES).sort((a,b)=>RULES[a].name.localeCompare(RULES[b].name,'de')).map(k=>`<option value="${k}">${esc(RULES[k].name)}</option>`).join('');
@@ -1312,12 +1354,25 @@ function renderLures(){
   const rs=$('#r-species'),keep=rs.value||S.recoSpecies||'Zander';
   const mt=myTargets(),spp=mt.length?[...mt].sort((a,b)=>a.localeCompare(b,'de')):allSpecies();
   rs.innerHTML=spp.map(x=>`<option>${esc(x)}</option>`).join('');rs.value=spp.includes(keep)?keep:spp[0];
-  renderRecoRods();renderReco();
+  renderRecoRods();renderReco();renderAct();
 }
 /* Ruten-Filter: „Heute dabei“ gilt für den laufenden Tag und liegt nur in diesem Browser */
 const CAST_TOL=0.1;
 function todayRods(){try{const o=JSON.parse(flag.get('rr-today-rods')||'null');return o&&o.day===localDT(new Date()).slice(0,10)?o.ids:[]}catch(e){return[]}}
 function setTodayRods(ids){flag.set('rr-today-rods',JSON.stringify({day:localDT(new Date()).slice(0,10),ids}))}
+function renderAct(){
+  const tw=todayWater(),inp=$('#r-water');if(document.activeElement!==inp)inp.value=tw?fmtN(tw.t):'';
+  $('#r-water-hint').textContent=tw?(tw.est?'Geschätzt aus der Lufttemperatur der letzten 14 Tage. Grob, eine Messung am Wasser ist besser.':'Selbst gemessen. Gilt für heute und wird bei neuen Fängen vorbelegt.'):'Einmal am Wasser messen, etwa 30–50 cm tief. Oder schätzen lassen.';
+  const box=$('#r-act');if(!tw){box.innerHTML='';return}
+  const t=tw.t,mt=myTargets(),spp=(mt.length?mt:(ACT.eintraege||[]).map(e=>e.id)).filter((x,i,a)=>a.indexOf(x)===i);
+  const groups={};for(const sp of spp){let st=actClass(sp,t).st;if(st!=='stress'&&st!=='best'&&st!=='aktiv'&&ownNear(sp,t)>=OWN_MIN)st='own';(groups[st]=groups[st]||[]).push(sp)}
+  const order=['best','aktiv','own','warm','traege','stress','unbekannt'];
+  const sel=$('#r-species').value,c=actClass(sel,t),own=ownTemps(sel),near=own.filter(x=>Math.abs(x-t)<=2).length,ovr=near>=OWN_MIN&&['traege','warm','unbekannt'].includes(c.st);
+  const head=ovr?`<div class="rule ok"><b>${esc(sel)} bei ${fmtN(t)} °C: ${esc(ACT_LABEL.own)}</b>Du hast bei ähnlicher Temperatur schon ${near} ${esc(sel)} gefangen. ${c.e?`Laut Richtwert eher träge (${esc(actRange(c.e))}).`:'Für diese Art gibt es keine Richtwerte.'}${own.length>=5?`<small>Deine ${esc(sel)}-Fänge: ${fmtN(own[0])}–${fmtN(own[own.length-1])} °C (${own.length} Fänge mit Messung).</small>`:''}</div>`
+    :c.e?`<div class="rule ${c.st==='stress'?'stop':c.st==='best'||c.st==='aktiv'?'ok':'info'}"><b>${esc(sel)} bei ${fmtN(t)} °C: ${esc(ACT_LABEL[c.st])}</b>${esc(actRange(c.e))}${c.st==='stress'?'. Fische möglichst schonen, Zurücksetzen belastet bei dieser Temperatur stark.':''}${near?`<small>Bei dir schon ${near} ${near===1?'Fang':'Fänge'} bei ähnlicher Temperatur (±2 °C).</small>`:''}${own.length>=5?`<small>Deine ${esc(sel)}-Fänge: ${fmtN(own[0])}–${fmtN(own[own.length-1])} °C (${own.length} Fänge mit Messung).</small>`:''}</div>`
+    :`<div class="rule info"><b>${esc(sel)}: keine Richtwerte</b>Für diese Art gibt es noch keine belegten Temperaturwerte.${own.length?`<small>Deine Fänge mit Messung: ${fmtN(own[0])}–${fmtN(own[own.length-1])} °C (${own.length}).</small>`:''}</div>`;
+  box.innerHTML=head+`<p class="hint" style="margin:0">${order.filter(k=>groups[k]&&k!=='unbekannt').map(k=>`<b>${esc(ACT_LABEL[k])}:</b> ${esc(groups[k].join(', '))}`).join(' · ')}${groups.unbekannt?` · ohne Richtwerte: ${esc(groups.unbekannt.join(', '))}`:''}</p><p class="hint" style="margin:0">Faustregel aus der Fachliteratur, keine Beißgarantie. Quellen unter Info.</p>`;
+}
 function renderRecoRods(){
   const all=rods(),rs=all.filter(r=>castOf(r)),sel=todayRods();
   $('#r-rods-f').hidden=!rs.length;
@@ -1563,7 +1618,7 @@ function fillGearSelects(rodId,spoolId){
   $('#c-rod').value=rodId||'';$('#c-spool').value=spoolId||'';
 }
 
-function renderAll(){renderGear();renderLures();renderCatches();renderSpots();renderLists();renderStore();renderRulesInfo();renderBackupInfo();renderSettings()}
+function renderAll(){renderGear();renderLures();renderCatches();renderSpots();renderLists();renderStore();renderRulesInfo();renderActInfo();renderBackupInfo();renderSettings()}
 
 /* ---------- Karte ---------- */
 function ensureMap(){
@@ -1659,7 +1714,7 @@ function openCatchForm(c,pre){
   $('#c-depth').value=c&&c.depthM!=null?fmtN(c.depthM):'';
   $('#c-pressure').value=w.pressure??'';$('#c-trend').value=w.trend||'';$('#c-temp').value=w.temp!=null?fmtN(w.temp):'';
   $('#c-sky').value=w.sky||'';$('#c-wind').value=w.wind??'';$('#c-winddir').value=w.windDir||'';
-  $('#c-watertemp').value=w.waterTemp!=null?fmtN(w.waterTemp):'';$('#c-clarity').value=w.clarity||'';
+  $('#c-watertemp').value=w.waterTemp!=null?fmtN(w.waterTemp):(!c&&todayWater()&&!todayWater().est?fmtN(todayWater().t):'');$('#c-clarity').value=w.clarity||'';
   $('#c-note').value=c?c.note||'':'';
   if(pre){$('#c-dt').value=pre.dt;fillSpotSelect(pre.spotId||'');$('#c-water').value=pre.water||'';$('#c-coords').value=pre.lat!=null?fmtCoords(pre.lat,pre.lon):'';$('#c-method').value=pre.method||''}
   S.wxSource=w.source||null;
@@ -1976,6 +2031,9 @@ document.addEventListener('click',async e=>{
       const dup=[...SPECIES,...customNames()].find(x=>x.toLowerCase()===n.toLowerCase());if(dup){setStatus('set-sp-status',`${dup} gibt es schon.`,'bad');break}
       await saveSettings({customSpecies:[...customSpecies(),{name:n,water:w}],myTargets:myTargets().length?[...myTargets(),n]:myTargets()});$('#set-sp-name').value='';setStatus('set-sp-status',`${n} hinzugefügt.`,'good');renderAll();break}
     case 'rm-species':{await saveSettings({customSpecies:customSpecies().filter(x=>x.name!==id)});setStatus('set-sp-status',`${id} entfernt. Fänge mit dieser Art bleiben erhalten.`);renderAll();break}
+    case 'estimate-water':{const h=$('#r-water-hint');h.textContent='Standort und Wetter werden abgefragt …';
+      try{const p=await gps();const t=await estimateWater(p.lat,p.lon);setTodayWater(t,true);renderAct()}
+      catch(err){h.textContent='Schätzen ging nicht (kein Standort oder keine Verbindung). Bitte selbst messen und eintragen.'}break}
     case 'pick-sec':await saveSettings({sections:a.dataset.sec});closeSheet('sheet-welcome');renderSettings();show(a.dataset.sec==='jagd'?'jagd':'faenge');break;
     case 'create-backup':createBackup();break;
     case 'goto-backup':show('info');setTimeout(()=>$('#backup-card').scrollIntoView({block:'start'}),50);break;
@@ -2022,7 +2080,8 @@ $('#form-gear').addEventListener('submit',submitGear);
 ['g-ltype','g-interval','g-since','g-lbought'].forEach(id=>$('#'+id).addEventListener('input',updateIntervalHint));
 $('#g-ltype').addEventListener('change',updateIntervalHint);
 ['l-price','l-pack'].forEach(id=>$('#'+id).addEventListener('input',updateUnit));
-$('#r-species').addEventListener('change',renderReco);
+$('#r-species').addEventListener('change',()=>{renderReco();renderAct()});
+$('#r-water').addEventListener('change',()=>{const v=parseNum($('#r-water').value);if(v==null||v<-1||v>40){flag.set('rr-today-water','null')}else setTodayWater(Math.round(v*10)/10,false);renderAct()});
 $('#r-rods').addEventListener('change',()=>{setTodayRods($$('#r-rods input:checked').map(i=>i.value));renderReco()});
 $('#l-type').addEventListener('change',()=>{renderXTypes($$('#l-xtypes input:checked').map(i=>i.value));lureFormKind()});
 $('#set-targets').addEventListener('change',async()=>{await saveSettings({myTargets:$$('#set-targets input:checked').map(i=>i.value)});renderLures()});$('#r-clarity').addEventListener('change',renderReco);
@@ -2063,6 +2122,7 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const open=$$
   renderAll();
   show(['faenge','spots','koeder','info','jagd'].includes(h)?h:sections()==='jagd'?'jagd':'faenge');
   if(!settings().sections)openSheet('sheet-welcome');
+  try{const r=await fetch('daten/aktivitaet.json',{cache:'no-cache'});if(r.ok){const ds=await r.json();if(ds&&ds.format===1&&(ds.stand||'')>=ACT_STAND&&Array.isArray(ds.eintraege)){ACT=ds;ACT_STAND=ds.stand;renderActInfo();renderAct()}}}catch(e){}
   try{const r=await fetch('daten/schonzeiten-binnen.json',{cache:'no-cache'});if(r.ok){const ds=await r.json();if(ds&&ds.format===1&&(ds.stand||'')>=RULES_STAND&&Array.isArray(ds.eintraege)&&ds.eintraege.length){RULES=rulesFromDs(ds);RULES_STAND=ds.stand;renderAll()}}}catch(e){}
 })();
 })();

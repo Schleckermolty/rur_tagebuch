@@ -9,15 +9,18 @@ import json, pathlib, re, datetime, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATEN = ROOT / "daten"
-DATASETS = ["schonzeiten-binnen"]
-STATUS = {"geprueft": "geprüft (Original)", "teilgeprueft": "teilweise geprüft", "abgeglichen": "abgeglichen (Sekundär)", "abweichung": "Abweichung offen"}
+DATASETS = ["schonzeiten-binnen", "aktivitaet"]
+STATUS = {"geprueft": "geprüft (Original)", "teilgeprueft": "teilweise geprüft", "abgeglichen": "abgeglichen (Sekundär)", "abweichung": "Abweichung offen", "einzelquelle": "eine Sekundärquelle"}
+# Pflichtfelder je Datensatz (Regeldaten brauchen Rechtsgrundlage, Richtwerte nicht)
+REQUIRED = {"schonzeiten-binnen": ("id", "name", "rechtsgrundlage", "rechtsstand", "quellen", "pruefung", "arten"),
+            "aktivitaet": ("id", "name", "werte", "quellen", "pruefung")}
 
 def load(name):
     ds = json.loads((DATEN / f"{name}.json").read_text(encoding="utf-8"))
     if ds.get("format") != 1:
         sys.exit(f"Daten-Fehler: {name}.json hat unbekanntes Format")
     for e in ds["eintraege"]:
-        for key in ("id", "name", "rechtsgrundlage", "rechtsstand", "quellen", "pruefung", "arten"):
+        for key in REQUIRED[name]:
             if key not in e:
                 sys.exit(f"Daten-Fehler: {name}.json, Eintrag {e.get('id')}: Feld '{key}' fehlt")
         if e["pruefung"].get("status") not in STATUS:
@@ -42,11 +45,12 @@ def pruefstand():
         due = [e for e in es if e["pruefung"]["naechste"] <= today]
         out += [f"## {ds['titel']}", "", f"Datei `{name}.json`, Stand {ds['stand']}, Prüfrhythmus {ds['pruefrhythmus_monate']} Monate. "
                 f"{len(es)} Einträge, davon {sum(e['pruefung']['status']=='geprueft' for e in es)} am Original geprüft, {len(due)} fällig.", "",
-                "| Eintrag | Status | Rechtsstand | Geprüft am | Nächste Prüfung | Hauptquelle |", "|---|---|---|---|---|---|"]
+                "| Eintrag | Status | Rechtsstand | Geprüft am | Nächste Prüfung | Hauptquelle |" if "rechtsstand" in REQUIRED[name] else "| Eintrag | Status | Geprüft am | Nächste Prüfung | Hauptquelle |", "|---|---|---|---|---|---|" if "rechtsstand" in REQUIRED[name] else "|---|---|---|---|---|"]
         for e in sorted(es, key=lambda e: (e["pruefung"]["naechste"], e["name"])):
             p = e["pruefung"]; q = e["quellen"][0]
             flag = " **fällig**" if p["naechste"] <= today else ""
-            out.append(f"| {e['name']} | {STATUS[p['status']]} | {e['rechtsstand']} | {p['am']} | {p['naechste']}{flag} | [{q['art']}]({q['url']}) |")
+            rs = f" {e['rechtsstand']} |" if "rechtsstand" in REQUIRED[name] else ""
+            out.append(f"| {e['name']} | {STATUS[p['status']]} |{rs} {p['am']} | {p['naechste']}{flag} | [{q['art']}]({q['url']}) |")
         out.append("")
     (DATEN / "PRUEFSTAND.md").write_text("\n".join(out), encoding="utf-8")
 
