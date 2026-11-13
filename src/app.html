@@ -738,6 +738,9 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
           <label class="f"><span>Preis (€)</span><input id="g-price" inputmode="decimal" autocomplete="off" placeholder="89,00"></label>
         </div>
         <label class="f"><span>Notiz</span><textarea id="g-note" placeholder="Bremse auf 1,5 kg eingestellt"></textarea></label>
+        <div data-kinds="rod reel"><div class="thumbs" id="g-photo"></div>
+        <label class="btn file-btn" id="g-file-btn">Foto hinzufügen<input type="file" id="g-file" accept="image/*"></label>
+        <p class="hint" style="margin:6px 0 0">Ein Foto, z. B. mit Typenschild oder Seriennummer. Hilft bei Verkauf oder Versicherung.</p></div>
       </fieldset>
     </div>
     <div class="sheet-foot"><div class="inner">
@@ -1253,6 +1256,8 @@ function renderRulesInfo(){
   $('#rules-source').innerHTML=`<b>${esc(st.src)}</b>${st.stand?', '+esc(st.stand):''}.<br>Geprüft am ${p.am?esc(fmtDate(p.am+'T12:00')):'–'}: ${esc(PR_STATUS[p.status]||'')}. ${esc(p.methode||'')} Nächste Prüfung ${p.naechste?esc(fmtDate(p.naechste+'T12:00')):'–'}${p.naechste&&p.naechste<today?' (überfällig)':''}.<br>Quellen: ${(st.quellen||[]).map(q=>`<a href="${esc(q.url)}" target="_blank" rel="noopener">${esc(q.titel)}</a> (${esc(q.art)})`).join(', ')}.${st.general?'<br>'+esc(st.general):''}${Object.keys(st.n).length?'<br>'+Object.entries(st.n).map(([a,t])=>`${esc(a)}: ${esc(t)}`).join(' '):''}<br>Datenstand ${esc(fmtDate(RULES_STAND+'T12:00'))}.`;
 }
 /* ---------- Köderbox ---------- */
+const gearPhotos=g=>g&&g.photos&&g.photos.length?g.photos:[];
+function renderGearPhoto(){const b=$('#g-photo');b.innerHTML=S.gearPhotos.map((ph,i)=>`<figure><img alt="Gerätefoto" ${ph.url?`src="${ph.url}"`:`data-photo="${esc(ph.id)}"`}><button type="button" data-act="rm-gear-photo" data-i="${i}" aria-label="Foto entfernen">✕</button></figure>`).join('');hydratePhotos(b);$('#g-file-btn').hidden=S.gearPhotos.length>=1}
 const lurePhotos=l=>l.photos&&l.photos.length?l.photos:(l.photo?[l.photo]:[]);
 const unitPrice=l=>l.price!=null?l.price/(l.pack||1):null;
 const fmtEuro=v=>v==null?'':v.toLocaleString('de-DE',{style:'currency',currency:'EUR'});
@@ -1479,14 +1484,14 @@ function openGear(id){
       <div class="actions"><button type="button" class="btn btn-primary" data-act="respool" data-id="${esc(g.id)}">Neue Schnur aufgespult</button><button type="button" class="btn" data-act="edit-gear" data-id="${esc(g.id)}">Bearbeiten</button><button type="button" class="btn btn-danger" data-act="ask-del" data-id="${esc(g.id)}">Löschen</button></div>`;
   }else{const key=k==='rod'?'rodId':'reelId';let cs=gearCatches(key,g.id);if(k==='reel')cs=[...cs,...spoolsOf(g.id).flatMap(sp=>gearCatches('spoolId',sp.id))];
     const bySp={};cs.forEach(c=>bySp[c.species]=(bySp[c.species]||0)+1);
-    body=`<h3 class="detail-title">${esc([g.brand,g.name].filter(Boolean).join(' '))}</h3><div class="meta">${gearKindName(k)}${g.example?' · Beispiel':''}</div>
+    body=`${gearPhotos(g).length?`<div class="gallery">${gearPhotos(g).map(p=>`<img data-photo="${esc(p)}" data-kind="full" alt="Foto: ${esc(g.name)}">`).join('')}</div>`:''}<h3 class="detail-title">${esc([g.brand,g.name].filter(Boolean).join(' '))}</h3><div class="meta">${gearKindName(k)}${g.example?' · Beispiel':''}</div>
       <dl class="facts">${k==='rod'?fact('Länge',g.length!=null?fmtN(g.length,2)+' m':'')+fact('Wurfgewicht',esc(castTxt(g))+(g.cast&&!castOf(g)?' <small>(bitte als Zahlen in g eintragen)</small>':'')+(g.castFrom?` <small>(umgerechnet aus ${esc(g.castFrom)})</small>`:'')):fact('Größe',esc(g.size))+fact('Übersetzung',esc(g.ratio))+fact('Spulen',spoolsOf(g.id).map(sp=>esc((sp.label||'Spule')+': '+lineDesc(sp))).join('<br>'))}
       ${fact('Gekauft',esc([g.bought?fmtDate(g.bought+'T12:00'):'',g.shop].filter(Boolean).join(' · ')))}${fact('Preis',g.price!=null?fmtEuro(g.price):'')}
       ${fact('Fänge',cs.length?Object.entries(bySp).map(([a,n])=>`${n}× ${esc(a)}`).join(', '):'noch keine')}</dl>
       ${g.note?`<div class="notebox">${esc(g.note)}</div>`:''}
       <div class="actions">${k==='reel'?`<button type="button" class="btn" data-act="new-spool" data-id="${esc(g.id)}">+ Spule</button>`:''}<button type="button" class="btn" data-act="edit-gear" data-id="${esc(g.id)}">Bearbeiten</button><button type="button" class="btn btn-danger" data-act="ask-del" data-id="${esc(g.id)}">Löschen</button></div>`;
   }
-  $('#sd-title').textContent=gearKindName(k);$('#detail-body').innerHTML=body+'<div id="del-confirm"></div>';openSheet('sheet-detail');
+  $('#sd-title').textContent=gearKindName(k);$('#detail-body').innerHTML=body+'<div id="del-confirm"></div>';hydratePhotos($('#detail-body'));openSheet('sheet-detail');
 }
 function updateIntervalHint(){
   const t=$('#g-ltype').value,iv=parseNum($('#g-interval').value);
@@ -1503,6 +1508,7 @@ function openGearForm(kind,g,reelId){
   v('#g-label',g?g.label:(kind==='spool'?(spoolsOf(reelId).length?'Ersatzspule':'Hauptspule'):''));$('#g-ltype').value=g&&g.lineType||'Geflecht';v('#g-lname',g&&g.lineName);v('#g-diam',g&&g.diameter!=null?fmtN(g.diameter,2):'');v('#g-load',g&&g.load!=null?fmtN(g.load):'');v('#g-llen',g&&g.lineLength);
   v('#g-interval',g&&g.interval&&g.interval!==LINE_DEFAULT[g.lineType]?g.interval:'');v('#g-since',g?g.since:localDT(new Date()).slice(0,10));v('#g-lbought',g&&g.lineBought);
   v('#g-bought',g&&g.bought);v('#g-shop',g&&g.shop);v('#g-price',g&&g.price!=null?fmtN(g.price,2):'');v('#g-note',g&&g.note);
+  S.gearPhotos=gearPhotos(g).map(id=>({id,isNew:false}));S.gearPhotosRemoved=[];renderGearPhoto();
   updateIntervalHint();$('#g-err').hidden=true;openSheet('sheet-gear');
 }
 async function submitGear(e){
@@ -1524,6 +1530,8 @@ async function submitGear(e){
     else Object.assign(g,{size:$('#g-size').value.trim(),ratio:$('#g-ratio').value.trim()});
   }
   Object.assign(g,{shop:$('#g-shop').value.trim(),price:parseNum($('#g-price').value),note:$('#g-note').value.trim()});
+  if(kind!=='spool'){for(const ph of S.gearPhotos.filter(x=>x.isNew))await dbPut('photos',{id:ph.id,gearId:g.id,full:ph.full,thumb:ph.thumb,meta:null});
+    for(const pid of S.gearPhotosRemoved)await dbDel('photos',pid);g.photos=S.gearPhotos.map(x=>x.id)}
   stamp(g,!old);await save(g);closeSheet('sheet-gear');S.tackleTab='geraet';show('koeder');renderAll();
   if(!$('#sheet-detail').hidden)openGear(g.id);
   toast(gearKindName(kind)+(old?' aktualisiert':' gespeichert'));
@@ -1818,6 +1826,7 @@ async function removeRecord(id){
   if(r.type==='spot')for(const c of catches().filter(c=>c.spotId===id)){const u={...c,spotId:null};stamp(u);await save(u)}
   if(r.type==='trip')for(const c of catchesOfTrip(id)){const u={...c,tripId:null};stamp(u);await save(u)}
   if(r.type==='lure')for(const ph of lurePhotos(r))await dbDel('photos',ph);
+  if(r.type==='rod'||r.type==='reel')for(const ph of gearPhotos(r))await dbDel('photos',ph);
   if(r.type==='reel')for(const sp of spoolsOf(id))await dropRecord(sp);
   const tripOfCatch=r.type==='catch'&&r.tripId?trips().find(x=>x.id===r.tripId):null;
   if(r.example){S.records=S.records.filter(x=>x.id!==id);await dbDel('records',id)}
@@ -1859,8 +1868,8 @@ async function createBackup(){
   setStatus('backup-status','Sicherung wird erstellt …');
   try{
     const recs=S.records.filter(r=>!r.example&&r.type!=='settings'),live=recs.filter(r=>!r.deleted).length;
-    const ids=new Set([...recs.filter(r=>r.type==='catch').flatMap(c=>c.photos||[]),...recs.filter(r=>r.type==='lure').flatMap(l=>lurePhotos(l))]);
-    const photos=[];for(const id of ids){const ph=await dbGet('photos',id);if(ph)photos.push({id:ph.id,catchId:ph.catchId,lureId:ph.lureId,meta:ph.meta||null,full:await blobToB64(ph.full),thumb:await blobToB64(ph.thumb)})}
+    const ids=new Set([...recs.filter(r=>r.type==='catch').flatMap(c=>c.photos||[]),...recs.filter(r=>r.type==='lure').flatMap(l=>lurePhotos(l)),...recs.filter(r=>r.type==='rod'||r.type==='reel').flatMap(g=>gearPhotos(g))]);
+    const photos=[];for(const id of ids){const ph=await dbGet('photos',id);if(ph)photos.push({id:ph.id,catchId:ph.catchId,lureId:ph.lureId,gearId:ph.gearId,meta:ph.meta||null,full:await blobToB64(ph.full),thumb:await blobToB64(ph.thumb)})}
     const data={app:'rute-und-revier-tagebuch',schema:2,created:new Date().toISOString(),records:recs,photos,prefs:{myTargets:myTargets(),customSpecies:customSpecies(),sections:settings().sections||null,homeState:flag.get('rr-home')||null}};
     let text=JSON.stringify(data);
     if(pw)text=JSON.stringify(await encryptText(text,pw));
@@ -1887,7 +1896,7 @@ async function restoreBackup(file){
   }
   if(!d||!Array.isArray(d.records))return setStatus('backup-status','Diese Datei ist keine Sicherung des Tagebuchs.','bad');
   let n=0,np=0;
-  for(const ph of d.photos||[]){if(!ph.id)continue;if(await dbGet('photos',ph.id))continue;await dbPut('photos',{id:ph.id,catchId:ph.catchId,lureId:ph.lureId,meta:ph.meta||null,full:b64ToBlob(ph.full),thumb:b64ToBlob(ph.thumb)});np++}
+  for(const ph of d.photos||[]){if(!ph.id)continue;if(await dbGet('photos',ph.id))continue;await dbPut('photos',{id:ph.id,catchId:ph.catchId,lureId:ph.lureId,gearId:ph.gearId,meta:ph.meta||null,full:b64ToBlob(ph.full),thumb:b64ToBlob(ph.thumb)});np++}
   for(const r of d.records){if(!r.id||!r.type||r.type==='settings')continue;const cur=S.records.find(x=>x.id===r.id);
     if(!cur||(r.updatedAt||'')>(cur.updatedAt||'')){await save(migrateCast(r)||r);n++}}
   /* Einstellungen: Arten werden zusammengeführt, Auswahl und Bereiche nur übernommen, wenn hier noch nichts gewählt ist */
@@ -1935,6 +1944,7 @@ document.addEventListener('click',async e=>{
     case 'edit-lure':openLureForm(lures().find(x=>x.id===id));break;
     case 'lure-targets-all':{const sel=$$('#l-targets input:checked').map(i=>i.value);S.lureTargetsAll=true;renderLureTargets(sel);break}
     case 'lure-filter':S.lureFilter=a.dataset.type;renderLures();break;
+    case 'rm-gear-photo':{const ph=S.gearPhotos.splice(Number(a.dataset.i),1)[0];if(ph&&!ph.isNew)S.gearPhotosRemoved.push(ph.id);renderGearPhoto();break}
     case 'rm-lure-photo':{const ph=S.lurePhotos.splice(Number(a.dataset.i),1)[0];if(ph&&!ph.isNew)S.lurePhotosRemoved.push(ph.id);renderLurePhoto();break}
     case 'lure-view':S.lureView=a.dataset.v;renderLures();break;
     case 'pick-lure-photo':{const ls=lures().filter(l=>(l.qty!==0&&isBait(l))||l.id===$('#c-lure').value).sort((x,y)=>x.name.localeCompare(y.name,'de'));$('#lurepick-grid').innerHTML=ls.length?ls.map(l=>lureTile(l,'pick-lure')).join(''):'<li class="empty" style="grid-column:1/-1"><b>Box ist leer</b>Leg zuerst Köder in der Köderbox an.</li>';hydratePhotos($('#lurepick-grid'));openSheet('sheet-lurepick');break}
@@ -1995,6 +2005,7 @@ $('#r-species').addEventListener('change',renderReco);
 $('#r-rods').addEventListener('change',()=>{setTodayRods($$('#r-rods input:checked').map(i=>i.value));renderReco()});
 $('#l-type').addEventListener('change',()=>{renderXTypes($$('#l-xtypes input:checked').map(i=>i.value));lureFormKind()});
 $('#set-targets').addEventListener('change',async()=>{await saveSettings({myTargets:$$('#set-targets input:checked').map(i=>i.value)});renderLures()});$('#r-clarity').addEventListener('change',renderReco);
+$('#g-file').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f||S.gearPhotos.length>=1)return;try{const img=await loadImg(f);const full=await reencode(img,1200,.82),thumb=await reencode(img,520,.78);S.gearPhotos.push({id:uid(),isNew:true,full,thumb,url:URL.createObjectURL(thumb)})}catch(err){toast('Foto konnte nicht gelesen werden')}renderGearPhoto()});
 $('#l-file').addEventListener('change',async e=>{const fs=[...e.target.files].slice(0,3-S.lurePhotos.length);e.target.value='';for(const f of fs){try{const img=await loadImg(f);const full=await reencode(img,1200,.82),thumb=await reencode(img,520,.78);S.lurePhotos.push({id:uid(),isNew:true,full,thumb,url:URL.createObjectURL(thumb)})}catch(err){toast('Foto konnte nicht gelesen werden')}}renderLurePhoto()});
 $('#c-lure').addEventListener('change',()=>{const l=lures().find(x=>x.id===$('#c-lure').value);if(l){$('#c-bait').value=l.name;if(l.rigId&&rigs().some(r=>r.id===l.rigId))$('#c-rigitem').value=l.rigId}});
 $('#c-bait').addEventListener('input',()=>{const l=lures().find(x=>x.id===$('#c-lure').value);if(l&&$('#c-bait').value.trim().toLowerCase()!==l.name.toLowerCase())$('#c-lure').value=''});
