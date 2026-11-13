@@ -1,7 +1,7 @@
 /* Service Worker: hält die App offline verfügbar.
    Eigene Dateien: aus dem Speicher, im Hintergrund aktualisiert.
    Wetter (Open-Meteo) und Kartenkacheln (OpenStreetMap): nur online, werden nicht gespeichert. */
-const CACHE = 'rur-tagebuch-0.9.3';
+const CACHE = 'rur-tagebuch-0.9.4';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'vendor/leaflet.js', 'fonts/fonts.css',
   'fonts/amatic-sc-latin-700-normal.woff2', 'fonts/cabin-sketch-latin-700-normal.woff2',
@@ -12,7 +12,8 @@ const SHELL = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  /* cache: 'reload' umgeht den HTTP-Cache des Browsers (GitHub Pages: 10 Minuten), sonst landet beim Update die alte index.html im neuen Speicher */
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL.map(u => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {

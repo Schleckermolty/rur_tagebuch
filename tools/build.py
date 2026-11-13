@@ -12,7 +12,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import daten
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-VERSION = "0.9.3"
+VERSION = "0.9.4"
 
 src = (ROOT / "src" / "app.html").read_text(encoding="utf-8")
 # Regeldaten aus daten/*.json als Rückfall-Kopie einbetten, Prüfübersicht erzeugen
@@ -65,7 +65,18 @@ body_start = src.index('<header class="top">')
 head_part, body_part = src[:body_start], src[body_start:]
 sw = f'''
 <script>
-if('serviceWorker' in navigator){{window.addEventListener('load',()=>{{navigator.serviceWorker.register('sw.js').catch(()=>{{}})}})}}
+if('serviceWorker' in navigator){{
+  /* Neue Version: Der neue Service Worker übernimmt sofort (skipWaiting), die offene Seite ist aber noch die alte.
+     Wechselt der Controller und gab es vorher schon einen, zeigt die App den Banner „Neue Version verfügbar“. */
+  const hadController=!!navigator.serviceWorker.controller;let shown=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{{if(!hadController||shown)return;shown=true;if(window.rurUpdateReady)window.rurUpdateReady()}});
+  window.addEventListener('load',()=>{{navigator.serviceWorker.register('sw.js').then(reg=>{{
+    /* Installierte Apps bleiben oft tagelang im Hintergrund offen: beim Zurückholen und stündlich nach Updates sehen */
+    const check=()=>{{if(navigator.onLine)reg.update().catch(()=>{{}})}};
+    document.addEventListener('visibilitychange',()=>{{if(document.visibilityState==='visible')check()}});
+    setInterval(check,36e5);
+  }}).catch(()=>{{}})}});
+}}
 </script>
 '''
 out = head + head_part + '</head>\n<body>\n' + body_part + sw + '</body>\n</html>\n'

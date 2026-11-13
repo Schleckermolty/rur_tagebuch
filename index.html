@@ -326,6 +326,10 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
 .plan .card{cursor:default}
 .plan .bd p{margin:0;color:var(--ink-2)}
 
+.update-bar{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:81;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--ink);color:var(--paper);padding:12px 14px;width:max-content;max-width:calc(100% - 32px);box-sizing:border-box;justify-content:flex-end;box-shadow:0 6px 24px rgba(0,0,0,.45);outline:2px solid var(--paper)}
+.update-bar p{margin:0;flex:1 1 100%;font-family:var(--f-meta);font-size:13px;letter-spacing:.08em}
+.update-bar .btn{border-color:var(--paper);color:var(--paper);min-height:44px}
+.update-bar .btn-primary{background:var(--paper);color:var(--ink)}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:80;background:var(--ink);color:var(--paper);padding:10px 18px;font-family:var(--f-meta);font-size:13px;letter-spacing:.08em;max-width:calc(100% - 32px)}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -448,7 +452,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
     <div class="view-head">
       <h1 class="display">Info</h1>
       <div class="brush" aria-hidden="true"></div>
-      <div class="meta">Version 0.9.3</div>
+      <div class="meta">Version 0.9.4</div>
     </div>
     <div class="info-grid">
       <article class="card"><div class="bd" style="gap:10px">
@@ -799,6 +803,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
 
 <datalist id="dl-species"></datalist><datalist id="dl-brand"></datalist><datalist id="dl-shop"></datalist><datalist id="dl-place"></datalist><datalist id="dl-bait"></datalist><datalist id="dl-rig"></datalist><datalist id="dl-leader"></datalist><datalist id="dl-water"></datalist>
 <div class="toast" id="toast" role="status" hidden></div>
+<div class="update-bar" id="update-bar" role="status" hidden><p>Neue Version verfügbar.</p><button type="button" class="btn btn-sm" data-act="update-later">Später</button><button type="button" class="btn btn-sm btn-primary" data-act="update-reload">Neu laden</button></div>
 
 <script src="vendor/leaflet.js"></script>
 <script>
@@ -1537,6 +1542,8 @@ function show(v){
 let sheetZ=60;
 function openSheet(id){const s=$('#'+id);s.style.zIndex=String(++sheetZ);s.hidden=false;document.body.classList.add('locked');s.scrollTop=0}
 function closeSheet(id){$('#'+id).hidden=true;if(!$$('.sheet').some(s=>!s.hidden))document.body.classList.remove('locked')}
+/* Update-Banner: wird vom Service-Worker-Code der installierten App aufgerufen. Kein automatisches Neuladen, damit offene Formulare nicht verloren gehen. */
+window.rurUpdateReady=()=>{$('#update-bar').hidden=false};
 function toast(msg){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2600)}
 function setStatus(id,msg,kind){const el=$('#'+id);el.textContent=msg||'';el.className='status'+(kind?' '+kind:'')}
 
@@ -1841,6 +1848,8 @@ document.addEventListener('click',async e=>{
   const sec=e.target.closest('[data-section]');if(sec){endPick();show(sec.dataset.section==='jagd'?'jagd':'faenge');return}
   const a=e.target.closest('[data-act]');if(!a)return;const id=a.dataset.id;
   switch(a.dataset.act){
+    case 'update-reload':location.reload();break;
+    case 'update-later':$('#update-bar').hidden=true;break;
     case 'new-catch':openCatchForm(null);break;
     case 'open-catch':openCatch(id);break;
     case 'edit-catch':openCatchForm(S.records.find(r=>r.id===id));break;
@@ -1960,7 +1969,18 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const open=$$
 </script>
 
 <script>
-if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})})}
+if('serviceWorker' in navigator){
+  /* Neue Version: Der neue Service Worker übernimmt sofort (skipWaiting), die offene Seite ist aber noch die alte.
+     Wechselt der Controller und gab es vorher schon einen, zeigt die App den Banner „Neue Version verfügbar“. */
+  const hadController=!!navigator.serviceWorker.controller;let shown=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!hadController||shown)return;shown=true;if(window.rurUpdateReady)window.rurUpdateReady()});
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').then(reg=>{
+    /* Installierte Apps bleiben oft tagelang im Hintergrund offen: beim Zurückholen und stündlich nach Updates sehen */
+    const check=()=>{if(navigator.onLine)reg.update().catch(()=>{})};
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')check()});
+    setInterval(check,36e5);
+  }).catch(()=>{})});
+}
 </script>
 </body>
 </html>
