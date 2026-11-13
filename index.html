@@ -454,7 +454,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
     <div class="view-head">
       <h1 class="display">Info</h1>
       <div class="brush" aria-hidden="true"></div>
-      <div class="meta">Version 0.9.7</div>
+      <div class="meta">Version 0.9.8</div>
     </div>
     <div class="info-grid">
       <article class="card"><div class="bd" style="gap:10px">
@@ -491,6 +491,15 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
         <h2>Meine Zielfische</h2>
         <p>Nur diese Arten erscheinen bei Tackle, im Köderformular und in der Köderempfehlung. Ohne Auswahl siehst du alle.</p>
         <div class="targets" id="set-targets"></div>
+        <h3 class="sub-h" style="margin:8px 0 0">Eigene Arten</h3>
+        <p class="hint" style="margin:0">Arten, die in der Liste fehlen. Sie erscheinen im Fangformular, bei Tackle und in der Empfehlung. Neue Arten aus dem Fangformular landen automatisch hier.</p>
+        <ul class="mini-list" id="set-species"></ul>
+        <div class="grid2">
+          <label class="f"><span>Art</span><input id="set-sp-name" autocomplete="off" placeholder="Kliesche"></label>
+          <label class="f"><span>Gewässer</span><select id="set-sp-water"><option>Süßwasser</option><option>Brackwasser</option><option>Meer</option></select></label>
+        </div>
+        <button type="button" class="btn btn-sm" data-act="add-species" style="align-self:flex-start">Art hinzufügen</button>
+        <p class="status" id="set-sp-status" role="status"></p>
       </div></article>
       <article class="card"><div class="bd" style="gap:10px">
         <h2>Schonzeiten &amp; Maße</h2>
@@ -847,7 +856,7 @@ const OTHER='__other';
 const WT=['Süßwasser','Brackwasser','Meer'];
 const getRadio=n=>{const r=document.querySelector(`input[name="${n}"]:checked`);return r?r.value:WT[0]};
 const setRadio=(n,v)=>{const r=document.querySelector(`input[name="${n}"][value="${WT.includes(v)?v:WT[0]}"]`);if(r)r.checked=true};
-function speciesWater(sp){if(FRESH.includes(sp))return'Süßwasser';if(SEA.includes(sp))return'Meer';const c=S.records.filter(r=>r.type==='catch'&&!r.deleted&&r.species===sp&&r.waterType).sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''))[0];return c?c.waterType:null}
+function speciesWater(sp){if(FRESH.includes(sp))return'Süßwasser';if(SEA.includes(sp))return'Meer';{const cu=customSpecies().find(x=>x.name===sp);if(cu&&cu.water)return cu.water}const c=S.records.filter(r=>r.type==='catch'&&!r.deleted&&r.species===sp&&r.waterType).sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''))[0];return c?c.waterType:null}
 const spotWater=sp=>sp?(sp.waterType||'Süßwasser'):null;
 const RIGS=['Texas Rig','Carolina Rig','Dropshot','Jigkopf','Free Rig','Wobbler','Spinner','Spinnerbait','Köderfisch','Pose','Grundmontage'];
 const BAITS=['Nays CRW 35','Craby Lui'];
@@ -933,7 +942,10 @@ const settings=()=>S.records.find(r=>r.id===SET_ID)||{id:SET_ID,type:'settings',
 async function saveSettings(patch){const cur=settings();const n={...cur,...patch,updatedAt:new Date().toISOString()};await save(n);return n}
 const sections=()=>settings().sections||'both';
 const myTargets=()=>settings().myTargets||[];
-const allSpecies=()=>[...new Set([...Object.keys(PROFILE),...catches().map(c=>c.species),...lures().flatMap(l=>l.targets||[]),...myTargets()])].filter(Boolean).sort((a,b)=>a.localeCompare(b,'de'));
+/* Eigene Arten: zentrale Liste [{name,water}], ergänzt Süß- und Meeresarten. Liegt in den Einstellungen und geht mit ins Backup. */
+const customSpecies=()=>(settings().customSpecies||[]).filter(x=>x&&x.name);
+const customNames=()=>customSpecies().map(x=>x.name);
+const allSpecies=()=>[...new Set([...Object.keys(PROFILE),...customNames(),...catches().map(c=>c.species),...lures().flatMap(l=>l.targets||[]),...myTargets()])].filter(Boolean).sort((a,b)=>a.localeCompare(b,'de'));
 const allowed=sec=>sections()==='both'||sections()===sec;
 const realRecords=()=>S.records.filter(r=>!r.example&&!r.deleted&&r.type!=='settings');
 const lures=()=>S.records.filter(r=>r.type==='lure'&&!r.deleted);
@@ -1617,9 +1629,9 @@ function openCatchForm(c,pre){
   S.formPhotos=(c&&c.photos||[]).map(id=>({id,isNew:false,url:null}));
   $('#sc-title').textContent=c?'Fang bearbeiten':'Fang eintragen';
   const opts=a=>a.map(s=>`<option>${esc(s)}</option>`).join('');
-  $('#c-species').innerHTML=`<option value="">Art wählen</option><optgroup label="Süßwasser">${opts(FRESH)}</optgroup><optgroup label="Meer">${opts(SEA)}</optgroup><option value="${OTHER}">Sonstige (Name eintragen)</option>`;
+  $('#c-species').innerHTML=`<option value="">Art wählen</option><optgroup label="Süßwasser">${opts(FRESH)}</optgroup><optgroup label="Meer">${opts(SEA)}</optgroup>${customNames().length?`<optgroup label="Eigene Arten">${opts([...customNames()].sort((a,b)=>a.localeCompare(b,'de')))}</optgroup>`:''}<option value="${OTHER}">Sonstige (Name eintragen)</option>`;
   const w=(c&&c.wx)||{};
-  const known=c&&SPECIES.includes(c.species);
+  const known=c&&(SPECIES.includes(c.species)||customNames().includes(c.species));
   $('#c-species').value=c?(known?c.species:OTHER):'';
   $('#c-other').value=c&&!known?c.species:'';
   $('#c-other-wrap').hidden=!(c&&!known);$('#c-wt-wrap').hidden=!(c&&!known);setRadio('c-wt',c&&!known?c.waterType||speciesWater(c.species):'Süßwasser');
@@ -1691,7 +1703,7 @@ async function submitCatch(e){
   err.hidden=true;
   const old=S.editCatch?S.records.find(r=>r.id===S.editCatch):null;
   const c=old?{...old}:{id:uid(),type:'catch',tripId:S.prefTrip||null};const prevTrip=old?old.tripId:null;
-  Object.assign(c,{species,waterType:$('#c-species').value===OTHER?getRadio('c-wt'):null,dt,lengthCm:parseNum($('#c-length').value),weightKg:parseNum($('#c-weight').value),released:$('#c-rel').checked,
+  Object.assign(c,{species,waterType:$('#c-species').value===OTHER?getRadio('c-wt'):customNames().includes(species)?speciesWater(species):null,dt,lengthCm:parseNum($('#c-length').value),weightKg:parseNum($('#c-weight').value),released:$('#c-rel').checked,
     spotId:$('#c-spot').value||null,method:$('#c-method').value||null,water:$('#c-water').value.trim(),lat:co?co.lat:null,lon:co?co.lon:null,
     lureId:$('#c-lure').value||null,rigId:$('#c-rigitem').value||null,rodId:$('#c-rod').value||null,spoolId:$('#c-spool').value||null,reelId:(spools().find(x=>x.id===$('#c-spool').value)||{}).reelId||null,bait:$('#c-bait').value.trim(),rig:$('#c-rig').value.trim(),leader:$('#c-leader').value.trim(),depthM:parseNum($('#c-depth').value),
     wx:{pressure:parseNum($('#c-pressure').value),trend:$('#c-trend').value||null,temp:parseNum($('#c-temp').value),wind:parseNum($('#c-wind').value),windDir:$('#c-winddir').value||null,sky:$('#c-sky').value||null,waterTemp:parseNum($('#c-watertemp').value),clarity:$('#c-clarity').value||null,source:S.wxSource||'manuell'},
@@ -1699,6 +1711,7 @@ async function submitCatch(e){
   for(const p of S.formPhotos.filter(p=>p.isNew))await dbPut('photos',{id:p.id,catchId:c.id,full:p.full,thumb:p.thumb,meta:p.meta||null});
   for(const id of S.removedPhotos)await dbDel('photos',id);
   c.photos=S.formPhotos.map(p=>p.id);
+  if($('#c-species').value===OTHER&&species&&!SPECIES.includes(species)&&!customNames().includes(species))await saveSettings({customSpecies:[...customSpecies(),{name:species,water:getRadio('c-wt')}]});
   stamp(c,!old);await save(c);
   if(!c.example)await assignTrip(S.records.find(r=>r.id===c.id),prevTrip);
   closeSheet('sheet-catch');
@@ -1867,7 +1880,7 @@ async function createBackup(){
     const recs=S.records.filter(r=>!r.example&&r.type!=='settings'),live=recs.filter(r=>!r.deleted).length;
     const ids=new Set([...recs.filter(r=>r.type==='catch').flatMap(c=>c.photos||[]),...recs.filter(r=>r.type==='lure').flatMap(l=>lurePhotos(l))]);
     const photos=[];for(const id of ids){const ph=await dbGet('photos',id);if(ph)photos.push({id:ph.id,catchId:ph.catchId,lureId:ph.lureId,meta:ph.meta||null,full:await blobToB64(ph.full),thumb:await blobToB64(ph.thumb)})}
-    const data={app:'rute-und-revier-tagebuch',schema:2,created:new Date().toISOString(),records:recs,photos,prefs:{myTargets:myTargets()}};
+    const data={app:'rute-und-revier-tagebuch',schema:2,created:new Date().toISOString(),records:recs,photos,prefs:{myTargets:myTargets(),customSpecies:customSpecies(),sections:settings().sections||null,homeState:flag.get('rr-home')||null}};
     let text=JSON.stringify(data);
     if(pw)text=JSON.stringify(await encryptText(text,pw));
     const day=localDT(new Date()).slice(0,10),name=`rur-sicherung-${day}${pw?'-verschluesselt':''}.json`;
@@ -1896,10 +1909,17 @@ async function restoreBackup(file){
   for(const ph of d.photos||[]){if(!ph.id)continue;if(await dbGet('photos',ph.id))continue;await dbPut('photos',{id:ph.id,catchId:ph.catchId,lureId:ph.lureId,meta:ph.meta||null,full:b64ToBlob(ph.full),thumb:b64ToBlob(ph.thumb)});np++}
   for(const r of d.records){if(!r.id||!r.type||r.type==='settings')continue;const cur=S.records.find(x=>x.id===r.id);
     if(!cur||(r.updatedAt||'')>(cur.updatedAt||'')){await save(migrateCast(r)||r);n++}}
-  if(d.prefs&&Array.isArray(d.prefs.myTargets)&&d.prefs.myTargets.length&&!myTargets().length)await saveSettings({myTargets:d.prefs.myTargets});
-  renderAll();setStatus('backup-status',`Eingelesen: ${n} ${n===1?'Eintrag':'Einträge'} und ${np} ${np===1?'Foto':'Fotos'} übernommen.${n?'':' Alles war schon auf dem neuesten Stand.'}`,'good');
+  /* Einstellungen: Arten werden zusammengeführt, Auswahl und Bereiche nur übernommen, wenn hier noch nichts gewählt ist */
+  let np2=0;if(d.prefs){const pr=d.prefs,patch={};
+    if(Array.isArray(pr.customSpecies)){const have=new Set(customNames().map(x=>x.toLowerCase())),add=pr.customSpecies.filter(x=>x&&x.name&&!have.has(x.name.toLowerCase())&&!SPECIES.includes(x.name));if(add.length){patch.customSpecies=[...customSpecies(),...add];np2+=add.length}}
+    if(Array.isArray(pr.myTargets)&&pr.myTargets.length&&!myTargets().length){patch.myTargets=pr.myTargets;np2++}
+    if(pr.sections&&['angeln','jagd','both'].includes(pr.sections)&&(!settings().sections||settings().sections==='both')&&pr.sections!==settings().sections){patch.sections=pr.sections;np2++}
+    if(Object.keys(patch).length)await saveSettings(patch);
+    if(pr.homeState&&!flag.get('rr-home')&&RULES[pr.homeState]){homeMem=pr.homeState;flag.set('rr-home',pr.homeState);np2++}}
+  renderAll();renderSettings();setStatus('backup-status',`Eingelesen: ${n} ${n===1?'Eintrag':'Einträge'} und ${np} ${np===1?'Foto':'Fotos'} übernommen${np2?', dazu Einstellungen':''}.${n?'':' Alles war schon auf dem neuesten Stand.'}`,'good');
 }
 function renderSettings(){const v=sections();const r=document.querySelector(`input[name="set-sec"][value="${v}"]`);if(r)r.checked=true;
+  $('#set-species').innerHTML=customSpecies().length?customSpecies().map(x=>`<li><span>${esc(x.name)} <small>${esc(x.water||'')}</small></span><button type="button" class="btn btn-sm" data-act="rm-species" data-id="${esc(x.name)}" aria-label="${esc(x.name)} entfernen">Entfernen</button></li>`).join(''):'<li class="hint">Noch keine eigenen Arten.</li>';
   const mt=myTargets();$('#set-targets').innerHTML=allSpecies().map(x=>`<label><input type="checkbox" value="${esc(x)}" ${mt.includes(x)?'checked':''}>${esc(x)}</label>`).join('')}
 
 /* ---------- Ereignisse ---------- */
@@ -1939,6 +1959,11 @@ document.addEventListener('click',async e=>{
     case 'pick-lure-photo':{const ls=lures().filter(l=>(l.qty!==0&&isBait(l))||l.id===$('#c-lure').value).sort((x,y)=>x.name.localeCompare(y.name,'de'));$('#lurepick-grid').innerHTML=ls.length?ls.map(l=>lureTile(l,'pick-lure')).join(''):'<li class="empty" style="grid-column:1/-1"><b>Box ist leer</b>Leg zuerst Köder in der Köderbox an.</li>';hydratePhotos($('#lurepick-grid'));openSheet('sheet-lurepick');break}
     case 'pick-lure':{const l=lures().find(x=>x.id===id);if(l){$('#c-lure').value=l.id;$('#c-bait').value=l.name;if(l.rigId&&rigs().some(r=>r.id===l.rigId))$('#c-rigitem').value=l.rigId}closeSheet('sheet-lurepick');break}
     case 'lure-lost':{const l=lures().find(x=>x.id===id);if(!l||l.qty===0)break;const u={...l,qty:l.qty==null?null:Math.max(0,l.qty-1),lost:[...(l.lost||[]),localDT(new Date()).slice(0,10)]};stamp(u);await save(u);renderAll();openLure(id);toast(u.qty===0?'Verloren. Bestand ist jetzt leer.':'Verlust eingetragen');break}
+    case 'add-species':{const n=$('#set-sp-name').value.trim().replace(/\s+/g,' '),w=$('#set-sp-water').value;
+      if(!n){setStatus('set-sp-status','Bitte einen Namen eintragen.','bad');break}
+      const dup=[...SPECIES,...customNames()].find(x=>x.toLowerCase()===n.toLowerCase());if(dup){setStatus('set-sp-status',`${dup} gibt es schon.`,'bad');break}
+      await saveSettings({customSpecies:[...customSpecies(),{name:n,water:w}],myTargets:myTargets().length?[...myTargets(),n]:myTargets()});$('#set-sp-name').value='';setStatus('set-sp-status',`${n} hinzugefügt.`,'good');renderAll();break}
+    case 'rm-species':{await saveSettings({customSpecies:customSpecies().filter(x=>x.name!==id)});setStatus('set-sp-status',`${id} entfernt. Fänge mit dieser Art bleiben erhalten.`);renderAll();break}
     case 'pick-sec':await saveSettings({sections:a.dataset.sec});closeSheet('sheet-welcome');renderSettings();show(a.dataset.sec==='jagd'?'jagd':'faenge');break;
     case 'create-backup':createBackup();break;
     case 'goto-backup':show('info');setTimeout(()=>$('#backup-card').scrollIntoView({block:'start'}),50);break;
