@@ -452,7 +452,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
     <div class="view-head">
       <h1 class="display">Info</h1>
       <div class="brush" aria-hidden="true"></div>
-      <div class="meta">Version 0.9.4</div>
+      <div class="meta">Version 0.9.5</div>
     </div>
     <div class="info-grid">
       <article class="card"><div class="bd" style="gap:10px">
@@ -710,11 +710,13 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
   <form id="form-gear" novalidate>
     <div class="sheet-body">
       <fieldset data-kinds="rod reel"><legend id="g-legend">Rute</legend>
-        <label class="f"><span>Modell</span><input id="g-name" autocomplete="off" placeholder="Daiwa Sensitip"></label>
+        <label class="f"><span>Modell</span><input id="g-name" autocomplete="off" placeholder="Sensitip"></label>
         <div class="grid2">
           <label class="f"><span>Hersteller</span><input id="g-brand" list="dl-brand" autocomplete="off" placeholder="Daiwa"></label>
           <label class="f" data-kinds="rod"><span>Länge (m)</span><input id="g-length" inputmode="decimal" autocomplete="off" placeholder="2,40"></label>
-          <label class="f" data-kinds="rod"><span>Wurfgewicht</span><input id="g-cast" autocomplete="off" placeholder="2–14 g"></label>
+          <label class="f" data-kinds="rod"><span>Wurfgewicht von (g)</span><input id="g-cmin" inputmode="decimal" autocomplete="off" placeholder="2"></label>
+          <label class="f" data-kinds="rod"><span>Wurfgewicht bis (g)</span><input id="g-cmax" inputmode="decimal" autocomplete="off" placeholder="14"></label>
+          <p class="hint" data-kinds="rod" id="g-cast-old" hidden style="grid-column:1/-1;margin:0"></p>
           <label class="f" data-kinds="reel"><span>Größe</span><input id="g-size" autocomplete="off" placeholder="2500"></label>
           <label class="f" data-kinds="reel"><span>Übersetzung</span><input id="g-ratio" autocomplete="off" placeholder="5,2:1"></label>
         </div>
@@ -848,8 +850,15 @@ const LURE_TYPES=[['Gummifisch','Gummifisch / Shad'],['Twister'],['Creature / Kr
 const SOFT_TYPES=['Gummifisch','Twister','Creature / Krebs','Finesse / No-Action'];
 const lureTypesOf=l=>[l.lureType,...(l.extraTypes||[])].filter((x,i,a)=>x&&a.indexOf(x)===i);
 const safeUrl=u=>/^https?:\/\/[^\s]+$/i.test(u||'')?u:'';
-function parseCast(t){if(!t)return null;const n=(String(t).match(/\d+(?:[.,]\d+)?/g)||[]).map(x=>parseFloat(x.replace(',','.')));
-  if(n.length>=2)return{min:Math.min(n[0],n[1]),max:Math.max(n[0],n[1])};if(n.length===1)return{min:0,max:n[0]};return null}
+/* Wurfgewicht: gespeichert als castMin/castMax in g. parseCast liest alte Textangaben („2–14 g“, „bis 40 g“, „1/4–3/4 oz“) für die Umstellung. */
+function parseCast(t){if(!t)return null;const str=String(t),oz=/oz|unze/i.test(str)&&!/\bg\b|gr\b|gramm/i.test(str);
+  const n=(str.match(/\d+\s*\/\s*\d+|\d+(?:[.,]\d+)?/g)||[]).map(x=>x.includes('/')?(([a,b])=>a/b)(x.split('/').map(Number)):parseFloat(x.replace(',','.'))).map(v=>oz?Math.round(v*28.35*10)/10:v);
+  if(n.length>=2)return{min:Math.min(n[0],n[1]),max:Math.max(n[0],n[1]),oz};if(n.length===1)return{min:0,max:n[0],oz};return null}
+function castOf(r){if(!r)return null;if(r.castMax!=null)return{min:r.castMin??0,max:r.castMax};return null}
+function castTxt(r){const c=castOf(r);if(!c)return r&&r.cast?r.cast:'';return (c.min?fmtN(c.min)+'–':'bis ')+fmtN(c.max)+' g'}
+/* Einmalige Umstellung alter Ruten. Kein neuer Zeitstempel, es ändert sich nur das Format. Unlesbares bleibt als Text und wird markiert. */
+function migrateCast(r){if(r.type!=='rod'||r.castMax!=null||!r.cast)return null;const c=parseCast(r.cast);if(!c)return null;
+  const u={...r,castMin:c.min||null,castMax:c.max};if(c.oz)u.castFrom=r.cast;delete u.cast;return u}
 const PROFILE={
   Zander:{t:['Gummifisch','Twister','Creature / Krebs','Finesse / No-Action','Jig','Wobbler'],min:7,max:13},
   Barsch:{t:['Gummifisch','Twister','Creature / Krebs','Finesse / No-Action','Spinner','Wobbler','Jig','Chatterbait'],min:3,max:9},
@@ -1076,7 +1085,7 @@ function examples(){
     {...base,id:'ex-spot-2',type:'spot',name:'Nidda-Mündung',water:'Main / Nidda',lat:50.0968,lon:8.5497,note:'Barsche im Kehrwasser der Mündung.'},
     {...base,id:'ex-c-1',type:'catch',rodId:'ex-rod-1',spoolId:'ex-sp-1',tripId:'ex-t-1',species:'Zander',dt:'2026-09-26T19:40',lengthCm:58,weightKg:1.65,released:false,spotId:'ex-spot-1',water:'Main',lat:50.0632,lon:8.5285,bait:'Nays CRW 35',rig:'Texas Rig',leader:'Fluorocarbon 0,30 mm',depthM:3.5,wx:{pressure:1016,trend:'fallend',temp:14,wind:11,windDir:'SW',sky:'bewölkt',waterTemp:16,clarity:'angetrübt',source:'Beispiel'},note:'Biss in der Absinkphase direkt an der Kante.',photos:[]},
     {...base,id:'ex-c-2',type:'catch',rodId:'ex-rod-1',spoolId:'ex-sp-1',tripId:'ex-t-2',species:'Barsch',dt:'2026-09-20T08:15',lengthCm:32,weightKg:.42,released:true,spotId:'ex-spot-2',water:'Main / Nidda',lat:50.0968,lon:8.5497,bait:'Craby Lui',rig:'Carolina Rig',leader:'Fluorocarbon 0,25 mm',depthM:2,wx:{pressure:1022,trend:'stabil',temp:11,wind:6,windDir:'O',sky:'heiter',waterTemp:17,clarity:'klar',source:'Beispiel'},note:'',photos:[]},
-    {...base,id:'ex-rod-1',type:'rod',name:'Sensitip',brand:'Daiwa',length:2.4,cast:'2–14 g',bought:'2008-04-01',shop:'',price:null,note:'Für Texas und Carolina Rig.'},
+    {...base,id:'ex-rod-1',type:'rod',name:'Sensitip',brand:'Daiwa',length:2.4,castMin:2,castMax:14,bought:'2008-04-01',shop:'',price:null,note:'Für Texas und Carolina Rig.'},
     {...base,id:'ex-reel-1',type:'reel',name:'Spinnrolle 2500',brand:'',size:'2500',ratio:'',bought:'2015-05-01',shop:'',price:null,note:''},
     {...base,id:'ex-sp-1',type:'spool',reelId:'ex-reel-1',label:'Hauptspule',lineType:'Geflecht',lineName:'8-fach Geflecht',diameter:0.1,load:6.8,lineLength:150,since:'2024-05-10',lineBought:'2024-05-01',interval:24,shop:'',price:null,note:'',history:[]},
     {...base,id:'ex-sp-2',type:'spool',reelId:'ex-reel-1',label:'Ersatzspule',lineType:'Fluorocarbon',lineName:'Fluorocarbon 0,30',diameter:0.3,load:6.2,lineLength:150,since:'2025-11-20',lineBought:'2023-03-01',interval:18,shop:'',price:null,note:'',history:[]},
@@ -1301,8 +1310,8 @@ function renderReco(){
 function monthsAgo(d){const m=Math.floor((Date.now()-new Date(d+'T12:00').getTime())/(30.44*864e5));return m<1?'':m===1?' (vor 1 Monat)':` (vor ${m} Monaten)`}
 function rodFit(l){
   if(l.weight==null||l.lureType==='Zubehör')return'';
-  const rs=rods().map(r=>({r,c:parseCast(r.cast)})).filter(x=>x.c);if(!rs.length)return'';
-  const w=l.weight,ok=rs.filter(x=>w>=x.c.min&&w<=x.c.max),nm=x=>[x.r.brand,x.r.name].filter(Boolean).join(' ')+` (${x.r.cast})`;
+  const rs=rods().map(r=>({r,c:castOf(r)})).filter(x=>x.c);if(!rs.length)return'';
+  const w=l.weight,ok=rs.filter(x=>w>=x.c.min&&w<=x.c.max),nm=x=>[x.r.brand,x.r.name].filter(Boolean).join(' ')+` (${castTxt(x.r)})`;
   const soft=lureTypesOf(l).some(t=>SOFT_TYPES.includes(t))?' · Gewicht ohne Jigkopf':'';
   return fact('Passt zur Rute',esc(ok.length?ok.map(nm).join(', ')+soft:`keine Rute für ${fmtN(w)} g`+soft));
 }
@@ -1401,7 +1410,7 @@ const fmtMm=v=>v.toFixed(2).replace('.',',');
 const lineDesc=sp=>[sp.lineType,sp.lineName,sp.diameter!=null?fmtMm(sp.diameter)+' mm':'',sp.load!=null?fmtN(sp.load)+' kg':'',sp.lineLength?sp.lineLength+' m':''].filter(Boolean).join(' · ');
 const gearCatches=(k,id)=>catches().filter(c=>c[k]===id);
 function rodCard(r){const n=gearCatches('rodId',r.id).length;
-  return `<li><button type="button" class="card" data-act="open-gear" data-id="${esc(r.id)}">${r.example?'<span class="stamp">BEISPIEL</span>':''}<div class="bd"><h3>${esc([r.brand,r.name].filter(Boolean).join(' '))}</h3><div class="meta">${esc([r.length!=null?fmtN(r.length,2)+' m':'',r.cast].filter(Boolean).join(' · '))}</div><div class="lure-stats"><span>${n} ${n===1?'Fang':'Fänge'}</span>${r.bought?`<span>seit ${esc(r.bought.slice(0,4))}</span>`:''}</div></div></button></li>`}
+  return `<li><button type="button" class="card" data-act="open-gear" data-id="${esc(r.id)}">${r.example?'<span class="stamp">BEISPIEL</span>':''}<div class="bd"><h3>${esc([r.brand,r.name].filter(Boolean).join(' '))}</h3><div class="meta">${esc([r.length!=null?fmtN(r.length,2)+' m':'',castTxt(r)].filter(Boolean).join(' · '))}</div><div class="lure-stats"><span>${n} ${n===1?'Fang':'Fänge'}</span>${r.bought?`<span>seit ${esc(r.bought.slice(0,4))}</span>`:''}</div></div></button></li>`}
 function reelCard(r){const sps=spoolsOf(r.id),n=gearCatches('reelId',r.id).length+sps.reduce((s,x)=>s+gearCatches('spoolId',x.id).length,0);
   return `<li><div class="card" style="cursor:default">${r.example?'<span class="stamp">BEISPIEL</span>':''}<div class="bd"><h3>${esc([r.brand,r.name].filter(Boolean).join(' '))}</h3><div class="meta">${esc([r.size?'Größe '+r.size:'',r.ratio].filter(Boolean).join(' · '))} · ${n} ${n===1?'Fang':'Fänge'}</div>
     <div class="spools">${sps.map(sp=>{const st=spoolState(sp);return `<button type="button" class="spool ${st.st}" style="border-top:0;border-right:0;border-bottom:0;text-align:left;cursor:pointer;width:100%" data-act="open-gear" data-id="${esc(sp.id)}"><span>${esc(sp.label||'Spule')}<small>${esc(lineDesc(sp))}</small><small>${esc(st.text)}</small></span><span class="lstate ${st.st}">${esc(st.label)}</span></button>`}).join('')||'<span class="hint">Noch keine Spule angelegt.</span>'}</div>
@@ -1432,7 +1441,7 @@ function openGear(id){
   }else{const key=k==='rod'?'rodId':'reelId';let cs=gearCatches(key,g.id);if(k==='reel')cs=[...cs,...spoolsOf(g.id).flatMap(sp=>gearCatches('spoolId',sp.id))];
     const bySp={};cs.forEach(c=>bySp[c.species]=(bySp[c.species]||0)+1);
     body=`<h3 class="detail-title">${esc([g.brand,g.name].filter(Boolean).join(' '))}</h3><div class="meta">${gearKindName(k)}${g.example?' · Beispiel':''}</div>
-      <dl class="facts">${k==='rod'?fact('Länge',g.length!=null?fmtN(g.length,2)+' m':'')+fact('Wurfgewicht',esc(g.cast)):fact('Größe',esc(g.size))+fact('Übersetzung',esc(g.ratio))+fact('Spulen',spoolsOf(g.id).map(sp=>esc((sp.label||'Spule')+': '+lineDesc(sp))).join('<br>'))}
+      <dl class="facts">${k==='rod'?fact('Länge',g.length!=null?fmtN(g.length,2)+' m':'')+fact('Wurfgewicht',esc(castTxt(g))+(g.cast&&!castOf(g)?' <small>(bitte als Zahlen in g eintragen)</small>':'')+(g.castFrom?` <small>(umgerechnet aus ${esc(g.castFrom)})</small>`:'')):fact('Größe',esc(g.size))+fact('Übersetzung',esc(g.ratio))+fact('Spulen',spoolsOf(g.id).map(sp=>esc((sp.label||'Spule')+': '+lineDesc(sp))).join('<br>'))}
       ${fact('Gekauft',esc([g.bought?fmtDate(g.bought+'T12:00'):'',g.shop].filter(Boolean).join(' · ')))}${fact('Preis',g.price!=null?fmtEuro(g.price):'')}
       ${fact('Fänge',cs.length?Object.entries(bySp).map(([a,n])=>`${n}× ${esc(a)}`).join(', '):'noch keine')}</dl>
       ${g.note?`<div class="notebox">${esc(g.note)}</div>`:''}
@@ -1451,7 +1460,7 @@ function openGearForm(kind,g,reelId){
   $('#sg-title').textContent=(g?gearKindName(kind)+' bearbeiten':gearKindName(kind)+' anlegen');$('#g-legend').textContent=gearKindName(kind);
   $$('#form-gear [data-kinds]').forEach(el=>el.hidden=!el.dataset.kinds.split(' ').includes(kind));
   const v=(id,x)=>{$(id).value=x==null?'':x};
-  v('#g-name',g&&g.name);v('#g-brand',g&&g.brand);v('#g-length',g&&g.length!=null?fmtN(g.length,2):'');v('#g-cast',g&&g.cast);v('#g-size',g&&g.size);v('#g-ratio',g&&g.ratio);
+  v('#g-name',g&&g.name);v('#g-brand',g&&g.brand);v('#g-length',g&&g.length!=null?fmtN(g.length,2):'');{const c=castOf(g);v('#g-cmin',c&&c.min?fmtN(c.min):'');v('#g-cmax',c?fmtN(c.max):'');const o=$('#g-cast-old'),t=g&&g.cast&&!c?g.cast:'';o.hidden=!t;o.textContent=t?`Bisher als Text: „${t}“. Bitte von und bis in g eintragen.`:''}v('#g-size',g&&g.size);v('#g-ratio',g&&g.ratio);
   v('#g-label',g?g.label:(kind==='spool'?(spoolsOf(reelId).length?'Ersatzspule':'Hauptspule'):''));$('#g-ltype').value=g&&g.lineType||'Geflecht';v('#g-lname',g&&g.lineName);v('#g-diam',g&&g.diameter!=null?fmtN(g.diameter,2):'');v('#g-load',g&&g.load!=null?fmtN(g.load):'');v('#g-llen',g&&g.lineLength);
   v('#g-interval',g&&g.interval&&g.interval!==LINE_DEFAULT[g.lineType]?g.interval:'');v('#g-since',g?g.since:localDT(new Date()).slice(0,10));v('#g-lbought',g&&g.lineBought);
   v('#g-bought',g&&g.bought);v('#g-shop',g&&g.shop);v('#g-price',g&&g.price!=null?fmtN(g.price,2):'');v('#g-note',g&&g.note);
@@ -1467,7 +1476,12 @@ async function submitGear(e){
   }else{
     const name=$('#g-name').value.trim();if(!name)return fail('Bitte das Modell angeben.');
     Object.assign(g,{name,brand:$('#g-brand').value.trim(),bought:$('#g-bought').value||null});
-    if(kind==='rod')Object.assign(g,{length:parseNum($('#g-length').value),cast:$('#g-cast').value.trim()});
+    if(kind==='rod'){let mn=parseNum($('#g-cmin').value),mx=parseNum($('#g-cmax').value);
+      if((mn!=null&&mn<0)||(mx!=null&&mx<=0))return fail('Wurfgewicht bitte als positive Zahl in g.');
+      if(mn!=null&&mx==null)return fail('Bitte auch das maximale Wurfgewicht angeben.');
+      if(mn!=null&&mx!=null&&mn>mx)[mn,mx]=[mx,mn];
+      Object.assign(g,{length:parseNum($('#g-length').value),castMin:mn||null,castMax:mx});
+      if(mx!=null||!$('#g-cast-old').textContent){delete g.cast;delete g.castFrom}}
     else Object.assign(g,{size:$('#g-size').value.trim(),ratio:$('#g-ratio').value.trim()});
   }
   Object.assign(g,{shop:$('#g-shop').value.trim(),price:parseNum($('#g-price').value),note:$('#g-note').value.trim()});
@@ -1476,7 +1490,7 @@ async function submitGear(e){
   toast(gearKindName(kind)+(old?' aktualisiert':' gespeichert'));
 }
 function fillGearSelects(rodId,spoolId){
-  $('#c-rod').innerHTML='<option value="">–</option>'+rods().map(r=>`<option value="${esc(r.id)}">${esc([r.brand,r.name].filter(Boolean).join(' '))}${r.cast?' · '+esc(r.cast):''}</option>`).join('');
+  $('#c-rod').innerHTML='<option value="">–</option>'+rods().map(r=>`<option value="${esc(r.id)}">${esc([r.brand,r.name].filter(Boolean).join(' '))}${castTxt(r)?' · '+esc(castTxt(r)):''}</option>`).join('');
   $('#c-spool').innerHTML='<option value="">–</option>'+reels().map(r=>spoolsOf(r.id).map(sp=>`<option value="${esc(sp.id)}">${esc(r.name)} · ${esc(sp.label||'Spule')} (${esc([sp.lineType,sp.diameter!=null?fmtMm(sp.diameter)+' mm':''].filter(Boolean).join(' '))})</option>`).join('')).join('');
   $('#c-rod').value=rodId||'';$('#c-spool').value=spoolId||'';
 }
@@ -1835,7 +1849,7 @@ async function restoreBackup(file){
   let n=0,np=0;
   for(const ph of d.photos||[]){if(!ph.id)continue;if(await dbGet('photos',ph.id))continue;await dbPut('photos',{id:ph.id,catchId:ph.catchId,lureId:ph.lureId,meta:ph.meta||null,full:b64ToBlob(ph.full),thumb:b64ToBlob(ph.thumb)});np++}
   for(const r of d.records){if(!r.id||!r.type||r.type==='settings')continue;const cur=S.records.find(x=>x.id===r.id);
-    if(!cur||(r.updatedAt||'')>(cur.updatedAt||'')){await save(r);n++}}
+    if(!cur||(r.updatedAt||'')>(cur.updatedAt||'')){await save(migrateCast(r)||r);n++}}
   if(d.prefs&&Array.isArray(d.prefs.myTargets)&&d.prefs.myTargets.length&&!myTargets().length)await saveSettings({myTargets:d.prefs.myTargets});
   renderAll();setStatus('backup-status',`Eingelesen: ${n} ${n===1?'Eintrag':'Einträge'} und ${np} ${np===1?'Foto':'Fotos'} übernommen.${n?'':' Alles war schon auf dem neuesten Stand.'}`,'good');
 }
@@ -1950,6 +1964,7 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const open=$$
 (async function init(){
   try{DB.db=await idbOpen()}catch(e){DB.db=null}
   S.records=await dbAll('records');
+  for(const r of S.records){const u=migrateCast(r);if(u)await save(u)}
   if(!S.records.length&&!flag.get('rr-seeded')){for(const r of examples())await dbPut('records',r);S.records=examples();flag.set('rr-seeded','1')}
   /* Migration: Beispiel-Angeltage ergänzen, echte Fänge ohne Angeltag zuordnen */
   if(S.records.some(r=>r.id==='ex-c-1')&&!S.records.some(r=>r.id==='ex-t-1')){
