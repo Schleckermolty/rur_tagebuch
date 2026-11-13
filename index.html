@@ -326,6 +326,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
 .plan .card{cursor:default}
 .plan .bd p{margin:0;color:var(--ink-2)}
 
+.linkish{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer;min-height:0}
 .update-bar{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:81;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--ink);color:var(--paper);padding:12px 14px;width:max-content;max-width:calc(100% - 32px);box-sizing:border-box;justify-content:flex-end;box-shadow:0 6px 24px rgba(0,0,0,.45);outline:2px solid var(--paper)}
 .update-bar p{margin:0;flex:1 1 100%;font-family:var(--f-meta);font-size:13px;letter-spacing:.08em}
 .update-bar .btn{border-color:var(--paper);color:var(--paper);min-height:44px}
@@ -435,6 +436,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
         <label class="f"><span>Zielfisch</span><select id="r-species"></select></label>
         <label class="f"><span>Wasser</span><select id="r-clarity"><option value="">egal</option><option>klar</option><option>angetrübt</option><option>trüb</option></select></label>
       </div>
+      <div class="f" id="r-rods-f" hidden><span class="lbl">Heute dabei</span><div class="targets" id="r-rods"></div><small class="hint" id="r-rods-hint" hidden></small></div>
       <div id="r-out"></div>
     </div>
     <div style="margin-top:16px"><button type="button" class="btn btn-primary" data-act="new-lure">+ Köder anlegen</button></div>
@@ -452,7 +454,7 @@ textarea.backup{width:100%;min-height:110px;font-family:var(--f-meta);font-size:
     <div class="view-head">
       <h1 class="display">Info</h1>
       <div class="brush" aria-hidden="true"></div>
-      <div class="meta">Version 0.9.6</div>
+      <div class="meta">Version 0.9.7</div>
     </div>
     <div class="info-grid">
       <article class="card"><div class="bd" style="gap:10px">
@@ -1293,8 +1295,22 @@ function renderLures(){
   const rs=$('#r-species'),keep=rs.value||S.recoSpecies||'Zander';
   const mt=myTargets(),spp=mt.length?[...mt].sort((a,b)=>a.localeCompare(b,'de')):allSpecies();
   rs.innerHTML=spp.map(x=>`<option>${esc(x)}</option>`).join('');rs.value=spp.includes(keep)?keep:spp[0];
-  renderReco();
+  renderRecoRods();renderReco();
 }
+/* Ruten-Filter: „Heute dabei“ gilt für den laufenden Tag und liegt nur in diesem Browser */
+const CAST_TOL=0.1;
+function todayRods(){try{const o=JSON.parse(flag.get('rr-today-rods')||'null');return o&&o.day===localDT(new Date()).slice(0,10)?o.ids:[]}catch(e){return[]}}
+function setTodayRods(ids){flag.set('rr-today-rods',JSON.stringify({day:localDT(new Date()).slice(0,10),ids}))}
+function renderRecoRods(){
+  const all=rods(),rs=all.filter(r=>castOf(r)),sel=todayRods();
+  $('#r-rods-f').hidden=!rs.length;
+  $('#r-rods').innerHTML=rs.map(r=>`<label><input type="checkbox" value="${esc(r.id)}" ${sel.includes(r.id)?'checked':''}>${esc([r.brand,r.name].filter(Boolean).join(' '))} <small>${esc(castTxt(r))}</small></label>`).join('');
+  const miss=all.length-rs.length,h=$('#r-rods-hint');h.hidden=!miss;h.textContent=miss?`${miss} ${miss===1?'Rute':'Ruten'} ohne Wurfgewicht ${miss===1?'fehlt':'fehlen'} hier.`:'';
+}
+/* ok, grenz (bis 10 % außerhalb), no, unknown (kein Gewicht) */
+function castFit(l,rs){const w=totalWeight(l);if(w==null)return{st:'unknown'};
+  const ok=rs.find(r=>{const c=castOf(r);return w>=c.min&&w<=c.max});if(ok)return{st:'ok',w,r:ok};
+  const g=rs.find(r=>{const c=castOf(r);return w>=c.min*(1-CAST_TOL)&&w<=c.max*(1+CAST_TOL)});if(g)return{st:'grenz',w,r:g};return{st:'no',w}}
 function scoreLure(l,sp,clarity){
   let s=0;const why=[];const pr=PROFILE[sp];
   const n=catchesWithLure(l).filter(c=>c.species===sp).length;
@@ -1311,13 +1327,19 @@ function scoreLure(l,sp,clarity){
 function renderReco(){
   const sp=$('#r-species').value,clarity=$('#r-clarity').value;S.recoSpecies=sp;
   if(!sp){$('#r-out').innerHTML='';return}
-  const ranked=lures().filter(l=>l.qty!==0&&isBait(l)).map(l=>scoreLure(l,sp,clarity)).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).slice(0,3);
+  const sel=new Set(todayRods()),rs=rods().filter(r=>sel.has(r.id)&&castOf(r)),rn=r=>[r.brand,r.name].filter(Boolean).join(' ');
+  let pool=lures().filter(l=>l.qty!==0&&isBait(l)).map(l=>scoreLure(l,sp,clarity)).filter(x=>x.s>0),unknown=[],out=0;
+  if(rs.length){pool=pool.filter(x=>{const f=castFit(x.l,rs);x.fit=f;if(f.st==='unknown'){unknown.push(x);return false}if(f.st==='no'){out++;return false}
+    if(f.st==='grenz')x.why.push(`grenzwertig: ${fmtN(f.w)} g an ${rn(f.r)} (${castTxt(f.r)})`);else if(rs.length>1)x.why.push(`für ${rn(f.r)}`);return true})}
+  const ranked=pool.sort((a,b)=>b.s-a.s||(a.fit&&a.fit.st==='grenz')-(b.fit&&b.fit.st==='grenz')).slice(0,3);
   const pr=PROFILE[sp];
   const closed=(()=>{const r=checkRules(sp,localDT(new Date()),null,true,null);return r&&r.items.find(i=>i.level==='stop')})();
   const empty=lures().filter(l=>l.qty===0&&isBait(l)&&scoreLure(l,sp,clarity).s>=10);
   $('#r-out').innerHTML=(closed?`<div class="rule stop"><b>${esc(closed.title.split(' · ')[0])}</b>${esc(closed.text)}</div>`:'')+
     (ranked.length?`<ol>${ranked.map((x,i)=>`<li><button type="button" data-act="open-lure" data-id="${esc(x.l.id)}"><span class="rank">${i===0?'Erste Wahl':i===1?'Zweite Wahl':'Dritte Wahl'}</span><b>${esc(x.l.name)}</b><small>${esc(x.why.join(' · '))}</small></button></li>`).join('')}</ol>`
-      :`<p class="hint" style="margin:0">Kein passender Köder in deiner Box.${pr?` Für ${esc(sp)} eignen sich meist ${esc(pr.t.slice(0,3).join(', '))} mit ${pr.min}–${pr.max} cm.`:''}</p>`)+
+      :`<p class="hint" style="margin:0">Kein passender Köder${rs.length?' für die gewählten Ruten':''} in deiner Box.${pr?` Für ${esc(sp)} eignen sich meist ${esc(pr.t.slice(0,3).join(', '))} mit ${pr.min}–${pr.max} cm.`:''}</p>`)+
+    (rs.length&&out?`<p class="hint" style="margin:0">${out} ${out===1?'Köder passt':'Köder passen'} nicht zum Wurfgewicht der gewählten ${rs.length===1?'Rute':'Ruten'} und ${out===1?'ist':'sind'} ausgeblendet.</p>`:'')+
+    (unknown.length?`<p class="hint" style="margin:0">Ohne Gewichtsangabe, daher nicht gegen die Rute geprüft: ${unknown.sort((a,b)=>b.s-a.s).slice(0,5).map(x=>`<button type="button" class="linkish" data-act="open-lure" data-id="${esc(x.l.id)}">${esc(x.l.name)}</button>`).join(', ')}${unknown.length>5?` und ${unknown.length-5} weitere`:''}.</p>`:'')+
     (empty.length?`<p class="hint" style="margin:0">Nachkaufen: ${esc(empty.map(l=>l.name).join(', '))}. Hat bei dir schon ${esc(sp)} gebracht, ist aber nicht mehr vorrätig.</p>`:'')+
     (!catches().some(c=>c.species===sp&&(c.lureId||c.bait))?`<p class="hint" style="margin:0">Noch keine eigenen ${esc(sp)}-Fänge mit Köder. Die Empfehlung beruht auf dem Grundprofil und wird mit jedem Fang genauer.</p>`:'');
 }
@@ -1964,6 +1986,7 @@ $('#form-gear').addEventListener('submit',submitGear);
 $('#g-ltype').addEventListener('change',updateIntervalHint);
 ['l-price','l-pack'].forEach(id=>$('#'+id).addEventListener('input',updateUnit));
 $('#r-species').addEventListener('change',renderReco);
+$('#r-rods').addEventListener('change',()=>{setTodayRods($$('#r-rods input:checked').map(i=>i.value));renderReco()});
 $('#l-type').addEventListener('change',()=>{renderXTypes($$('#l-xtypes input:checked').map(i=>i.value));lureFormKind()});
 $('#set-targets').addEventListener('change',async()=>{await saveSettings({myTargets:$$('#set-targets input:checked').map(i=>i.value)});renderLures()});$('#r-clarity').addEventListener('change',renderReco);
 $('#l-file').addEventListener('change',async e=>{const fs=[...e.target.files].slice(0,3-S.lurePhotos.length);e.target.value='';for(const f of fs){try{const img=await loadImg(f);const full=await reencode(img,1200,.82),thumb=await reencode(img,520,.78);S.lurePhotos.push({id:uid(),isNew:true,full,thumb,url:URL.createObjectURL(thumb)})}catch(err){toast('Foto konnte nicht gelesen werden')}}renderLurePhoto()});
